@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.ProductCategoryMapper">
+
+
+
+  <select id="getProductCategories"  parameterType="java.util.Map" resultType="com.qiguliuxing.dts.vo.ProductCategoryVO">
+    select
+      category_id as categoryId,
+      category_name as categoryName,
+      created_by as createBy,
+      created_time as createTime,
+      updated_by as updatedBy,
+      updated_time as updatedTime
+    from product_category
+    where 0=0
+      <if test="categoryId != null and categoryId != ''">
+          and category_id = #{categoryId}
+      </if>
+      <if test="categoryName != null and categoryName != ''">
+          and category_name = #{categoryName}
+      </if>
+  </select>
+
+  <insert id="insertProductCategory" parameterType="com.qiguliuxing.dts.vo.ProductCategoryVO" useGeneratedKeys="true" keyProperty="categoryId">
+    INSERT INTO product_category (
+      category_name,
+      created_by,
+      created_time,
+      updated_by,
+      updated_time
+    ) VALUES (
+               #{categoryName},
+               #{createdBy},
+               NOW(),
+               #{updatedBy},
+               NOW()
+             )
+  </insert>
+
+    <!-- 根据 categoryId 删除商品类目 -->
+    <delete id="deleteProductCategory" parameterType="java.lang.Integer">
+        DELETE FROM product_category
+        WHERE category_id = #{categoryId}
+    </delete>
+
+    <!-- 根据 categoryId 更新商品类目 -->
+    <update id="updateProductCategory" parameterType="com.qiguliuxing.dts.vo.ProductCategoryVO">
+        UPDATE product_category
+        SET
+            category_name = #{categoryName},
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE category_id = #{categoryId}
+    </update>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.ProductLevelMapper">
+
+
+    <insert id="insertProductLevel" parameterType="com.qiguliuxing.dts.vo.ProductLevelVO" useGeneratedKeys="true" keyProperty="levelId">
+        INSERT INTO product_level (
+            level_id,
+            level_name,
+            created_by,
+            created_time,
+            updated_by,
+            updated_time
+        ) VALUES (
+                     #{levelId},
+                     #{levelName},
+                     #{createdBy},
+                     NOW(),
+                     #{updatedBy},
+                     NOW()
+                 )
+    </insert>
+
+    <delete id="deleteProductLevel" parameterType="java.lang.Integer">
+        DELETE FROM product_level
+        WHERE level_id = #{levelId}
+    </delete>
+
+
+    <update id="updateProductLevel" parameterType="com.qiguliuxing.dts.vo.ProductLevelVO">
+        UPDATE product_level
+        SET
+            level_name = #{levelName},
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE level_id = #{levelId}
+    </update>
+
+    <select id="selectAllProductLevels" resultType="com.qiguliuxing.dts.vo.ProductLevelVO">
+        SELECT
+            level_id AS levelId,
+            level_name AS levelName,
+            created_by AS createdBy,
+            created_time AS createdTime,
+            updated_by AS updatedBy,
+            updated_time AS updatedTime
+        FROM product_level
+    </select>
+
+
+</mapper>

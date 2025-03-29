@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.ProductSeriesMapper">
+
+    <!-- 动态查询商品系列 -->
+    <select id="getProductSeries" parameterType="java.util.Map" resultType="com.qiguliuxing.dts.vo.ProductSeriesVO">
+        SELECT
+        ser.series_id AS seriesId,
+        ser.category_id AS categoryId,
+        category.category_name as categoryName,
+        ser.series_name AS seriesName,
+        ser.series_image AS seriesImage,
+        ser.series_description AS seriesDescription,
+        ser.is_hot AS isHot,
+        ser.is_avoid AS isAvoid,
+        ser.purchase_count AS purchaseCount,
+        ser.created_by AS createdBy,
+        ser.created_time AS createdTime,
+        ser.updated_by AS updatedBy,
+        ser.updated_time AS updatedTime
+        FROM product_series as ser
+        left join product_category as category
+        on category.category_id = ser.category_id
+        WHERE 1 = 1
+        <if test="seriesId != null and seriesId != ''">
+            AND series_id = #{seriesId}
+        </if>
+        <if test="seriesName != null and seriesName != ''">
+            AND series_name = #{seriesName}
+        </if>
+        ORDER BY series_id
+    </select>
+
+    <!-- 插入商品系列 -->
+    <insert id="insertProductSeries" parameterType="com.qiguliuxing.dts.vo.ProductSeriesVO" useGeneratedKeys="true" keyProperty="seriesId">
+        INSERT INTO product_series (
+            category_id,
+            series_name,
+            series_image,
+            series_description,
+            is_hot,
+            is_avoid,
+            purchase_count,
+            created_by,
+            created_time,
+            updated_by,
+            updated_time
+        ) VALUES (
+                     #{categoryId},
+                     #{seriesName},
+                     #{seriesImage},
+                     #{seriesDescription},
+                     #{isHot},
+                     #{isAvoid},
+                     #{purchaseCount},
+                     #{createdBy},
+                     NOW(),
+                     #{updatedBy},
+                     NOW()
+                 )
+    </insert>
+
+    <!-- 根据 series_id 更新商品系列 -->
+    <update id="updateProductSeries" parameterType="com.qiguliuxing.dts.vo.ProductSeriesVO">
+        UPDATE product_series
+        SET
+            category_id = #{categoryId},
+            series_name = #{seriesName},
+            series_image = #{seriesImage},
+            series_description = #{seriesDescription},
+            is_hot = #{isHot},
+            is_avoid = #{isAvoid},
+            purchase_count = #{purchaseCount},
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE series_id = #{seriesId}
+    </update>
+
+    <!-- 根据 series_id 删除商品系列 -->
+    <delete id="deleteProductSeries" parameterType="java.lang.Integer">
+        DELETE FROM product_series
+        WHERE series_id = #{seriesId}
+    </delete>
+
+
+</mapper>

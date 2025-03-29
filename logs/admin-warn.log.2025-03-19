@@ -1,0 +1,395 @@
+ERROR 2025-03-19 15:19:47,717 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productCategoryService in com.qiguliuxing.dts.admin.controller.ProductCategoryController required a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' in your configuration.
+
+ERROR 2025-03-19 15:19:59,132 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productCategoryService in com.qiguliuxing.dts.admin.controller.ProductCategoryController required a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' in your configuration.
+
+ERROR 2025-03-19 15:22:18,666 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productCategoryService in com.qiguliuxing.dts.admin.controller.ProductCategoryController required a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' in your configuration.
+
+ERROR 2025-03-19 15:23:00,240 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productCategoryService in com.qiguliuxing.dts.admin.controller.ProductCategoryController required a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' in your configuration.
+
+ERROR 2025-03-19 15:23:15,573 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productCategoryService in com.qiguliuxing.dts.admin.controller.ProductCategoryController required a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductCategoryService' in your configuration.
+
+ERROR 2025-03-19 15:25:05,963 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:31:39,373 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:33:22,306 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:34:08,283 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:40:45,599 [restartedMain] org.springframework.boot.SpringApplication > Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'configService': Invocation of init method failed; nested exception is org.springframework.dao.InvalidDataAccessApiUsageException: Error attempting to get column 'add_time' from result set.  Cause: java.sql.SQLFeatureNotSupportedException
+; ]; null; nested exception is java.sql.SQLFeatureNotSupportedException
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:139)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:416)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1691)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:573)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:495)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:317)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:315)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:759)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:869)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:550)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:762)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:398)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:330)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1258)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1246)
+	at com.qiguliuxing.dts.admin.api.Application.main(Application.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+Caused by: org.springframework.dao.InvalidDataAccessApiUsageException: Error attempting to get column 'add_time' from result set.  Cause: java.sql.SQLFeatureNotSupportedException
+; ]; null; nested exception is java.sql.SQLFeatureNotSupportedException
+	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:96)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:72)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:81)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441)
+	at com.sun.proxy.$Proxy78.selectList(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224)
+	at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80)
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:145)
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86)
+	at com.sun.proxy.$Proxy121.selectByExample(Unknown Source)
+	at com.qiguliuxing.dts.db.service.DtsSystemConfigService.queryAll(DtsSystemConfigService.java:20)
+	at com.qiguliuxing.dts.core.system.ConfigService.inistConfigs(ConfigService.java:55)
+	at com.qiguliuxing.dts.core.system.ConfigService.inist(ConfigService.java:34)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:309)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:136)
+	... 23 common frames omitted
+Caused by: java.sql.SQLFeatureNotSupportedException: null
+	at com.alibaba.druid.pool.DruidPooledResultSet.getObject(DruidPooledResultSet.java:1771)
+	at org.apache.ibatis.type.LocalDateTimeTypeHandler.getNullableResult(LocalDateTimeTypeHandler.java:38)
+	at org.apache.ibatis.type.LocalDateTimeTypeHandler.getNullableResult(LocalDateTimeTypeHandler.java:28)
+	at org.apache.ibatis.type.BaseTypeHandler.getResult(BaseTypeHandler.java:85)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.getPropertyMappingValue(DefaultResultSetHandler.java:512)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.applyPropertyMappings(DefaultResultSetHandler.java:481)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.getRowValue(DefaultResultSetHandler.java:405)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.handleRowValuesForSimpleResultMap(DefaultResultSetHandler.java:355)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.handleRowValues(DefaultResultSetHandler.java:329)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.handleResultSet(DefaultResultSetHandler.java:302)
+	at org.apache.ibatis.executor.resultset.DefaultResultSetHandler.handleResultSets(DefaultResultSetHandler.java:195)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:65)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79)
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63)
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325)
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156)
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:109)
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:89)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
+	... 40 common frames omitted
+ERROR 2025-03-19 15:42:36,656 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:47:01,086 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxService in com.qiguliuxing.dts.admin.controller.ProductBoxController required a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.service.IProductBoxService' in your configuration.
+
+ERROR 2025-03-19 15:49:39,540 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxMapper in com.qiguliuxing.dts.db.service.impl.ProductBoxServiceImpl required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 15:50:08,936 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxMapper in com.qiguliuxing.dts.db.service.impl.ProductBoxServiceImpl required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 15:54:09,416 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxMapper in com.qiguliuxing.dts.db.service.impl.ProductBoxServiceImpl required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 18:09:19,481 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field productBoxMapper in com.qiguliuxing.dts.db.service.impl.ProductBoxServiceImpl required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:14:11,698 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:18:24,404 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:21:43,629 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:24:15,295 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.dao.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:27:14,341 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.mapper.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.mapper.ProductBoxMapper' in your configuration.
+
+ERROR 2025-03-19 22:30:53,448 [restartedMain] o.s.b.diagnostics.LoggingFailureAnalysisReporter > 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.qiguliuxing.dts.db.mapper.ProductBoxMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.qiguliuxing.dts.db.mapper.ProductBoxMapper' in your configuration.
+

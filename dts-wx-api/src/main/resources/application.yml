@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: @profile.active@
+  messages:
+    encoding: UTF-8
+  servlet:
+    multipart:
+      max-file-size: 50Mb
+      max-request-size: 80Mb
+      location: /tmp/tomcat_upload
+      
+server:
+  port: 8088
+  servlet:
+    context-path: /dts-shop
+
+logging:
+  level:
+    root:  ERROR
+    org.springframework:  ERROR
+    org.mybatis:  DEBUG
+    com.qiguliuxing.dts.wx:  DEBUG
+    com.qiguliuxing.dts:  DEBUG

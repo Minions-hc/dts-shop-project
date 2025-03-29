@@ -1,0 +1,79 @@
+INFO  2025-03-18 00:09:11,065 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 00:09:11,096 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 00:39:11,100 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 01:08:58,570 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 01:08:58,601 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 01:38:58,619 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 02:08:58,590 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 02:08:58,636 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 02:38:58,651 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 02:59:47,491 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动确认收货
+INFO  2025-03-18 03:08:58,617 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 03:08:58,662 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 03:38:58,669 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 03:59:47,500 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期未评价
+INFO  2025-03-18 04:08:58,629 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 04:08:58,674 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 04:38:58,685 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 05:08:58,646 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 05:08:58,691 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 05:38:58,702 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 06:08:58,670 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 06:08:58,717 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 06:38:58,726 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 07:08:58,679 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 07:08:58,743 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 07:38:58,753 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 08:08:58,691 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 08:08:58,769 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 08:38:58,791 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 09:08:58,707 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 09:08:58,799 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 09:38:58,813 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 10:08:58,715 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 10:08:58,827 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 10:38:58,847 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 11:08:58,731 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 11:08:58,856 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 11:38:58,873 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 12:08:58,735 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 12:08:58,892 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 12:38:58,912 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 13:00:37,643 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Starting Application on 黄诚 with PID 10408 (C:\yfsshop\dts-shop-master\dts-shop-master\dts-admin-api\target\classes started by hc185 in C:\yfsshop\dts-shop-master\dts-shop-master)
+DEBUG 2025-03-18 13:00:37,644 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Running with Spring Boot v2.0.4.RELEASE, Spring v5.0.8.RELEASE
+INFO  2025-03-18 13:00:37,644 [restartedMain] com.qiguliuxing.dts.admin.api.Application > The following profiles are active: dev
+INFO  2025-03-18 13:00:42,624 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 13:00:42,653 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Started Application in 5.537 seconds (JVM running for 7.069)
+INFO  2025-03-18 13:00:42,677 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 13:16:59,121 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Starting Application on 黄诚 with PID 10408 (C:\yfsshop\dts-shop-master\dts-shop-master\dts-admin-api\target\classes started by hc185 in C:\yfsshop\dts-shop-master\dts-shop-master)
+DEBUG 2025-03-18 13:16:59,121 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Running with Spring Boot v2.0.4.RELEASE, Spring v5.0.8.RELEASE
+INFO  2025-03-18 13:16:59,121 [restartedMain] com.qiguliuxing.dts.admin.api.Application > The following profiles are active: dev
+INFO  2025-03-18 13:17:01,540 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 13:17:01,561 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Started Application in 2.495 seconds (JVM running for 985.978)
+INFO  2025-03-18 13:17:01,572 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 13:47:01,610 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 14:17:01,570 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 14:17:01,616 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 14:47:01,621 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 15:17:01,595 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 15:17:01,643 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 15:47:01,656 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 16:17:01,626 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 16:17:01,673 [pool-2-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 16:48:20,148 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Starting Application on 黄诚 with PID 21236 (C:\yfsshop\dts-shop-master\dts-shop-master\dts-admin-api\target\classes started by hc185 in C:\yfsshop\dts-shop-master\dts-shop-master)
+DEBUG 2025-03-18 16:48:20,149 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Running with Spring Boot v2.0.4.RELEASE, Spring v5.0.8.RELEASE
+INFO  2025-03-18 16:48:20,149 [restartedMain] com.qiguliuxing.dts.admin.api.Application > The following profiles are active: dev
+INFO  2025-03-18 16:48:26,761 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 16:48:26,798 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Started Application in 7.164 seconds (JVM running for 8.376)
+INFO  2025-03-18 16:48:26,830 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 17:28:04,011 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 17:48:26,690 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 17:58:04,022 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 18:28:04,039 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-18 18:48:26,716 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 23:27:56,579 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Starting Application on 黄诚 with PID 37000 (C:\yfsshop\dts-shop-master\dts-shop-master\dts-admin-api\target\classes started by hc185 in C:\yfsshop\dts-shop-master\dts-shop-master)
+DEBUG 2025-03-18 23:27:56,580 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Running with Spring Boot v2.0.4.RELEASE, Spring v5.0.8.RELEASE
+INFO  2025-03-18 23:27:56,580 [restartedMain] com.qiguliuxing.dts.admin.api.Application > The following profiles are active: dev
+INFO  2025-03-18 23:28:01,691 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-18 23:28:01,718 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Started Application in 5.578 seconds (JVM running for 6.438)
+INFO  2025-03-18 23:28:01,741 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
