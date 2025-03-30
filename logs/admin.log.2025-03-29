@@ -1,0 +1,9 @@
+INFO  2025-03-29 12:43:40,643 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Starting Application on 黄诚 with PID 23884 (C:\yfsshop\dts-shop-master\dts-shop-master\dts-admin-api\target\classes started by hc185 in C:\yfsshop\dts-shop-master\dts-shop-master)
+DEBUG 2025-03-29 12:43:40,644 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Running with Spring Boot v2.0.4.RELEASE, Spring v5.0.8.RELEASE
+INFO  2025-03-29 12:43:40,644 [restartedMain] com.qiguliuxing.dts.admin.api.Application > The following profiles are active: dev
+INFO  2025-03-29 12:43:46,982 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-29 12:43:47,014 [restartedMain] com.qiguliuxing.dts.admin.api.Application > Started Application in 6.917 seconds (JVM running for 8.147)
+INFO  2025-03-29 12:43:47,043 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-29 13:13:47,073 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
+INFO  2025-03-29 13:43:47,038 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.CouponJob > 系统开启任务检查优惠券是否已经过期
+INFO  2025-03-29 13:43:47,084 [pool-1-thread-1] com.qiguliuxing.dts.admin.job.OrderJob > 系统开启任务检查订单是否已经超期自动取消订单
