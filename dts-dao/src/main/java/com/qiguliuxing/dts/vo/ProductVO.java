@@ -7,6 +7,7 @@ public class ProductVO {
     private String productName;;
     private String productImage; // 产品图片
     private Double productPrice; // 产品价格
+    private Integer quantity;
     private Integer productSeriesId;
     private String productSeriesName;
     private String productLevelName;
@@ -111,5 +112,13 @@ public class ProductVO {
 
     public void setProductSeriesId(Integer productSeriesId) {
         this.productSeriesId = productSeriesId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

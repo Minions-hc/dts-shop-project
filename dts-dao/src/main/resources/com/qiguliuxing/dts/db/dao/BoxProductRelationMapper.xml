@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BoxProductRelationMapper">
+
+
+    <!-- 新增箱子产品关联关系 -->
+    <insert id="batchInsertBoxProductRelations" parameterType="java.util.List">
+        INSERT INTO box_product_relation (
+        box_id,
+        box_number,
+        product_id,
+        quantity,
+        sold_quantity,
+        created_by,
+        created_at,
+        updated_by,
+        updated_at
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.boxId},
+            #{item.boxNumber},
+            #{item.productId},
+            #{item.quantity},
+            #{item.soldQuantity},
+            #{item.createdBy},
+            NOW(),
+            #{item.updatedBy},
+            NOW()
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="queryProductsInBox" resultType="com.qiguliuxing.dts.vo.ProductVO" parameterType="java.util.Map">
+        SELECT
+        p.product_id AS productId,
+        p.product_name as productName,
+        p.product_image as productImage,
+        p.product_price as productPrice,
+        p.product_levelid as productLevelId,
+        pl.level_name as productLevelName,
+        r.quantity as quantity
+        FROM box_product_relation r
+        JOIN product p
+            ON r.product_id = p.product_id
+        LEFT JOIN product_level pl
+            ON p.product_levelid = pl.level_id
+        <where>
+            <if test="boxId != null">
+                AND r.box_id = #{boxId}
+            </if>
+            <if test="boxNumber != null and boxNumber != ''">
+                AND r.box_number = #{boxNumber}
+            </if>
+        </where>
+        ORDER BY p.product_id
+    </select>
+
+</mapper>

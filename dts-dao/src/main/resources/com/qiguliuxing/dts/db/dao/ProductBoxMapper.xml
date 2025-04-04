@@ -2,4 +2,53 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qiguliuxing.dts.db.dao.ProductBoxMapper">
 
+
+    <select id="findMaxBoxId" resultType="java.lang.Integer">
+        SELECT COALESCE(MAX(box_id), 0) FROM product_box
+    </select>
+
+    <select id="getProductBoxByCondition" parameterType="java.util.Map" resultType="com.qiguliuxing.dts.vo.ProductBoxVO">
+        SELECT
+        b.box_id as boxId,
+        b.box_number as boxNumber,
+        s.series_id as seriesId,
+        s.series_name as seriesName
+        FROM product_box b
+        LEFT JOIN product_series s ON b.series_id = s.series_id
+        WHERE 1=1
+        <if test="boxId != null">
+            AND b.box_id = #{boxId}
+        </if>
+        <if test="seriesId != null">
+            AND b.series_id = #{seriesId}
+        </if>
+        <if test="seriesName != null and seriesName != ''">
+            AND s.series_name LIKE CONCAT('%', #{seriesName}, '%')
+        </if>
+        ORDER BY b.box_id
+    </select>
+
+
+    <!-- 插入箱子信息 -->
+    <insert id="insertProductBox" parameterType="com.qiguliuxing.dts.vo.ProductBoxVO" >
+        INSERT INTO product_box (
+            box_id,
+            box_number,
+            series_id,
+            created_by,
+            created_time,
+            updated_by,
+            updated_time
+        ) VALUES (
+                     #{boxId},
+                     #{boxNumber},
+                     #{seriesId},
+                     #{createdBy},
+                     NOW(),
+                     #{updatedBy},
+                     NOW()
+                 )
+    </insert>
+
+
 </mapper>

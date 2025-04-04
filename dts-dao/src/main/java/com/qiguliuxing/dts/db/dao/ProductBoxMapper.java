@@ -1,10 +1,14 @@
 package com.qiguliuxing.dts.db.dao;
 
 import com.qiguliuxing.dts.vo.ProductBoxVO;
+import com.qiguliuxing.dts.vo.ProductVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductBoxMapper {
+
+    Integer findMaxBoxId();
 
     void insertProductBox(ProductBoxVO productBox);
 
@@ -15,4 +19,6 @@ public interface ProductBoxMapper {
     ProductBoxVO getProductBoxById( Integer seriesId,  String boxNumber,  Integer productId);
 
     List<ProductBoxVO> getProductBoxesBySeriesId(Integer seriesId);
+
+    List<ProductBoxVO> getProductBoxByCondition(Map<String, Object> params);
 }
