@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductBoxServiceImpl implements IProductBoxService {
@@ -55,14 +53,50 @@ public class ProductBoxServiceImpl implements IProductBoxService {
 
     @Override
     @Transactional
-    public void deleteProductBox(Integer seriesId, String boxNumber, Integer productId) {
-        productBoxMapper.deleteProductBox(seriesId, boxNumber, productId);
+    public void deleteProductBox(Map<String, Object> params) {
+        productBoxMapper.deleteProductBox(params);
+        boxProductRelationService.deleteProductBoxRelation(params);
     }
 
     @Override
     @Transactional
     public void updateProductBox(ProductBoxVO productBox) {
-        productBoxMapper.updateProductBox(productBox);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("boxId", productBox.getBoxId());
+        params.put("boxNumber", productBox.getBoxNumber());
+        // 查询已有数据
+        List<ProductVO> existingProducts = boxProductRelationService.queryProductsInBox(params);
+        List<Integer> existingProductIds = existingProducts.stream().map(ProductVO::getProductId).collect(Collectors.toList());
+        List<BoxProductRelationVO> needUpdateRelations = new ArrayList<>();
+        List<ProductVO> needUpdateProducts = productBox.getProducts().stream().filter(productVO -> existingProductIds.contains(productVO.getProductId())).collect(Collectors.toList());
+        setProductBoxRelations(productBox, needUpdateProducts, needUpdateRelations);
+        if(!needUpdateRelations.isEmpty()){
+            boxProductRelationService.batchUpdateProductBoxRelation(needUpdateRelations);
+        }
+        List<ProductVO> needInsertProducts = productBox.getProducts().stream()
+                .filter(productVO -> (productVO.getQuantity() != null && productVO.getQuantity() > 0) && !existingProductIds.contains(productVO.getProductId()))
+                .collect(Collectors.toList());
+        List<BoxProductRelationVO> needInsertRelations = new ArrayList<>();
+        setProductBoxRelations(productBox, needInsertProducts, needInsertRelations);
+        if(!needInsertRelations.isEmpty()){
+            boxProductRelationService.batchInsertBoxProductRelations(needInsertRelations);
+        }
+    }
+
+    private void setProductBoxRelations(ProductBoxVO productBox, List<ProductVO> products, List<BoxProductRelationVO> relations) {
+        BoxProductRelationVO relationVO;
+        for (ProductVO needInsertProduct : products) {
+            relationVO = new BoxProductRelationVO();
+            relationVO.setBoxNumber(productBox.getBoxNumber());
+            relationVO.setBoxId(productBox.getBoxId());
+            relationVO.setQuantity(needInsertProduct.getQuantity());
+            relationVO.setProductId(needInsertProduct.getProductId());
+            relationVO.setSoldQuantity(0);
+            relationVO.setUpdatedBy(productBox.getUpdatedBy());
+            relationVO.setCreatedBy(productBox.getCreatedBy());
+            relations.add(relationVO);
+        }
     }
 
     @Override

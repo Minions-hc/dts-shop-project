@@ -50,5 +50,10 @@
                  )
     </insert>
 
-
+    <!-- 根据 boxId, boxNumber 删除箱子数据 -->
+    <delete id="deleteProductBox" parameterType="java.util.Map">
+        DELETE FROM product_box
+        WHERE box_id = #{boxId}
+        and box_number = #{boxNumber}
+    </delete>
 </mapper>

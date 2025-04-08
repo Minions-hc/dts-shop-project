@@ -11,5 +11,9 @@ public interface IBoxProductRelationService {
     void batchInsertBoxProductRelations(List<BoxProductRelationVO> relations);
 
     List<ProductVO> queryProductsInBox(Map<String, Object> params);
-    
+
+
+    void deleteProductBoxRelation(Map<String, Object> params);
+
+    void batchUpdateProductBoxRelation(List<BoxProductRelationVO> relations);
 }

@@ -57,4 +57,35 @@
         ORDER BY p.product_id
     </select>
 
+    <!-- 根据 boxId, boxNumber 删除箱子关系表数据 -->
+    <delete id="deleteProductBoxRelation" parameterType="java.util.Map">
+        DELETE FROM box_product_relation
+        WHERE box_id = #{boxId}
+          and box_number = #{boxNumber}
+    </delete>
+
+
+    <update id="batchUpdateProductBoxRelation" parameterType="java.util.List">
+        UPDATE box_product_relation r
+        JOIN (
+        <foreach collection="list" item="item" separator="UNION ALL">
+            SELECT
+            #{item.boxId} AS box_id,
+            #{item.boxNumber} AS box_number,
+            #{item.productId} AS product_id,
+            #{item.quantity} AS new_quantity,
+            #{item.soldQuantity} AS new_sold_quantity,
+            #{item.updatedBy} AS new_updated_by
+        </foreach>
+        ) AS temp ON r.box_id = temp.box_id
+        AND r.box_number = temp.box_number
+        AND r.product_id = temp.product_id
+        SET
+        r.quantity = temp.new_quantity,
+        r.sold_quantity = temp.new_sold_quantity,
+        r.updated_by = temp.new_updated_by,
+        r.updated_at = NOW()
+    </update>
+
+
 </mapper>

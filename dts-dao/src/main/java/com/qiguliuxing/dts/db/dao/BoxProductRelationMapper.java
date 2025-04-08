@@ -13,4 +13,8 @@ public interface BoxProductRelationMapper {
 
     List<ProductVO> queryProductsInBox (Map<String, Object> params);
 
+
+    void deleteProductBoxRelation(Map<String, Object> params);
+
+    void batchUpdateProductBoxRelation(List<BoxProductRelationVO> relations);
 }

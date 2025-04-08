@@ -6,7 +6,7 @@ public class ProductBoxVO {
 
     private Integer boxId;
     private Integer seriesId; // 系列ID
-    private Integer boxNumber; // 箱子编号
+    private String boxNumber; // 箱子编号
     private String seriesName;
     private String createdBy; // 创建人
     private Date createdTime; // 创建时间
@@ -82,11 +82,11 @@ public class ProductBoxVO {
         this.products = products;
     }
 
-    public Integer getBoxNumber() {
+    public String getBoxNumber() {
         return boxNumber;
     }
 
-    public void setBoxNumber(Integer boxNumber) {
+    public void setBoxNumber(String boxNumber) {
         this.boxNumber = boxNumber;
     }
 }

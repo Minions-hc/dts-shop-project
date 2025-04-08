@@ -36,4 +36,14 @@ public class BoxProductRelationServiceImpl implements IBoxProductRelationService
     public List<ProductVO> queryProductsInBox(Map<String, Object> params) {
         return boxProductRelationMapper.queryProductsInBox(params);
     }
+
+    @Override
+    public void deleteProductBoxRelation(Map<String, Object> params) {
+        boxProductRelationMapper.deleteProductBoxRelation(params);
+    }
+
+    @Override
+    public void batchUpdateProductBoxRelation(List<BoxProductRelationVO> relations) {
+        boxProductRelationMapper.batchUpdateProductBoxRelation(relations);
+    }
 }

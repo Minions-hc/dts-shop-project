@@ -6,7 +6,7 @@ public class BoxProductRelationVO {
 
 
     private Integer boxId;
-    private Integer boxNumber;
+    private String boxNumber;
     private Integer productId;
     private Integer quantity;
     private Integer soldQuantity;
@@ -23,7 +23,7 @@ public class BoxProductRelationVO {
         this.boxId = boxId;
     }
 
-    public Integer getBoxNumber() {
+    public String getBoxNumber() {
         return boxNumber;
     }
 
@@ -35,7 +35,7 @@ public class BoxProductRelationVO {
         this.productId = productId;
     }
 
-    public void setBoxNumber(Integer boxNumber) {
+    public void setBoxNumber(String boxNumber) {
         this.boxNumber = boxNumber;
     }
 

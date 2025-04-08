@@ -8,7 +8,7 @@ import java.util.Map;
 public interface IProductBoxService {
 
     void addProductBox(ProductBoxVO productBox);
-    void deleteProductBox(Integer seriesId, String boxNumber, Integer productId);
+    void deleteProductBox(Map<String, Object> params);
     void updateProductBox(ProductBoxVO productBox);
     ProductBoxVO getProductBoxById(Integer seriesId, String boxNumber, Integer productId);
     List<ProductBoxVO> getProductBoxesBySeriesId(Integer seriesId);

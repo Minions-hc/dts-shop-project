@@ -12,7 +12,7 @@ public interface ProductBoxMapper {
 
     void insertProductBox(ProductBoxVO productBox);
 
-    void deleteProductBox( Integer seriesId, String boxNumber,  Integer productId);
+    void deleteProductBox(Map<String, Object> params);
 
     void updateProductBox(ProductBoxVO productBox);
 
