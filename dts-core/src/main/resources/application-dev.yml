@@ -98,7 +98,7 @@ dts:
     local:
       storagePath: dts/storage
       # 这个地方应该是wx模块的WxStorageController的fetch方法对应的地址
-      address: http://localhost:8080/demo/storage/
+      address: http://localhost:8083/dts/storage/
     # 阿里云对象存储配置信息
     aliyun:
       endpoint: oss-cn-guangzhou.aliyuncs.com
