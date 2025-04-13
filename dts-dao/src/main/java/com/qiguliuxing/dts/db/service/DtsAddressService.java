@@ -5,12 +5,15 @@ import com.qiguliuxing.dts.db.dao.DtsAddressMapper;
 import com.qiguliuxing.dts.db.domain.DtsAddress;
 import com.qiguliuxing.dts.db.domain.DtsAddressExample;
 
+import com.qiguliuxing.dts.vo.AddressVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DtsAddressService {
@@ -20,7 +23,7 @@ public class DtsAddressService {
 	public List<DtsAddress> queryByUid(Integer uid) {
 		DtsAddressExample example = new DtsAddressExample();
 		example.or().andUserIdEqualTo(uid).andDeletedEqualTo(false);
-		return addressMapper.selectByExample(example);
+		return null;
 	}
 
 	public DtsAddress findById(Integer id) {
@@ -62,24 +65,12 @@ public class DtsAddressService {
 		addressMapper.updateByExampleSelective(address, example);
 	}
 
-	public List<DtsAddress> querySelective(Integer userId, String name, Integer page, Integer limit, String sort,
-			String order) {
-		DtsAddressExample example = new DtsAddressExample();
-		DtsAddressExample.Criteria criteria = example.createCriteria();
-
-		if (userId != null) {
-			criteria.andUserIdEqualTo(userId);
-		}
-		if (!StringUtils.isEmpty(name)) {
-			criteria.andNameLike("%" + name + "%");
-		}
-		criteria.andDeletedEqualTo(false);
-
-		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
-			example.setOrderByClause(sort + " " + order);
-		}
-
+	public List<AddressVO> queryAddressList(String userId, String userName, String receiverName, Integer page, Integer limit) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("userName", userName);
+		params.put("receiverName", receiverName);
 		PageHelper.startPage(page, limit);
-		return addressMapper.selectByExample(example);
+		return addressMapper.queryAddressList(params);
 	}
 }

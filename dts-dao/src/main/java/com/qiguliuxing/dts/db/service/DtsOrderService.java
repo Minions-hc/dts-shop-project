@@ -7,6 +7,9 @@ import com.qiguliuxing.dts.db.domain.DtsOrder;
 import com.qiguliuxing.dts.db.domain.DtsOrderExample;
 import com.qiguliuxing.dts.db.util.OrderUtil;
 
+import com.qiguliuxing.dts.vo.OrderDetailVO;
+import com.qiguliuxing.dts.vo.OrderItemVO;
+import com.qiguliuxing.dts.vo.OrderVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -83,8 +86,30 @@ public class DtsOrderService {
 		return dtsOrderMapper.selectByExample(example);
 	}
 
+	public List<OrderVO> queryOrderList(String userId, String orderNo, List<String> orderStatusList, Integer page,
+										Integer size) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("orderNo", orderNo);
+		params.put("orderStatusList", orderStatusList);
+		PageHelper.startPage(page, size);
+		return dtsOrderMapper.queryOrderList(params);
+	}
+
+	public OrderDetailVO queryOrderDetail(String orderNo) {
+		OrderDetailVO orderDetail = dtsOrderMapper.queryOrderDetail(orderNo);
+		if (orderDetail == null) {
+			return null;
+		}
+		Integer orderId = orderDetail.getOrderId();
+		List<OrderItemVO> orderItems = dtsOrderMapper.queryOrderItems(orderId);
+		orderDetail.setOrderItems(orderItems);
+		return orderDetail;
+	}
+
+
 	public List<DtsOrder> querySelective(Integer userId, String orderSn, List<Short> orderStatusArray, Integer page,
-			Integer size, String sort, String order) {
+										 Integer size, String sort, String order) {
 		DtsOrderExample example = new DtsOrderExample();
 		DtsOrderExample.Criteria criteria = example.createCriteria();
 
@@ -112,6 +137,7 @@ public class DtsOrderService {
 		order.setUpdateTime(LocalDateTime.now());
 		return orderMapper.updateWithOptimisticLocker(preUpdateTime, order);
 	}
+
 
 	public void deleteById(Integer id) {
 		dtsOrderMapper.logicalDeleteByPrimaryKey(id);

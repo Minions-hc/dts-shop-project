@@ -1,10 +1,13 @@
 package com.qiguliuxing.dts.db.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.qiguliuxing.dts.vo.UserVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -74,6 +77,17 @@ public class DtsUserService {
 
 		PageHelper.startPage(page, size);
 		return userMapper.selectByExample(example);
+	}
+
+
+	public List<UserVO> queryUserList(String userId, String userName, String phone, Integer page, Integer size) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("userName", userName);
+		params.put("phone", phone);
+		PageHelper.startPage(page, size);
+		return userMapper.queryUserList(params);
 	}
 
 	public int count() {

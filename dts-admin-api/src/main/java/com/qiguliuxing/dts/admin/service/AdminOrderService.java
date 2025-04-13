@@ -6,6 +6,7 @@ import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_REPLY_EXIST
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +59,7 @@ public class AdminOrderService {
 
 	public Object list(Integer userId, String orderSn, List<Short> orderStatusArray, Integer page, Integer limit,
 			String sort, String order) {
-		List<DtsOrder> orderList = orderService.querySelective(userId, orderSn, orderStatusArray, page, limit, sort,
-				order);
+		List<DtsOrder> orderList = new ArrayList<>();
 		long total = PageInfo.of(orderList).getTotal();
 
 		Map<String, Object> data = new HashMap<>();

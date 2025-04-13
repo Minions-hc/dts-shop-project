@@ -35,6 +35,60 @@
     <result column="settlement_money" jdbcType="DECIMAL" property="settlementMoney" />
     <result column="settlement_status" jdbcType="BIT" property="settlementStatus" />
   </resultMap>
+
+
+  <resultMap id="orderResultMap" type="com.qiguliuxing.dts.vo.OrderVO">
+    <id property="orderId" column="order_id"/>
+    <result property="userId" column="user_id"/>
+    <result property="userName" column="user_name"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="addressId" column="address_id"/>
+    <result property="orderAmount" column="order_amount"/>
+    <result property="paymentAmount" column="payment_amount"/>
+    <result property="paymentTime" column="payment_time"/>
+    <result property="shippingChannel" column="shipping_channel"/>
+    <result property="trackingNumber" column="tracking_number"/>
+    <result property="orderStatus" column="order_status"/>
+    <result property="createBy" column="create_by"/>
+    <result property="createTime" column="create_time"/>
+    <result property="updateBy" column="update_by"/>
+    <result property="updateTime" column="update_time"/>
+  </resultMap>
+
+  <resultMap id="orderDetailResultMap" type="com.qiguliuxing.dts.vo.OrderDetailVO">
+    <!-- 订单基本信息 -->
+    <id property="orderId" column="order_id"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="userId" column="user_id"/>
+    <result property="userName" column="user_name"/>
+
+    <!-- 收货信息 -->
+    <result property="receiverName" column="receiver_name"/>
+    <result property="receiverPhone" column="receiver_phone"/>
+    <result property="fullAddress" column="full_address"/>
+
+    <!-- 快递信息 -->
+    <result property="shippingChannel" column="shipping_channel"/>
+    <result property="trackingNumber" column="tracking_number"/>
+    <result property="orderStatus" column="order_status"/>
+
+    <!-- 金额信息 -->
+    <result property="orderAmount" column="order_amount"/>
+    <result property="paymentAmount" column="payment_amount"/>
+    <result property="paymentTime" column="payment_time"/>
+
+    <!-- 商品列表 -->
+    <collection property="items" ofType="com.qiguliuxing.dts.vo.OrderItemVO">
+      <id property="id" column="id"/>
+      <result property="productId" column="product_id"/>
+      <result property="productName" column="product_name"/>
+      <result property="unitPrice" column="unit_price"/>
+      <result property="quantity" column="quantity"/>
+      <result property="productImage" column="product_image"/>
+      <result property="itemTotalPrice" column="item_total_price"/>
+    </collection>
+  </resultMap>
+
   <sql id="Example_Where_Clause">
     <!--
       WARNING - @mbg.generated
@@ -111,6 +165,7 @@
     pay_id, pay_time, ship_sn, ship_channel, ship_time, confirm_time, comments, end_time, 
     add_time, update_time, deleted, settlement_money, settlement_status
   </sql>
+
   <select id="selectByExample" parameterType="com.qiguliuxing.dts.db.domain.DtsOrderExample" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
@@ -129,6 +184,82 @@
       order by ${orderByClause}
     </if>
   </select>
+
+  <!-- 动态查询SQL - 关联用户表获取用户名 -->
+  <select id="queryOrderList" resultMap="orderResultMap" parameterType="java.util.Map">
+    SELECT
+        o.order_id,
+        o.order_no,
+        o.user_id,
+        u.user_name,
+        o.order_amount,
+        o.payment_amount,
+        DATE_FORMAT(o.payment_time, '%Y-%m-%d %H:%i:%s') as payment_time,
+        o.shipping_channel,
+        o.tracking_number,
+        o.order_status,
+        DATE_FORMAT(o.create_time, '%Y-%m-%d %H:%i:%s') as create_time
+    FROM shop_order o
+    LEFT JOIN shop_user u ON o.user_id = u.user_id
+    <where>
+      <if test="userId != null and userId != ''">
+        AND o.user_id = #{userId}
+      </if>
+      <if test="orderNo != null and orderNo != ''">
+        AND o.order_no = #{orderNo}
+      </if>
+      <if test="orderStatusList != null and orderStatusList.size() > 0">
+        order_status IN
+        <foreach collection="orderStatusList" item="orderStatus" open="(" separator="," close=")">
+          #{orderStatus}
+        </foreach>
+      </if>
+    </where>
+    ORDER BY o.create_time DESC
+  </select>
+
+  <select id="queryOrderItems" parameterType="java.lang.Integer" resultType="com.qiguliuxing.dts.vo.OrderItemVO">
+      SELECT
+        o.order_id as orderId,
+        o.product_id as productId,
+        o.quantity as quantity,
+        p.product_name as productName,
+        p.product_image as productImg,
+        p.product_price as productPrice
+      FROM
+        shop_order_item o
+          JOIN product p ON o.product_id = p.product_id
+      WHERE
+        o.order_id = #{orderId}
+  </select>
+
+
+  <select id="queryOrderDetail" parameterType="java.lang.String" resultType="com.qiguliuxing.dts.vo.OrderDetailVO">
+      SELECT
+        o.order_id as orderId,
+        o.order_no as orderNo,
+        o.user_id as userId,
+        u.user_name as userName,
+        a.receiver_name as receiverName,
+        a.phone AS receiverPhone,
+        CONCAT(a.region, a.detail_address) AS fullAddress,
+        o.shipping_channel as shippingChannel,
+        o.tracking_number as trackingNumber,
+        o.order_status as orderStatus,
+        o.order_amount as orderAmount,
+        o.payment_amount as paymentAmount,
+        o.payment_time as paymentTime
+      FROM
+        shop_order o
+          LEFT JOIN
+        shop_user u ON o.user_id = u.user_id
+          LEFT JOIN
+        shop_address a ON o.address_id = a.address_id
+      WHERE
+        o.order_no = #{orderNo}
+
+  </select>
+
   <select id="selectByExampleSelective" parameterType="map" resultMap="BaseResultMap">
     <!--
       WARNING - @mbg.generated
