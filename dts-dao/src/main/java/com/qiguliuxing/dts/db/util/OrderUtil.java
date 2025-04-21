@@ -38,6 +38,10 @@ public class OrderUtil {
 	public static final Short STATUS_REFUND_CONFIRM = 203;
 	public static final Short STATUS_AUTO_CONFIRM = 402;
 
+	public static final String WAIT_SHIPPING = "WAIT_SHIPPING";
+	public static final String SHIPPED = "SHIPPED";
+	public static final String COMPLETED = "COMPLETED";
+
 	public static String orderStatusText(DtsOrder order) {
 		int status = order.getOrderStatus().intValue();
 
@@ -182,7 +186,7 @@ public class OrderUtil {
 
 	/**
 	 * 0，全部订单； 1，有效订单； 2，失效订单； 3，结算订单； 4，待结算订单。
-	 * 
+	 *
 	 * @param showType
 	 * @return
 	 */
@@ -224,7 +228,7 @@ public class OrderUtil {
 
 	/**
 	 * 0，全部订单； 1，有效订单； 2，失效订单； 3，结算订单； 4，待结算订单。
-	 * 
+	 *
 	 * @param showType
 	 * @return
 	 */
@@ -252,7 +256,7 @@ public class OrderUtil {
 			orderStr = null;
 		} else {
 			for (DtsOrderGoods dog : orderGoodsList) {
-				orderStr = orderStr 
+				orderStr = orderStr
 						+ "<br>&nbsp;&nbsp;&nbsp;&nbsp;商品序列码" + "【" + dog.getGoodsSn() + "】;"
 						+ "<br>&nbsp;&nbsp;&nbsp;&nbsp;商品名称" + "【" + dog.getGoodsName() + "】;"
 						+ "<br>&nbsp;&nbsp;&nbsp;&nbsp;商品规格" + "【" + JSONObject.toJSONString(dog.getSpecifications()) + "】;"

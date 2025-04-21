@@ -13,9 +13,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import com.github.pagehelper.PageInfo;
+import com.qiguliuxing.dts.db.service.*;
+import com.qiguliuxing.dts.vo.ProductSeriesVO;
+import com.qiguliuxing.dts.vo.ProductVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +34,6 @@ import com.qiguliuxing.dts.core.system.SystemConfig;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsCategory;
 import com.qiguliuxing.dts.db.domain.DtsGoods;
-import com.qiguliuxing.dts.db.service.DtsAdService;
-import com.qiguliuxing.dts.db.service.DtsArticleService;
-import com.qiguliuxing.dts.db.service.DtsBrandService;
-import com.qiguliuxing.dts.db.service.DtsCategoryService;
-import com.qiguliuxing.dts.db.service.DtsCouponService;
-import com.qiguliuxing.dts.db.service.DtsGoodsService;
-import com.qiguliuxing.dts.db.service.DtsGrouponRulesService;
-import com.qiguliuxing.dts.db.service.DtsTopicService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.service.HomeCacheManager;
 
@@ -73,6 +70,11 @@ public class WxHomeController {
 	@Autowired
 	private DtsArticleService articleService;
 
+
+	@Autowired
+	private IProductSeriesService productSeriesService;
+
+
 	private final static ArrayBlockingQueue<Runnable> WORK_QUEUE = new ArrayBlockingQueue<>(9);
 
 	private final static RejectedExecutionHandler HANDLER = new ThreadPoolExecutor.CallerRunsPolicy();
@@ -99,7 +101,7 @@ public class WxHomeController {
 
 	/**
 	 * 首页数据
-	 * 
+	 *
 	 * @param userId
 	 *            当用户已经登录时，非空。为登录状态为null
 	 * @return 首页数据
@@ -222,5 +224,20 @@ public class WxHomeController {
 			categoryList.add(catGoods);
 		}
 		return categoryList;
+	}
+
+
+	@GetMapping("/getWxProductSeries")
+	public Object getProductSeries(String seriesId, Integer isHot, Integer isAvoid) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("seriesId", seriesId);
+		params.put("isHot", isHot);
+		params.put("isAvoid", isAvoid);
+		List<ProductSeriesVO> productSeries = productSeriesService.getWxProductSeries(params);
+		Map<String, Object> data = new HashMap<>();
+		data.put("items", productSeries);
+		Map<String, List<ProductSeriesVO>> productSeriesGroup = productSeries.stream().collect(Collectors.groupingBy(ProductSeriesVO::getCategoryName));
+		data.put("productSeriesGroup", productSeriesGroup);
+		return ResponseUtil.ok(data);
 	}
 }

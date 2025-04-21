@@ -13,6 +13,7 @@
         ser.series_description AS seriesDescription,
         ser.is_hot AS isHot,
         ser.is_avoid AS isAvoid,
+        ser.price as price,
         ser.purchase_count AS purchaseCount,
         ser.created_by AS createdBy,
         ser.created_time AS createdTime,
@@ -21,13 +22,20 @@
         FROM product_series as ser
         left join product_category as category
         on category.category_id = ser.category_id
-        WHERE 1 = 1
-        <if test="seriesId != null and seriesId != ''">
-            AND series_id = #{seriesId}
-        </if>
-        <if test="seriesName != null and seriesName != ''">
-            AND series_name = #{seriesName}
-        </if>
+        <where>
+            <if test="seriesId != null and seriesId != ''">
+                AND series_id = #{seriesId}
+            </if>
+            <if test="seriesName != null and seriesName != ''">
+                AND series_name = #{seriesName}
+            </if>
+            <if test="isHot != null">
+                AND is_hot = #{isHot}
+            </if>
+            <if test="isAvoid != null">
+                AND is_avoid = #{isAvoid}
+            </if>
+        </where>
         ORDER BY series_id
     </select>
 
@@ -40,6 +48,7 @@
             series_description,
             is_hot,
             is_avoid,
+            price,
             purchase_count,
             created_by,
             created_time,
@@ -52,6 +61,7 @@
                      #{seriesDescription},
                      #{isHot},
                      #{isAvoid},
+                     #{price},
                      #{purchaseCount},
                      #{createdBy},
                      NOW(),
@@ -70,6 +80,7 @@
             series_description = #{seriesDescription},
             is_hot = #{isHot},
             is_avoid = #{isAvoid},
+            price = #{price},
             purchase_count = #{purchaseCount},
             updated_by = #{updatedBy},
             updated_time = NOW()
@@ -82,5 +93,10 @@
         WHERE series_id = #{seriesId}
     </delete>
 
+    <select id="sumSeriesQuantity" resultType="com.qiguliuxing.dts.vo.ProductSeriesVO">
+        select p.product_seriesid as seriesId, SUM(o.quantity) as purchaseCount from product p
+            inner join shop_order_item o on p.product_id = o.product_id
+        GROUP BY p.product_seriesid
+    </select>
 
 </mapper>

@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.vo;
 import java.util.Date;
+import java.util.List;
 
 public class ProductSeriesVO {
 
@@ -12,6 +13,7 @@ public class ProductSeriesVO {
     private Boolean isHot; // 是否热榜
     private Boolean isAvoid; // 是否踩雷
     private Integer purchaseCount; // 购买次数
+    private Double price;
     private String createdBy; // 创建人
     private Date createdTime; // 创建时间
     private String updatedBy; // 更新人
@@ -120,5 +122,13 @@ public class ProductSeriesVO {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qiguliuxing.dts.vo.OrderVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,37 +178,25 @@ public class AdminOrderService {
 	 * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
 	 */
 	public Object ship(String body) {
-		Integer orderId = JacksonUtil.parseInteger(body, "orderId");
+		String orderNo = JacksonUtil.parseString(body, "orderNo");
 		String shipSn = JacksonUtil.parseString(body, "shipSn");
 		String shipChannel = JacksonUtil.parseString(body, "shipChannel");
-		if (orderId == null || shipSn == null || shipChannel == null) {
+		if (StringUtils.isEmpty(orderNo) || StringUtils.isEmpty(shipSn) || StringUtils.isEmpty(shipChannel)) {
 			return ResponseUtil.badArgument();
 		}
 
-		DtsOrder order = orderService.findById(orderId);
+		OrderVO order = orderService.queryOrderByOrderNo(orderNo);
 		if (order == null) {
 			return ResponseUtil.badArgument();
 		}
-
-		// 如果订单不是已付款状态，则不能发货
-		if (!order.getOrderStatus().equals(OrderUtil.STATUS_PAY)) {
-			logger.info("商场管理->订单管理->订单发货失败:{}", ORDER_CONFIRM_NOT_ALLOWED.desc());
-			return AdminResponseUtil.fail(ORDER_CONFIRM_NOT_ALLOWED);
-		}
-
-		order.setOrderStatus(OrderUtil.STATUS_SHIP);
-		order.setShipSn(shipSn);
-		order.setShipChannel(shipChannel);
-		order.setShipTime(LocalDateTime.now());
-		if (orderService.updateWithOptimisticLocker(order) == 0) {
-			logger.info("商场管理->订单管理->订单发货失败:{}", "更新数据失败!");
-			return ResponseUtil.updatedDateExpired();
-		}
-
+		order.setOrderStatus(OrderUtil.SHIPPED);
+		order.setShippingChannel(shipChannel);
+		order.setTrackingNumber(shipSn);
+		orderService.updateShippingInfo(order);
 		// TODO 发送邮件和短信通知，这里采用异步发送
 		// 发货会发送通知短信给用户: *
 		// "您的订单已经发货，快递公司 {1}，快递单 {2} ，请注意查收"
-		notifyService.notifySmsTemplate(order.getMobile(), NotifyType.SHIP, new String[] { shipChannel, shipSn });
+//		notifyService.notifySmsTemplate(order.get(), NotifyType.SHIP, new String[] { shipChannel, shipSn });
 
 		logger.info("【请求结束】商场管理->订单管理->订单发货,响应结果:{}", "成功!");
 		return ResponseUtil.ok();

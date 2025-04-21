@@ -12,6 +12,8 @@ public class ProductVO {
     private String productSeriesName;
     private String productLevelName;
     private Integer productLevelId;
+    private Integer productPoints;
+    private String productBadge;
     private String createdBy; // 创建人
     private Date createdTime; // 创建时间
     private String updatedBy; // 更新人
@@ -120,5 +122,21 @@ public class ProductVO {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getProductPoints() {
+        return productPoints;
+    }
+
+    public void setProductPoints(Integer productPoints) {
+        this.productPoints = productPoints;
+    }
+
+    public String getProductBadge() {
+        return productBadge;
+    }
+
+    public void setProductBadge(String productBadge) {
+        this.productBadge = productBadge;
     }
 }

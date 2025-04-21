@@ -96,6 +96,14 @@ public class DtsOrderService {
 		return dtsOrderMapper.queryOrderList(params);
 	}
 
+	public OrderVO queryOrderByOrderNo(String orderNo) {
+		return dtsOrderMapper.queryOrderByOrderNo(orderNo);
+	}
+
+	public void updateShippingInfo(OrderVO order){
+		dtsOrderMapper.updateShippingInfo(order);
+	}
+
 	public OrderDetailVO queryOrderDetail(String orderNo) {
 		OrderDetailVO orderDetail = dtsOrderMapper.queryOrderDetail(orderNo);
 		if (orderDetail == null) {

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.RewardRulesMapper">
+
+    <resultMap id="RewardRulesVoResultMap" type="com.qiguliuxing.dts.vo.RewardRulesVo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="rank_name" property="rankName" jdbcType="VARCHAR"/>
+        <result column="rank_order" property="rankOrder" jdbcType="INTEGER"/>
+        <result column="percentage" property="percentage" jdbcType="DECIMAL"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.RewardRulesVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO reward_rules
+            (rank_name, rank_order, percentage, created_at, updated_at)
+        VALUES
+            (#{rankName}, #{rankOrder}, #{percentage}, NOW(), NOW())
+    </insert>
+
+    <update id="updateById" parameterType="com.qiguliuxing.dts.vo.RewardRulesVo">
+        UPDATE reward_rules
+        SET
+            rank_name = #{rankName},
+            rank_order = #{rankOrder},
+            percentage = #{percentage},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM reward_rules WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="RewardRulesVoResultMap">
+        SELECT * FROM reward_rules WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="RewardRulesVoResultMap">
+        SELECT * FROM reward_rules ORDER BY rank_order ASC
+    </select>
+
+    <select id="selectByRankOrder" resultMap="RewardRulesVoResultMap">
+        SELECT * FROM reward_rules WHERE rank_order = #{rankOrder}
+    </select>
+
+</mapper>

@@ -8,11 +8,9 @@ spring:
       max-file-size: 50Mb
       max-request-size: 80Mb
       location: /tmp/tomcat_upload
-      
+
 server:
   port: 8088
-  servlet:
-    context-path: /dts-shop
 
 logging:
   level:

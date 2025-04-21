@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.vo;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,13 +15,29 @@ public class OrderVO {
     private Double orderAmount;     // 订单金额
     private Double paymentAmount;   // 支付金额
     private Date paymentTime;      // 支付时间
+    private Date deliveryTime;
     private String shippingChannel; // 物流渠道
     private String trackingNumber;  // 物流单号
-    private Integer orderStatus;    // 订单状态（1.系统取消，2.待付款，3.待发货，4.待收货，5.已完成）
+    private String orderStatus;    // 订单状态（1.系统取消，2.待付款，3.待发货，4.待收货，5.已完成）
     private String createBy;        // 创建人
     private Date createTime;        // 创建时间
     private String updateBy;        // 修改人
     private Date updateTime;
+
+    /**
+     * 快递费用
+     */
+    private Double shippingFee;
+
+    /**
+     * 优惠减免
+     */
+    private Double discountAmount;
+
+    /**
+     * 积分减免
+     */
+    private Double pointsDeduction;
 
     // 非数据库字段
     private List<OrderItemVO> items;  // 订单商品列表
@@ -106,6 +123,14 @@ public class OrderVO {
         this.paymentAmount = paymentAmount;
     }
 
+    public String getPaymentTimeStr() {
+        if (this.paymentTime == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(this.paymentTime);
+    }
+
     public Date getPaymentTime() {
         return paymentTime;
     }
@@ -130,11 +155,11 @@ public class OrderVO {
         this.trackingNumber = trackingNumber;
     }
 
-    public Integer getOrderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
+    public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -144,5 +169,45 @@ public class OrderVO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(Double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public Double getPointsDeduction() {
+        return pointsDeduction;
+    }
+
+    public void setPointsDeduction(Double pointsDeduction) {
+        this.pointsDeduction = pointsDeduction;
+    }
+
+    public String getDeliveryTimeStr() {
+        if (this.deliveryTime == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(this.deliveryTime);
+    }
+
+    public Date getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(Date deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 }

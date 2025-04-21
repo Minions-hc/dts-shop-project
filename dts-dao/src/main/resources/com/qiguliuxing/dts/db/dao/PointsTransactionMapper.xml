@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.PointsTransactionMapper">
+
+    <insert id="insertPointsTransaction" parameterType="com.qiguliuxing.dts.vo.PointsTransactionVO">
+        INSERT INTO points_transaction
+            (user_id, points_change, balance_after, transaction_type, created_at)
+        VALUES (
+                   #{userId},
+                   #{pointsChange},
+                   #{balanceAfter},
+                   #{transactionType},
+                   #{createdAt}
+               )
+    </insert>
+
+    <select id="findLatestBalanceByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT balance_after
+        FROM points_transaction
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+            LIMIT 1
+    </select>
+</mapper>

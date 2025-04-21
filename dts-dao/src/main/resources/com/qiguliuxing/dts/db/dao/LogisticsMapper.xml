@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.LogisticsMapper">
+
+    <resultMap id="BaseResultMap" type="com.qiguliuxing.dts.vo.LogisticsInfoVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="logistics_name" property="logisticsName" jdbcType="VARCHAR"/>
+        <result column="logistics_code" property="logisticsCode" jdbcType="VARCHAR"/>
+        <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR"/>
+        <result column="website" property="website" jdbcType="VARCHAR"/>
+        <result column="available" property="available" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 新增物流信息 -->
+    <insert id="addLogistics" parameterType="com.qiguliuxing.dts.vo.LogisticsInfoVO">
+        INSERT INTO logistics_info (
+            logistics_name,
+            logistics_code,
+            contact_phone,
+            website,
+            available,
+            create_time,
+            update_time
+        ) VALUES (
+                     #{logisticsName},
+                     #{logisticsCode},
+                     #{contactPhone},
+                     #{website},
+                     #{available},
+                     NOW(),
+                     NOW()
+                 )
+    </insert>
+
+    <!-- 删除物流信息 -->
+    <delete id="deleteLogistics" parameterType="java.lang.Integer">
+        DELETE FROM logistics_info
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 更新物流信息 -->
+    <update id="updateLogistics" parameterType="com.qiguliuxing.dts.vo.LogisticsInfoVO">
+        UPDATE logistics_info
+        SET
+            logistics_name = #{logisticsName},
+            logistics_code = #{logisticsCode},
+            contact_phone = #{contactPhone},
+            website = #{website},
+            available = #{available},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 获取物流信息 -->
+    <select id="queryLogisticsByCondition" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        id,
+        logistics_name,
+        logistics_code,
+        contact_phone,
+        website,
+        available,
+        create_time,
+        update_time
+        FROM logistics_info
+        <where>
+            <if test="logisticsName != null and logisticsName != ''">
+                AND logistics_name LIKE CONCAT('%', #{logisticsName}, '%')
+            </if>
+            <if test="logisticsCode != null and logisticsCode != ''">
+                AND logistics_code = #{logisticsCode}
+            </if>
+        </where>
+        ORDER BY id ASC
+    </select>
+</mapper>

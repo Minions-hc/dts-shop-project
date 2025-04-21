@@ -1,5 +1,7 @@
 package com.qiguliuxing.dts.vo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class OrderDetailVO {
@@ -39,8 +41,25 @@ public class OrderDetailVO {
     // 支付金额
     private Double paymentAmount;
 
+    /**
+     * 快递费用
+     */
+    private Double shippingFee;
+
+    /**
+     * 优惠减免
+     */
+    private Double discountAmount;
+
+    /**
+     * 积分减免
+     */
+    private Double pointsDeduction;
+
     // 支付时间
-    private String paymentTime;
+    private Date paymentTime;
+
+    private Date deliveryTime;
 
     // 商品列表
     private List<OrderItemVO> orderItems;
@@ -141,11 +160,19 @@ public class OrderDetailVO {
         this.paymentAmount = paymentAmount;
     }
 
-    public String getPaymentTime() {
+    public String getPaymentTimeStr() {
+        if (this.paymentTime == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(this.paymentTime);
+    }
+
+    public Date getPaymentTime() {
         return paymentTime;
     }
 
-    public void setPaymentTime(String paymentTime) {
+    public void setPaymentTime(Date paymentTime) {
         this.paymentTime = paymentTime;
     }
 
@@ -155,5 +182,45 @@ public class OrderDetailVO {
 
     public void setOrderItems(List<OrderItemVO> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public Double getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(Double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public Double getPointsDeduction() {
+        return pointsDeduction;
+    }
+
+    public void setPointsDeduction(Double pointsDeduction) {
+        this.pointsDeduction = pointsDeduction;
+    }
+
+    public String getDeliveryTimeStr() {
+        if (this.deliveryTime == null) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(this.deliveryTime);
+    }
+
+    public Date getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(Date deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 }

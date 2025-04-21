@@ -17,5 +17,7 @@ public interface ProductSeriesMapper {
 
     ProductSeriesVO getProductSeriesById(Integer seriesId);
 
-    List<ProductSeriesVO> getProductSeries(Map<String, String> params);
+    List<ProductSeriesVO> getProductSeries(Map<String, Object> params);
+
+    List<ProductSeriesVO> sumSeriesQuantity();
 }

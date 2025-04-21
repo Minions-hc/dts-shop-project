@@ -59,7 +59,7 @@ public class ProductSeriesController {
     @GetMapping("/getProductSeries")
     public Object getProductSeries(String seriesId, String seriesName) {
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("seriesId", seriesId);
         params.put("seriesName", seriesName);
 

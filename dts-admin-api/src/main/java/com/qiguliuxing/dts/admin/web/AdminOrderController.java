@@ -1,6 +1,7 @@
 package com.qiguliuxing.dts.admin.web;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +10,8 @@ import com.mysql.jdbc.StringUtils;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.DtsOrderService;
+import com.qiguliuxing.dts.db.service.LogisticsService;
+import com.qiguliuxing.dts.vo.LogisticsInfoVO;
 import com.qiguliuxing.dts.vo.OrderDetailVO;
 import com.qiguliuxing.dts.vo.OrderVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -42,6 +45,9 @@ public class AdminOrderController {
 
 	@Autowired
 	private DtsOrderService dtsOrderService;
+
+	@Autowired
+	private LogisticsService logisticsService;
 
 	/**
 	 * 查询订单
@@ -85,6 +91,25 @@ public class AdminOrderController {
 		}
 
 		return AdminResponseUtil.fail(ORDER_NOT_EXIST);
+	}
+
+
+	/**
+	 *  快递服务商列表
+	 *
+	 * @return
+	 */
+	@RequiresPermissions("admin:order:read")
+	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "详情")
+	@GetMapping("/listShipChannel")
+	public Object listShipChannel() {
+		logger.info("【请求开始】商场管理->订单管理->详情");
+		List<LogisticsInfoVO> logisticsInfoVOS = logisticsService.queryLogisticsByCondition(new HashMap<>());
+
+		Map<String, Object> data = new HashMap<>();
+		data.put("shipChannelList", logisticsInfoVOS.stream().filter(LogisticsInfoVO::getAvailable).collect(Collectors.toList()));
+
+		return AdminResponseUtil.ok(data);
 	}
 
 	/**
