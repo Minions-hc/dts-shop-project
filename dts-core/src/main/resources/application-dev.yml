@@ -101,10 +101,10 @@ dts:
       address: http://localhost:8083/dts/storage/
     # 阿里云对象存储配置信息
     aliyun:
-      endpoint:
-      accessKeyId:
-      accessKeySecret:
-      bucketName:
+      endpoint: oss-cn-shenzhen.aliyuncs.com
+      accessKeyId: XXXXXXX
+      accessKeySecret: XXXXXXX
+      bucketName: chaoshangshiduo-public-static
     # 腾讯对象存储配置信息
     # 请参考 https://cloud.tencent.com/document/product/436/6249
     tencent:
