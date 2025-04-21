@@ -102,8 +102,8 @@ dts:
     # 阿里云对象存储配置信息
     aliyun:
       endpoint: oss-cn-shenzhen.aliyuncs.com
-      accessKeyId: LTAI5tBkvDMjHCAQGRs4vqTR
-      accessKeySecret: Yy1GWPJl6RwfYkX4aguliacoz5PP4A
+      accessKeyId: XXXXXXX
+      accessKeySecret: XXXXXXX
       bucketName: chaoshangshiduo-public-static
     # 腾讯对象存储配置信息
     # 请参考 https://cloud.tencent.com/document/product/436/6249
