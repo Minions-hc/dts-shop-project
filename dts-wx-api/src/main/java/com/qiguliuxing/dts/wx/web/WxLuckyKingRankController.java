@@ -35,4 +35,14 @@ public class WxLuckyKingRankController {
     public Integer getTotalLuckyKingPoints() {
         return luckyKingRankService.getTotalLuckyKingPoints();
     }
+
+
+    /**
+     * 获取当月当前用户
+     * @return 所有用户的总积分和
+     */
+    @GetMapping("/lucky-king/user-points")
+    public LuckyKingRankVO getUserLuckyKingPoints(String userId) {
+        return luckyKingRankService.getUserLuckyKingPoints(userId);
+    }
 }

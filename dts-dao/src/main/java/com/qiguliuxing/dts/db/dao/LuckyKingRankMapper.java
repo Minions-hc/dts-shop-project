@@ -17,4 +17,10 @@ public interface LuckyKingRankMapper {
      * @return 全体用户的总积分和
      */
     Integer selectTotalLuckyKingPoints();
+
+    /**
+     * 查询当前用户当月欧皇榜积分
+     * @return 查询当前用户当月欧皇榜积分
+     */
+    LuckyKingRankVO selectUserLuckyKingPoints();
 }

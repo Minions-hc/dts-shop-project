@@ -23,6 +23,9 @@ public class LuckyKingRankVO {
     /** 排名 */
     private Integer rank;
 
+    /** 距离上一名或不在前十名就显示距离第十名差距得分数 */
+    private Integer distancePoints;
+
     public String getUserId() {
         return userId;
     }
@@ -77,5 +80,13 @@ public class LuckyKingRankVO {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public Integer getDistancePoints() {
+        return distancePoints;
+    }
+
+    public void setDistancePoints(Integer distancePoints) {
+        this.distancePoints = distancePoints;
     }
 }

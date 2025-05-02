@@ -22,7 +22,8 @@
                     ELSE 0
                 END) AS total_points,
             COUNT(CASE WHEN bp.product_level = 'A赏' THEN 1 END) AS a_count,
-            COUNT(CASE WHEN bp.product_level = 'B赏' THEN 1 END) AS b_count
+            COUNT(CASE WHEN bp.product_level = 'B赏' THEN 1 END) AS b_count,
+            MAX(bp.obtain_time) as max_obtain_time
         FROM
             shop_user u
                 JOIN
@@ -35,7 +36,7 @@
         GROUP BY
             u.user_id, u.user_name, u.avatar
         ORDER BY
-            total_points DESC
+            max_obtain_time asc, total_points DESC
             LIMIT 10
     </select>
 
@@ -53,5 +54,29 @@
                 AND activity_type IN ('一番赏', '踩雷赏')
                 AND YEAR(obtain_time) = YEAR(CURRENT_DATE)
           AND MONTH(obtain_time) = MONTH(CURRENT_DATE)
+    </select>
+
+    <select id="selectUserLuckyKingPoints" resultMap="LuckyKingRankVOMap">
+        SELECT
+            u.user_id,
+            u.user_name,
+            u.avatar,
+            SUM(CASE
+                    WHEN bp.product_level = 'A赏' THEN 10
+                    WHEN bp.product_level = 'B赏' THEN 1
+                    ELSE 0
+                END) AS total_points,
+            COUNT(CASE WHEN bp.product_level = 'A赏' THEN 1 END) AS a_count,
+            COUNT(CASE WHEN bp.product_level = 'B赏' THEN 1 END) AS b_count
+        FROM
+            shop_user u
+                JOIN
+            box_product bp ON u.user_id = bp.user_id
+        WHERE
+            bp.product_level IN ('A赏', 'B赏')
+                AND bp.activity_type IN ('一番赏', '踩雷赏')
+                AND YEAR(bp.obtain_time) = YEAR(CURRENT_DATE)
+          AND MONTH(bp.obtain_time) = MONTH(CURRENT_DATE)
+         AND u.user_id = #{userId}
     </select>
 </mapper>
