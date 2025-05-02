@@ -66,4 +66,9 @@ public class ProductSeriesServiceImpl implements IProductSeriesService {
         }
         return productSeriesVOS;
     }
+
+    @Override
+    public List<ProductSeriesVO> getProductSeriesByCategoryId(Integer categoryId) {
+        return productSeriesMapper.getProductSeriesByCategoryId(categoryId);
+    }
 }

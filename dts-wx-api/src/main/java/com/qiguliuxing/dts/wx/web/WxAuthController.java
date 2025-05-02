@@ -41,7 +41,6 @@ import com.qiguliuxing.dts.core.util.RegexUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.util.bcrypt.BCryptPasswordEncoder;
 import com.qiguliuxing.dts.db.domain.DtsUser;
-import com.qiguliuxing.dts.db.service.CouponAssignService;
 import com.qiguliuxing.dts.db.service.DtsUserService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.dao.UserInfo;
@@ -73,9 +72,6 @@ public class WxAuthController {
 
 	@Autowired
 	private NotifyService notifyService;
-
-	@Autowired
-	private CouponAssignService couponAssignService;
 
 	/**
 	 * 账号登录
@@ -118,7 +114,7 @@ public class WxAuthController {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setNickName(username);
 		userInfo.setAvatarUrl(user.getAvatar());
-		
+
 		try {
 			String registerDate = new SimpleDateFormat("yyyy-MM-dd")
 					.format(user.getAddTime() == null ? user.getAddTime() : LocalDateTime.now());
@@ -186,7 +182,7 @@ public class WxAuthController {
 		}
 
 		DtsUser user = userService.queryByOid(openId);
-		
+
 		if (user == null) {
 			user = new DtsUser();
 			user.setUsername(openId);
@@ -203,8 +199,6 @@ public class WxAuthController {
 
 			userService.add(user);
 
-			// 新用户发送注册优惠券
-			couponAssignService.assignForRegister(user.getId());
 		} else {
 			user.setLastLoginTime(LocalDateTime.now());
 			user.setLastLoginIp(IpUtil.client(request));
@@ -372,14 +366,6 @@ public class WxAuthController {
 		user.setLastLoginIp(IpUtil.client(request));
 		userService.add(user);
 
-		// 给新用户发送注册优惠券
-		try {
-			couponAssignService.assignForRegister(user.getId());
-		} catch (Exception e) {
-			logger.error("账号注册失败,给新用户发送注册优惠券失败：{}", user.getId());
-			e.printStackTrace();
-			return ResponseUtil.fail();
-		}
 
 		// userInfo
 		UserInfo userInfo = new UserInfo();
@@ -462,7 +448,7 @@ public class WxAuthController {
 
 	/**
 	 * 绑定手机号码
-	 * 
+	 *
 	 * @param userId
 	 * @param body
 	 * @return
@@ -498,7 +484,7 @@ public class WxAuthController {
 
 	/**
 	 * 注销登录
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */

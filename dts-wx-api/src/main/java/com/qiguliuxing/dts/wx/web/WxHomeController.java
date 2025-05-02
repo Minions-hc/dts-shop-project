@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.db.service.*;
+import com.qiguliuxing.dts.vo.ProductCategoryVO;
 import com.qiguliuxing.dts.vo.ProductSeriesVO;
 import com.qiguliuxing.dts.vo.ProductVO;
 import org.slf4j.Logger;
@@ -46,14 +47,12 @@ import com.qiguliuxing.dts.wx.service.HomeCacheManager;
 public class WxHomeController {
 	private static final Logger logger = LoggerFactory.getLogger(WxHomeController.class);
 
-	@Autowired
-	private DtsAdService adService;
+
 
 	@Autowired
 	private DtsGoodsService goodsService;
 
-	@Autowired
-	private DtsBrandService brandService;
+
 
 	@Autowired
 	private DtsTopicService topicService;
@@ -67,13 +66,13 @@ public class WxHomeController {
 	@Autowired
 	private DtsCouponService couponService;
 
-	@Autowired
-	private DtsArticleService articleService;
 
 
 	@Autowired
 	private IProductSeriesService productSeriesService;
 
+	@Autowired
+	private IProductCategoryService productCategoryService;
 
 	private final static ArrayBlockingQueue<Runnable> WORK_QUEUE = new ArrayBlockingQueue<>(9);
 
@@ -116,11 +115,11 @@ public class WxHomeController {
 		// 先查询和用户有关的信息
 		Callable<List> couponListCallable = null;
 		try {
-			if (userId == null) {// 调整，用户未登录，不发送优惠券
-				couponListCallable = () -> couponService.queryList(0, 3);
-			} else {
-				couponListCallable = () -> couponService.queryAvailableList(userId, 0, 3);
-			}
+//			if (userId == null) {// 调整，用户未登录，不发送优惠券
+//				couponListCallable = () -> couponService.queryList(0, 3);
+//			} else {
+//				couponListCallable = () -> couponService.queryAvailableList(userId, 0, 3);
+//			}
 			FutureTask<List> couponListTask = new FutureTask<>(couponListCallable);
 			executorService.submit(couponListTask);
 
@@ -135,17 +134,13 @@ public class WxHomeController {
 				}
 			}
 
-			Callable<List> bannerListCallable = () -> adService.queryIndex();
 
-			Callable<List> articleListCallable = () -> articleService.queryList(0, 5, "add_time", "desc");
 
 			Callable<List> channelListCallable = () -> categoryService.queryChannel();
 
 			Callable<List> newGoodsListCallable = () -> goodsService.queryByNew(0, SystemConfig.getNewLimit());
 
 			Callable<List> hotGoodsListCallable = () -> goodsService.queryByHot(0, SystemConfig.getHotLimit());
-
-			Callable<List> brandListCallable = () -> brandService.queryVO(0, SystemConfig.getBrandLimit());
 
 			Callable<List> topicListCallable = () -> topicService.queryList(0, SystemConfig.getTopicLimit());
 
@@ -154,33 +149,30 @@ public class WxHomeController {
 
 			Callable<List> floorGoodsListCallable = this::getCategoryList;
 
-			FutureTask<List> bannerTask = new FutureTask<>(bannerListCallable);
-			FutureTask<List> articleTask = new FutureTask<>(articleListCallable);
+
 			FutureTask<List> channelTask = new FutureTask<>(channelListCallable);
 			FutureTask<List> newGoodsListTask = new FutureTask<>(newGoodsListCallable);
 			FutureTask<List> hotGoodsListTask = new FutureTask<>(hotGoodsListCallable);
-			FutureTask<List> brandListTask = new FutureTask<>(brandListCallable);
+
 			FutureTask<List> topicListTask = new FutureTask<>(topicListCallable);
 			FutureTask<List> grouponListTask = new FutureTask<>(grouponListCallable);
 			FutureTask<List> floorGoodsListTask = new FutureTask<>(floorGoodsListCallable);
 
-			executorService.submit(bannerTask);
-			executorService.submit(articleTask);
+
 			executorService.submit(channelTask);
 			executorService.submit(newGoodsListTask);
 			executorService.submit(hotGoodsListTask);
-			executorService.submit(brandListTask);
+
 			executorService.submit(topicListTask);
 			executorService.submit(grouponListTask);
 			executorService.submit(floorGoodsListTask);
 
-			data.put("banner", bannerTask.get());
-			data.put("articles", articleTask.get());
+
 			data.put("channel", channelTask.get());
 			data.put("couponList", couponListTask.get());
 			data.put("newGoodsList", newGoodsListTask.get());
 			data.put("hotGoodsList", hotGoodsListTask.get());
-			data.put("brandList", brandListTask.get());
+
 			data.put("topicList", topicListTask.get());
 			data.put("grouponList", grouponListTask.get());
 			data.put("floorGoodsList", floorGoodsListTask.get());
@@ -227,12 +219,23 @@ public class WxHomeController {
 	}
 
 
+	@GetMapping("/getWxCategoryNames")
+	public Object getWxCategoryNames() {
+		List<ProductCategoryVO> productCategories = productCategoryService.getProductCategories(new HashMap<>());
+		Map<String, Object> data = new HashMap<>();
+		data.put("items", productCategories);
+		return ResponseUtil.ok(data);
+	}
+
+
 	@GetMapping("/getWxProductSeries")
-	public Object getProductSeries(String seriesId, Integer isHot, Integer isAvoid) {
+	public Object getProductSeries(String seriesId, Integer isHot, Integer isAvoid, Integer isPopularNew, Integer isHotRecommend) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("seriesId", seriesId);
 		params.put("isHot", isHot);
 		params.put("isAvoid", isAvoid);
+		params.put("isPopularNew", isPopularNew);
+		params.put("isHotRecommend", isHotRecommend);
 		List<ProductSeriesVO> productSeries = productSeriesService.getWxProductSeries(params);
 		Map<String, Object> data = new HashMap<>();
 		data.put("items", productSeries);
@@ -240,4 +243,13 @@ public class WxHomeController {
 		data.put("productSeriesGroup", productSeriesGroup);
 		return ResponseUtil.ok(data);
 	}
+
+	@GetMapping("/getWxSeriesByCategoryId")
+	public Object getWxSeriesByCategoryId(Integer categoryId) {
+		List<ProductSeriesVO> productSeries = productSeriesService.getProductSeriesByCategoryId(categoryId);
+		Map<String, Object> data = new HashMap<>();
+		data.put("items", productSeries);
+		return ResponseUtil.ok(data);
+	}
+
 }

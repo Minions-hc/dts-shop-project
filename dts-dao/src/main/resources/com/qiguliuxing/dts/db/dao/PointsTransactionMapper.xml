@@ -3,6 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qiguliuxing.dts.db.dao.PointsTransactionMapper">
 
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.qiguliuxing.dts.vo.PointsTransactionVO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="points_change" property="pointsChange" jdbcType="INTEGER"/>
+        <result column="balance_after" property="balanceAfter" jdbcType="INTEGER"/>
+        <result column="transaction_type" property="transactionType"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+                jdbcType="TINYINT"
+                javaType="com.qiguliuxing.dts.db.util.PointsTransactionType"/>
+        <result column="related_id" property="relatedId" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
     <insert id="insertPointsTransaction" parameterType="com.qiguliuxing.dts.vo.PointsTransactionVO">
         INSERT INTO points_transaction
             (user_id, points_change, balance_after, transaction_type, created_at)
@@ -22,4 +36,21 @@
         ORDER BY created_at DESC
             LIMIT 1
     </select>
+
+
+    <select id="findUserLatestCheckInDay" parameterType="java.lang.String" resultType="java.util.Date">
+        SELECT created_at
+        FROM points_transaction
+        WHERE user_id = #{userId}
+        and transaction_type = 1
+        ORDER BY created_at DESC
+            LIMIT 1
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM points_transaction
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

@@ -53,4 +53,15 @@
     <select id="findByPeriodNumber" resultMap="LuckyDrawActivityResultMap">
         SELECT * FROM lucky_draw_activity WHERE period_number = #{periodNumber}
     </select>
+
+    <select id="selectValidActivitiy" resultMap="LuckyDrawActivityResultMap">
+        SELECT * FROM lucky_draw_activity
+        WHERE is_active = 1
+    </select>
+
+    <update id="updateActivityStatus">
+        UPDATE lucky_draw_activity
+        SET is_active = #{isActive}, updated_at = NOW()
+        WHERE activity_id = #{activityId}
+    </update>
 </mapper>

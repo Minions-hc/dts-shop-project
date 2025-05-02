@@ -22,7 +22,7 @@ public enum WxResponseCode {
 	GROUPON_EXPIRED(730, "团购活动已过期!"),
 
 	COUPON_EXCEED_LIMIT(740, "优惠券已领完"), COUPON_NOT_RECEIVE(741, "非领取优惠券"), COUPON_CODE_INVALID(742,
-			"优惠券券码不正确"), COUPON_EXPIRED(743, "优惠券已经过期"), COUPON_NOT_CHANGE(744, "非兑换优惠券"),
+			"兑换码码不正确"), COUPON_EXPIRED(743, "优惠券已经过期"), COUPON_NOT_CHANGE(744, "不可用的兑换码"),
 
 	// 提现错误
 	APPLY_WITHDRAWAL_FAIL(850, "申请提现金额不能大于可提现金额"), INVALID_COUPON(851, "无效购物券"), INVALID_USER(852, "无效用户");

@@ -4,19 +4,21 @@
 
     <resultMap id="LuckyDrawPrizeResultMap" type="com.qiguliuxing.dts.vo.LuckyDrawPrizeVo">
         <id column="prize_id" property="prizeId"/>
+        <result column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
         <result column="product_quantity" property="productQuantity"/>
         <result column="activity_id" property="activityId"/>
         <result column="activity_name" property="activityName"/>
+        <result column="redemption_code" property="redemptionCode"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
 
     <insert id="insert" parameterType="com.qiguliuxing.dts.vo.LuckyDrawPrizeVo" useGeneratedKeys="true" keyProperty="prizeId">
         INSERT INTO lucky_draw_prize
-            (product_name, product_quantity, activity_id)
+            (product_id, product_name, product_quantity, activity_id, redemption_code)
         VALUES
-            (#{productName}, #{productQuantity}, #{activityId})
+            (#{productId}, #{productName}, #{productQuantity}, #{activityId}, #{redemptionCode})
     </insert>
 
     <update id="update" parameterType="com.qiguliuxing.dts.vo.LuckyDrawPrizeVo">
@@ -40,10 +42,12 @@
     <select id="selectByCondition" resultMap="LuckyDrawPrizeResultMap">
         SELECT
         p.prize_id,
+        p.product_id,
         p.product_name,
         p.product_quantity,
         p.activity_id,
         a.activity_name,
+        p.redemption_code,
         p.created_at,
         p.updated_at
         FROM lucky_draw_prize p
@@ -63,6 +67,24 @@
         ORDER BY prize_id
     </select>
 
+
+    <select id="selectById" resultMap="LuckyDrawPrizeResultMap">
+        SELECT
+        p.prize_id,
+        p.product_id,
+        p.product_name,
+        p.product_quantity,
+        p.activity_id,
+        a.activity_name,
+        p.redemption_code,
+        p.created_at,
+        p.updated_at
+        FROM lucky_draw_prize p
+        inner join lucky_draw_activity a
+        on p.activity_id = a.activity_id
+        WHERE prize_id = #{prizeId}
+    </select>
+
     <update id="decreaseQuantity">
         UPDATE lucky_draw_prize
         SET product_quantity = product_quantity - #{quantity},
@@ -70,4 +92,22 @@
         WHERE prize_id = #{prizeId}
           AND product_quantity >= #{quantity}
     </update>
+
+
+    <select id="selectByRedemptionCode" resultMap="LuckyDrawPrizeResultMap">
+        SELECT
+            prize_id,
+            product_id,
+            product_name,
+            product_quantity,
+            activity_id,
+            redemption_code,
+            created_at,
+            updated_at
+        FROM
+            lucky_draw_prize
+        WHERE
+            redemption_code = #{redemptionCode}
+            LIMIT 1
+    </select>
 </mapper>

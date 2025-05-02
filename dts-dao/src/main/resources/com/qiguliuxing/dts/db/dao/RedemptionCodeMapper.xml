@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.RedemptionCodeMapper">
+
+    <resultMap id="RedemptionCodeResultMap" type="com.qiguliuxing.dts.vo.RedemptionCodeVo">
+        <id column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="code_type" property="codeType" jdbcType="TINYINT"/>
+        <result column="is_available" property="available" jdbcType="TINYINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.RedemptionCodeVo">
+        INSERT INTO redemption_code (
+            code, code_type, is_available, create_time, update_time
+        ) VALUES (
+            #{code}, #{codeType}, #{available}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <delete id="deleteByCode">
+        DELETE FROM redemption_code WHERE code = #{code}
+    </delete>
+
+    <select id="selectByCode" resultMap="RedemptionCodeResultMap">
+        SELECT
+            code, code_type, is_available, create_time, update_time
+        FROM
+            redemption_code
+        WHERE
+            code = #{code}
+    </select>
+
+    <select id="selectAll" resultMap="RedemptionCodeResultMap">
+        SELECT
+            code, code_type, is_available, create_time, update_time
+        FROM
+            redemption_code
+        <where>
+            <if test="codeType != null">
+                AND code_type = #{codeType}
+            </if>
+            <if test="code != null and code != ''">
+                AND code = #{code}
+            </if>
+            <if test="available != null">
+                AND is_available = #{available}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        <if test="offset != null and limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
+    <!-- 批量更新兑换码类型 -->
+    <update id="batchUpdateCodeType">
+        UPDATE redemption_code
+        SET
+        code_type = #{codeType},
+        update_time = NOW()
+        WHERE code IN
+        <foreach collection="codes" item="code" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </update>
+
+    <!-- 批量更新兑换码状态 -->
+    <update id="batchUpdateStatus">
+        UPDATE redemption_code
+        SET
+        is_available = #{available},
+        update_time = NOW()
+        WHERE code IN
+        <foreach collection="codes" item="code" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </update>
+</mapper>

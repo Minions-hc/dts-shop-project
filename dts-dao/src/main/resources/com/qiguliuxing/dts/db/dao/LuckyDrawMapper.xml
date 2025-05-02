@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.LuckyDrawMapper">
+
+    <resultMap id="ActivityResultMap" type="com.qiguliuxing.dts.db.domain.LuckyDrawActivity">
+        <id column="activity_id" property="activityId" jdbcType="INTEGER"/>
+        <result column="period_number" property="periodNumber" jdbcType="INTEGER"/>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"/>
+        <result column="activity_rules" property="activityRules" jdbcType="LONGVARCHAR"/>
+        <result column="draw_date" property="drawDate" jdbcType="TIMESTAMP"/>
+        <result column="activity_details" property="activityDetails" jdbcType="LONGVARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="is_active" property="isActive" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <resultMap id="PrizeVoResultMap" type="com.qiguliuxing.dts.vo.LuckyDrawPrizeVo">
+        <id column="prize_id" property="prizeId" jdbcType="INTEGER"/>
+        <result column="product_id" property="productId" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="product_quantity" property="productQuantity" jdbcType="INTEGER"/>
+        <result column="activity_id" property="activityId" jdbcType="INTEGER"/>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"/>
+        <result column="redemption_code" property="redemptionCode" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getActiveActivities" resultMap="ActivityResultMap">
+        SELECT
+            activity_id,
+            period_number,
+            activity_name,
+            activity_rules,
+            draw_date,
+            activity_details,
+            created_at,
+            updated_at,
+            is_active
+        FROM
+            lucky_draw_activity
+        WHERE
+            is_active = 1
+    </select>
+
+    <select id="selectPrizesByActivityId" resultMap="PrizeVoResultMap">
+        SELECT
+            prize_id,
+            product_id,
+            product_name,
+            product_quantity,
+            activity_id,
+            redemption_code,
+            created_at,
+            updated_at
+        FROM
+            lucky_draw_prize
+        WHERE
+            activity_id = #{activityId}
+    </select>
+
+    <!-- 添加在mapper.xml中 -->
+    <resultMap id="ParticipantVoResultMap" type="com.qiguliuxing.dts.vo.ActivityParticipantVo">
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="code_count" property="codeCount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectParticipantsByActivity" resultMap="ParticipantVoResultMap">
+        SELECT
+            ldc.user_id,
+            su.avatar,
+            COUNT(ldc.id) AS code_count
+        FROM
+            lucky_draw_code ldc
+                JOIN
+            shop_user su ON ldc.user_id = su.user_id
+        WHERE
+            ldc.activity_id = #{activityId}
+          AND ldc.period_number = #{periodNumber}
+        GROUP BY
+            ldc.user_id, su.avatar
+        ORDER BY
+            code_count DESC
+    </select>
+
+    <!-- 添加WinnerInfoVo结果映射 -->
+    <resultMap id="WinnerInfoVoResultMap" type="com.qiguliuxing.dts.vo.WinnerInfoVo">
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="code_count" property="codeCount" jdbcType="INTEGER"/>
+        <result column="product_name" property="prizeName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 添加中奖用户查询SQL -->
+    <select id="selectWinnersByActivity" resultMap="WinnerInfoVoResultMap">
+        SELECT
+            ldc.user_id,
+            su.user_name,
+            su.avatar,
+            COUNT(ldc.id) AS code_count,
+            ldc.product_name
+        FROM
+            lucky_draw_code ldc
+                JOIN
+            shop_user su ON ldc.user_id = su.user_id
+        WHERE
+            ldc.activity_id = #{activityId}
+          AND ldc.period_number = #{periodNumber}
+          AND ldc.status = 'WIN'
+        GROUP BY
+            ldc.user_id, su.user_name, su.avatar, ldc.product_name
+        ORDER BY
+            code_count DESC
+    </select>
+
+    <!-- 添加UserDrawCodeVo结果映射 -->
+    <resultMap id="UserDrawCodeVoResultMap" type="com.qiguliuxing.dts.vo.UserDrawCodeVo">
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"/>
+        <result column="period_number" property="periodNumber" jdbcType="INTEGER"/>
+        <result column="source" property="source" jdbcType="VARCHAR"/>
+        <result column="helper_avatar" property="helperAvatar" jdbcType="VARCHAR"/>
+        <result column="help_user_id" property="helperUserId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 添加用户抽奖码查询SQL -->
+    <select id="selectUserDrawCodes" resultMap="UserDrawCodeVoResultMap">
+        SELECT
+        ldc.code,
+        ldc.create_time,
+        ldc.status,
+        ldc.activity_name,
+        ldc.period_number,
+        ldc.source,
+        helper.avatar AS helper_avatar,
+        ldc.help_user_id
+        FROM
+        lucky_draw_code ldc
+        LEFT JOIN
+        shop_user helper ON ldc.help_user_id = helper.user_id
+        WHERE
+        ldc.user_id = #{userId}
+        <if test="activityId != null">
+            AND ldc.activity_id = #{activityId}
+        </if>
+        <if test="periodNumber != null">
+            AND ldc.period_number = #{periodNumber}
+        </if>
+        ORDER BY
+        ldc.create_time DESC
+    </select>
+
+
+    <!-- 助力记录查询SQL -->
+    <select id="selectHelpRecords" resultMap="HelpRecordVoResultMap">
+        SELECT
+            ldc.create_time AS help_time,
+            ldc.help_user_id AS helper_id,
+            helper.user_name AS helper_name,
+            helper.avatar AS helper_avatar,
+            ldc.activity_name
+        FROM
+            lucky_draw_code ldc
+                JOIN
+            shop_user helper ON ldc.help_user_id = helper.user_id
+        WHERE
+            ldc.user_id = #{userId}
+          AND ldc.source = 'HELP'
+          AND ldc.help_user_id IS NOT NULL
+        ORDER BY
+            ldc.create_time DESC
+    </select>
+
+    <!-- 结果映射 -->
+    <resultMap id="HelpRecordVoResultMap" type="com.qiguliuxing.dts.vo.HelpRecordVo">
+        <result column="help_time" property="helpTime" jdbcType="TIMESTAMP"/>
+        <result column="helper_id" property="helperId" jdbcType="VARCHAR"/>
+        <result column="helper_name" property="helperName" jdbcType="VARCHAR"/>
+        <result column="helper_avatar" property="helperAvatar" jdbcType="VARCHAR"/>
+        <result column="activity_name" property="activityName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!-- 检查抽奖码是否存在 -->
+    <select id="existsByCode" resultType="boolean">
+        SELECT COUNT(1) > 0
+        FROM lucky_draw_code
+        WHERE code = #{code}
+            LIMIT 1
+    </select>
+
+
+    <insert id="insertHelpRecord" parameterType="com.qiguliuxing.dts.vo.LuckyDrawCodeVo">
+        INSERT INTO lucky_draw_code (
+            user_id,
+            code,
+            source,
+            help_user_id,
+            create_time,
+            status,
+            activity_id,
+            activity_name,
+            period_number,
+            product_id,
+            product_name
+        ) VALUES (
+                     #{codeVo.userId,jdbcType=VARCHAR},
+                     #{codeVo.code,jdbcType=VARCHAR},
+                     #{codeVo.source,jdbcType=VARCHAR},
+                     #{codeVo.helpUserId,jdbcType=VARCHAR},
+                     #{codeVo.createTime,jdbcType=TIMESTAMP},
+                     #{codeVo.status,jdbcType=VARCHAR},
+                     #{codeVo.activityId,jdbcType=INTEGER},
+                     #{codeVo.activityName,jdbcType=VARCHAR},
+                     #{codeVo.periodNumber,jdbcType=INTEGER},
+                     #{codeVo.productId,jdbcType=BIGINT},
+                     #{codeVo.productName,jdbcType=VARCHAR}
+                 )
+    </insert>
+
+    <insert id="joinLottery" parameterType="com.qiguliuxing.dts.vo.LuckyDrawCodeVo">
+        INSERT INTO lucky_draw_code (
+            user_id,
+            code,
+            source,
+            help_user_id,
+            create_time,
+            status,
+            activity_id,
+            activity_name,
+            period_number,
+            product_id,
+            product_name
+        ) VALUES (
+                     #{codeVo.userId,jdbcType=VARCHAR},
+                     #{codeVo.code,jdbcType=VARCHAR},
+                     #{codeVo.source,jdbcType=VARCHAR},
+                     #{codeVo.helpUserId,jdbcType=VARCHAR},
+                     #{codeVo.createTime,jdbcType=TIMESTAMP},
+                     #{codeVo.status,jdbcType=VARCHAR},
+                     #{codeVo.activityId,jdbcType=INTEGER},
+                     #{codeVo.activityName,jdbcType=VARCHAR},
+                     #{codeVo.periodNumber,jdbcType=INTEGER},
+                     #{codeVo.productId,jdbcType=BIGINT},
+                     #{codeVo.productName,jdbcType=VARCHAR}
+                 )
+    </insert>
+
+    <resultMap id="luckyDrawCodeResultMap" type="com.qiguliuxing.dts.vo.LuckyDrawCodeVo">
+        <!-- 主键映射 -->
+        <id property="id" column="id" jdbcType="BIGINT"/>
+
+        <!-- 字符串类型的用户ID字段（新修改的字段） -->
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="helpUserId" column="help_user_id" jdbcType="VARCHAR"/>
+
+        <!-- 基础字段映射 -->
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="source" column="source" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+
+        <!-- 时间字段 -->
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+        <!-- 活动相关字段 -->
+        <result property="activityId" column="activity_id" jdbcType="INTEGER"/>
+        <result property="activityName" column="activity_name" jdbcType="VARCHAR"/>
+        <result property="periodNumber" column="period_number" jdbcType="INTEGER"/>
+
+        <!-- 商品相关字段 -->
+        <result property="productId" column="product_id" jdbcType="BIGINT"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectPendingCodesByActivityId" resultMap="luckyDrawCodeResultMap">
+        SELECT
+            user_id,
+            code,
+            source,
+            help_user_id,
+            create_time,
+            status,
+            activity_id,
+            activity_name,
+            period_number,
+            product_id,
+            product_name
+            FROM lucky_draw_code
+        WHERE activity_id = #{activityId}
+          AND status = 'PENDING'
+        ORDER BY create_time ASC
+    </select>
+
+    <!-- 批量更新抽奖码状态 -->
+    <update id="batchUpdateResults">
+        UPDATE lucky_draw_code
+        <trim prefix="SET" suffixOverrides=",">
+            <trim prefix="status = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.status}
+                </foreach>
+            </trim>
+            <trim prefix="code = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.code}
+                </foreach>
+            </trim>
+            <trim prefix="source = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.source}
+                </foreach>
+            </trim>
+            <trim prefix="help_user_id = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.helpUserId}
+                </foreach>
+            </trim>
+            <trim prefix="activity_id = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.activityId}
+                </foreach>
+            </trim>
+            <trim prefix="activity_name = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.activityName}
+                </foreach>
+            </trim>
+            <trim prefix="period_number = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.periodNumber}
+                </foreach>
+            </trim>
+            <trim prefix="product_id = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.productId}
+                </foreach>
+            </trim>
+            <trim prefix="product_name = CASE" suffix="END,">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN #{item.productName}
+                </foreach>
+            </trim>
+            <trim prefix="update_time = CASE" suffix="END">
+                <foreach collection="list" item="item" index="index">
+                    WHEN id = #{item.id} THEN NOW()
+                </foreach>
+            </trim>
+        </trim>
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+
+
+</mapper>

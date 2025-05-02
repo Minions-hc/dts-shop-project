@@ -23,4 +23,12 @@ public interface IProductSeriesService {
      */
     List<ProductSeriesVO> getWxProductSeries(Map<String, Object> params);
 
+
+    /**
+     *  根據類目ID查詢類目底下所有系列
+     * @param categoryId 類目ID
+     * @return 類目底下所有系列
+     */
+    List<ProductSeriesVO> getProductSeriesByCategoryId(Integer categoryId);
+
 }

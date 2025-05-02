@@ -1,7 +1,6 @@
 package com.qiguliuxing.dts.admin.web;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +10,7 @@ import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.DtsOrderService;
 import com.qiguliuxing.dts.db.service.LogisticsService;
-import com.qiguliuxing.dts.vo.LogisticsInfoVO;
+
 import com.qiguliuxing.dts.vo.OrderDetailVO;
 import com.qiguliuxing.dts.vo.OrderVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,16 +19,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
 import com.qiguliuxing.dts.admin.service.AdminOrderService;
-import com.qiguliuxing.dts.core.validator.Order;
-import com.qiguliuxing.dts.core.validator.Sort;
 
 import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_NOT_EXIST;
 
@@ -53,8 +49,6 @@ public class AdminOrderController {
 	 * 查询订单
 	 *
 	 * @param userId
-	 * @param page
-	 * @param limit
 	 * @return
 	 */
 	@RequiresPermissions("admin:order:list")
@@ -91,70 +85,6 @@ public class AdminOrderController {
 		}
 
 		return AdminResponseUtil.fail(ORDER_NOT_EXIST);
-	}
-
-
-	/**
-	 *  快递服务商列表
-	 *
-	 * @return
-	 */
-	@RequiresPermissions("admin:order:read")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "详情")
-	@GetMapping("/listShipChannel")
-	public Object listShipChannel() {
-		logger.info("【请求开始】商场管理->订单管理->详情");
-		List<LogisticsInfoVO> logisticsInfoVOS = logisticsService.queryLogisticsByCondition(new HashMap<>());
-
-		Map<String, Object> data = new HashMap<>();
-		data.put("shipChannelList", logisticsInfoVOS.stream().filter(LogisticsInfoVO::getAvailable).collect(Collectors.toList()));
-
-		return AdminResponseUtil.ok(data);
-	}
-
-	/**
-	 * 订单退款
-	 *
-	 * @param body 订单信息，{ orderId：xxx }
-	 * @return 订单退款操作结果
-	 */
-	@RequiresPermissions("admin:order:refund")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单退款")
-	@PostMapping("/refund")
-	public Object refund(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单退款,请求参数,body:{}", body);
-
-		return adminOrderService.refund(body);
-	}
-
-	/**
-	 * 发货
-	 *
-	 * @param body 订单信息，{ orderId：xxx, shipSn: xxx, shipChannel: xxx }
-	 * @return 订单操作结果
-	 */
-	@RequiresPermissions("admin:order:ship")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单发货")
-	@PostMapping("/ship")
-	public Object ship(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单发货,请求参数,body:{}", body);
-
-		return adminOrderService.ship(body);
-	}
-
-	/**
-	 * 回复订单商品
-	 *
-	 * @param body 订单信息，{ orderId：xxx }
-	 * @return 订单操作结果
-	 */
-	@RequiresPermissions("admin:order:reply")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单商品回复")
-	@PostMapping("/reply")
-	public Object reply(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单商品回复,请求参数,body:{}", body);
-
-		return adminOrderService.reply(body);
 	}
 
 }

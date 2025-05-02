@@ -40,7 +40,7 @@ public class WxUserController {
 
 	@Autowired
 	private DtsAccountService accountService;
-	
+
 	@Autowired
 	private DtsUserService userService;
 
@@ -78,13 +78,13 @@ public class WxUserController {
 		data.put("remainAmount", remainAmount);
 
 		// 查询用户的优惠券
-		int total = couponService.queryUserCouponCnt(userId);
-		data.put("couponCount", total);
+//		int total = couponService.queryUserCouponCnt(userId);
+//		data.put("couponCount", total);
 
 		logger.info("【请求结束】用户个人页面数据,响应结果:{}", JSONObject.toJSONString(data));
 		return ResponseUtil.ok(data);
 	}
-	
+
 	/**
 	 * 申请代理用户
 	 * <p>
@@ -100,9 +100,9 @@ public class WxUserController {
 			logger.error("用户个人页面代理申请:用户未登录！！！");
 			return ResponseUtil.unlogin();
 		}
-		
+
 		DtsUser user = userService.findById(userId);
-		
+
 		//用户存在且未注销，未禁用
 		if (user != null && user.getStatus().intValue() != 1 && user.getStatus().intValue() != 2) {
 			// 查询用户账号,不存在则删除，如已经存在，不管状态如何都不做改变
@@ -122,11 +122,11 @@ public class WxUserController {
 			logger.error("用户个人页面代理申请出错:{}", WxResponseCode.COUPON_EXCEED_LIMIT.desc());
 			return WxResponseUtil.fail(WxResponseCode.INVALID_USER);
 		}
-		
+
 		logger.info("【请求结束】用户个人页面代理申请,响应结果:{}", "成功!");
 		return ResponseUtil.ok();
 	}
-	
+
 	/**
 	 * 获取用户
 	 * <p>
@@ -149,7 +149,7 @@ public class WxUserController {
 				data.put("userSharedUrl", userAccount.getShareUrl());
 			}
 		}
-		
+
 		logger.info("【请求结束】获取用户推广二维码图片URL,响应结果:{}", JSONObject.toJSONString(data));
 		return ResponseUtil.ok(data);
 	}

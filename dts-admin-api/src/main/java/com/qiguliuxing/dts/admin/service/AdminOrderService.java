@@ -1,11 +1,8 @@
 package com.qiguliuxing.dts.admin.service;
 
-import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_CONFIRM_NOT_ALLOWED;
 import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_REFUND_FAILED;
-import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_REPLY_EXIST;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +24,9 @@ import com.qiguliuxing.dts.core.notify.NotifyService;
 import com.qiguliuxing.dts.core.notify.NotifyType;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.db.domain.DtsComment;
 import com.qiguliuxing.dts.db.domain.DtsOrder;
 import com.qiguliuxing.dts.db.domain.DtsOrderGoods;
 import com.qiguliuxing.dts.db.domain.UserVo;
-import com.qiguliuxing.dts.db.service.DtsCommentService;
 import com.qiguliuxing.dts.db.service.DtsGoodsProductService;
 import com.qiguliuxing.dts.db.service.DtsOrderGoodsService;
 import com.qiguliuxing.dts.db.service.DtsOrderService;
@@ -50,8 +45,7 @@ public class AdminOrderService {
 	private DtsGoodsProductService productService;
 	@Autowired
 	private DtsUserService userService;
-	@Autowired
-	private DtsCommentService commentService;
+
 	/*
 	 * @Autowired private WxPayService wxPayService;
 	 */
@@ -202,39 +196,6 @@ public class AdminOrderService {
 		return ResponseUtil.ok();
 	}
 
-	/**
-	 * 回复订单商品
-	 *
-	 * @param body 订单信息，{ orderId：xxx }
-	 * @return 订单操作结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
-	 */
-	public Object reply(String body) {
-		Integer commentId = JacksonUtil.parseInteger(body, "commentId");
-		if (commentId == null || commentId == 0) {
-			return ResponseUtil.badArgument();
-		}
-		// 目前只支持回复一次
-		if (commentService.findById(commentId) != null) {
-			logger.info("商场管理->订单管理->订单商品回复:{}", ORDER_REPLY_EXIST.desc());
-			return AdminResponseUtil.fail(ORDER_REPLY_EXIST);
-		}
-		String content = JacksonUtil.parseString(body, "content");
-		if (StringUtils.isEmpty(content)) {
-			return ResponseUtil.badArgument();
-		}
-		// 创建评价回复
-		DtsComment comment = new DtsComment();
-		comment.setType((byte) 2);
-		comment.setValueId(commentId);
-		comment.setContent(content);
-		comment.setUserId(0); // 评价回复没有用
-		comment.setStar((short) 0); // 评价回复没有用
-		comment.setHasPicture(false); // 评价回复没有用
-		comment.setPicUrls(new String[] {}); // 评价回复没有用
-		commentService.save(comment);
 
-		logger.info("【请求结束】商场管理->订单管理->订单商品回复,响应结果:{}", "成功!");
-		return ResponseUtil.ok();
-	}
 
 }

@@ -49,6 +49,15 @@ public class RewardRulesService {
     }
 
     /**
+     * 查询前10名奖励规则
+     *
+     * @return 奖励规则列表
+     */
+    public List<RewardRulesVo> getTop10RewardRules() {
+        return rewardRulesMapper.selectTop10RewardRules();
+    }
+
+    /**
      * 根据排名顺序查询奖励规则
      */
     public RewardRulesVo findByRankOrder(Integer rankOrder) {

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.qiguliuxing.dts.vo.InvitationRecordVO;
 import com.qiguliuxing.dts.vo.UserVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,10 +23,10 @@ import com.qiguliuxing.dts.db.domain.UserVo;
 
 @Service
 public class DtsUserService {
-	
+
 	@Resource
 	private DtsUserMapper userMapper;
-	
+
 	@Resource
 	private DtsUserAccountMapper userAccountMapper;
 
@@ -90,6 +91,10 @@ public class DtsUserService {
 		return userMapper.queryUserList(params);
 	}
 
+	public List<InvitationRecordVO> getInvitationRecords(String inviterId) {
+		return userMapper.selectInvitationRecords(inviterId);
+	}
+
 	public int count() {
 		DtsUserExample example = new DtsUserExample();
 		example.or().andDeletedEqualTo(false);
@@ -101,12 +106,6 @@ public class DtsUserService {
 		DtsUserExample example = new DtsUserExample();
 		example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
 		return userMapper.selectByExample(example);
-	}
-
-	public boolean checkByUsername(String username) {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
-		return userMapper.countByExample(example) != 0;
 	}
 
 	public List<DtsUser> queryByMobile(String mobile) {
@@ -133,7 +132,7 @@ public class DtsUserService {
 		//获取账户数据
 		DtsUserAccountExample example = new DtsUserAccountExample();
 		example.or().andUserIdEqualTo(userId);
-		
+
 		DtsUserAccount dbAccount = userAccountMapper.selectOneByExample(example);
 		if (dbAccount == null) {
 			throw new RuntimeException("申请账户不存在");
@@ -144,7 +143,7 @@ public class DtsUserService {
 		}
 		dbAccount.setModifyTime(LocalDateTime.now());
 		userAccountMapper.updateByPrimaryKey(dbAccount);
-		
+
 		//更新会员状态和类型
 		DtsUser user = findById(userId);
 		user.setUserLevel((byte) 2);//区域代理用户

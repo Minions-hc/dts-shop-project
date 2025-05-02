@@ -14,4 +14,10 @@ public interface RewardRulesMapper {
     RewardRulesVo selectById(@Param("id") Integer id);
     List<RewardRulesVo> selectAll();
     RewardRulesVo selectByRankOrder(@Param("rankOrder") Integer rankOrder);
+    /**
+     * 查询前10名奖励规则
+     *
+     * @return 奖励规则列表
+     */
+    List<RewardRulesVo> selectTop10RewardRules();
 }

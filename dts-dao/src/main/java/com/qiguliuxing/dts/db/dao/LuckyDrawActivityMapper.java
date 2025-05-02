@@ -13,4 +13,15 @@ public interface LuckyDrawActivityMapper {
     LuckyDrawActivityVo findById(@Param("activityId") Integer activityId);
     List<LuckyDrawActivityVo> findAll();
     LuckyDrawActivityVo findByPeriodNumber(@Param("periodNumber") Integer periodNumber);
+
+    /**
+     * 查询有效活动
+     */
+    LuckyDrawActivityVo selectValidActivitiy();
+
+    /**
+     * 更新活动状态
+     */
+    void updateActivityStatus(@Param("activityId") Integer activityId,
+                              @Param("isActive") Integer isActive);
 }

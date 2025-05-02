@@ -1,4 +1,7 @@
 package com.qiguliuxing.dts.vo;
+import com.alibaba.fastjson.JSON;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +15,8 @@ public class ProductSeriesVO {
     private String seriesDescription; // 系列描述
     private Boolean isHot; // 是否热榜
     private Boolean isAvoid; // 是否踩雷
+    private Boolean isPopularNew;
+    private Boolean isHotRecommend;
     private Integer purchaseCount; // 购买次数
     private Double price;
     private String createdBy; // 创建人
@@ -130,5 +135,31 @@ public class ProductSeriesVO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Boolean getIsPopularNew() {
+        return isPopularNew;
+    }
+
+    public void setIsPopularNew(Boolean popularNew) {
+        isPopularNew = popularNew;
+    }
+
+    public Boolean getIsHotRecommend() {
+        return isHotRecommend;
+    }
+
+    public void setIsHotRecommend(Boolean hotRecommend) {
+        isHotRecommend = hotRecommend;
+    }
+
+    private String priceRanges; // 改为String类型存储JSON字符串
+
+    public String getPriceRanges() {
+        return priceRanges;
+    }
+
+    public void setPriceRanges(String priceRanges) {
+        this.priceRanges = priceRanges;
     }
 }

@@ -4,6 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
+import com.github.pagehelper.PageInfo;
+import com.mysql.jdbc.StringUtils;
+import com.qiguliuxing.dts.core.util.ResponseUtil;
+import com.qiguliuxing.dts.vo.OrderVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.service.WxOrderService;
 
+import java.util.*;
+
 @RestController
 @RequestMapping("/wx/order")
 @Validated
@@ -31,21 +37,19 @@ public class WxOrderController {
 	 * 订单列表
 	 *
 	 * @param userId
-	 *            用户ID
-	 * @param showType
-	 *            订单信息
-	 * @param page
-	 *            分页页数
-	 * @param size
-	 *            分页大小
-	 * @return 订单列表
 	 */
-	@GetMapping("list")
-	public Object list(@LoginUser Integer userId, @RequestParam(defaultValue = "0") Integer showType,
-			@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-		logger.info("【请求开始】订单列表,请求参数,userId:{},showType:{},page:{}", userId, showType, page);
-		return wxOrderService.list(userId, showType, page, size);
+	@GetMapping("queryOrderList")
+	public Object queryOrderList(String userId, String orderNo, String orderStatusStr) {
+		List<String> orderStatusList = new ArrayList<>();
+		if (!StringUtils.isNullOrEmpty(orderStatusStr)) {
+			orderStatusList = Arrays.asList(orderStatusStr.split(","));
+		}
+		List<OrderVO> orderList = wxOrderService.queryOrderList(userId, orderNo, orderStatusList);
+		Map<String, Object> data = new HashMap<>();
+		data.put("items", orderList);
+		return ResponseUtil.ok(data);
 	}
+
 
 	/**
 	 * 订单详情
@@ -57,14 +61,14 @@ public class WxOrderController {
 	 * @return 订单详情
 	 */
 	@GetMapping("detail")
-	public Object detail(@LoginUser Integer userId, @NotNull Integer orderId) {
+	public Object detail(Integer userId, @NotNull Integer orderId) {
 		logger.info("【请求开始】查库订单详情,请求参数,userId:{},orderId:{}", userId, orderId);
 		return wxOrderService.detail(userId, orderId);
 	}
 
 	/**
 	 * 物流跟踪
-	 * 
+	 *
 	 * @param userId
 	 * @param orderId
 	 * @return

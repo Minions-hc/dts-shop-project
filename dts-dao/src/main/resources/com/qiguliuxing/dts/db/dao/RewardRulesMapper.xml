@@ -44,4 +44,18 @@
         SELECT * FROM reward_rules WHERE rank_order = #{rankOrder}
     </select>
 
+
+    <!-- 查询前10名奖励规则 -->
+    <select id="selectTop10RewardRules" resultMap="RewardRulesVoResultMap">
+        SELECT
+            rank_name,
+            percentage,
+            CONCAT(rank_name, ' ', percentage, '%') AS reward_info
+        FROM
+            reward_rules
+        ORDER BY
+            rank_order ASC
+            LIMIT 10
+    </select>
+
 </mapper>

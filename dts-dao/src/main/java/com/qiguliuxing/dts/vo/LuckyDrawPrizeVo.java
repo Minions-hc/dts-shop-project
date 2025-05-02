@@ -7,10 +7,12 @@ import java.util.Date;
  */
 public class LuckyDrawPrizeVo {
     private Integer prizeId;         // 奖品ID
+    private Integer productId;
     private String productName;     // 产品名称
     private Integer productQuantity; // 产品数量
     private Integer activityId;     // 关联的活动ID
     private String activityName;
+    private String redemptionCode;
     private Date createdAt;         // 创建时间
     private Date updatedAt;         // 更新时间
 
@@ -73,5 +75,21 @@ public class LuckyDrawPrizeVo {
 
     public void setActivityName(String activityName) {
         this.activityName = activityName;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public String getRedemptionCode() {
+        return redemptionCode;
+    }
+
+    public void setRedemptionCode(String redemptionCode) {
+        this.redemptionCode = redemptionCode;
     }
 }

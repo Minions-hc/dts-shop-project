@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
+import com.qiguliuxing.dts.vo.OrderVO;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +58,6 @@ import com.qiguliuxing.dts.db.domain.DtsAccountTrace;
 import com.qiguliuxing.dts.db.domain.DtsAddress;
 import com.qiguliuxing.dts.db.domain.DtsCart;
 import com.qiguliuxing.dts.db.domain.DtsComment;
-import com.qiguliuxing.dts.db.domain.DtsCoupon;
-import com.qiguliuxing.dts.db.domain.DtsCouponUser;
 import com.qiguliuxing.dts.db.domain.DtsGoodsProduct;
 import com.qiguliuxing.dts.db.domain.DtsGroupon;
 import com.qiguliuxing.dts.db.domain.DtsGrouponRules;
@@ -67,11 +66,8 @@ import com.qiguliuxing.dts.db.domain.DtsOrderGoods;
 import com.qiguliuxing.dts.db.domain.DtsUser;
 import com.qiguliuxing.dts.db.domain.DtsUserAccount;
 import com.qiguliuxing.dts.db.domain.DtsUserFormid;
-import com.qiguliuxing.dts.db.service.CouponVerifyService;
 import com.qiguliuxing.dts.db.service.DtsAccountService;
 import com.qiguliuxing.dts.db.service.DtsAddressService;
-import com.qiguliuxing.dts.db.service.DtsCartService;
-import com.qiguliuxing.dts.db.service.DtsCommentService;
 import com.qiguliuxing.dts.db.service.DtsCouponUserService;
 import com.qiguliuxing.dts.db.service.DtsGoodsProductService;
 import com.qiguliuxing.dts.db.service.DtsGrouponRulesService;
@@ -81,7 +77,6 @@ import com.qiguliuxing.dts.db.service.DtsOrderService;
 import com.qiguliuxing.dts.db.service.DtsRegionService;
 import com.qiguliuxing.dts.db.service.DtsUserFormIdService;
 import com.qiguliuxing.dts.db.service.DtsUserService;
-import com.qiguliuxing.dts.db.util.CouponUserConstant;
 import com.qiguliuxing.dts.db.util.OrderHandleOption;
 import com.qiguliuxing.dts.db.util.OrderUtil;
 import com.qiguliuxing.dts.wx.dao.BrandCartGoods;
@@ -118,8 +113,7 @@ public class WxOrderService {
 	private DtsOrderGoodsService orderGoodsService;
 	@Autowired
 	private DtsAddressService addressService;
-	@Autowired
-	private DtsCartService cartService;
+
 	@Autowired
 	private DtsRegionService regionService;
 	@Autowired
@@ -138,12 +132,13 @@ public class WxOrderService {
 	private QCodeService qCodeService;
 	@Autowired
 	private ExpressService expressService;
-	@Autowired
-	private DtsCommentService commentService;
+
 	@Autowired
 	private DtsCouponUserService couponUserService;
+
 	@Autowired
-	private CouponVerifyService couponVerifyService;
+	DtsOrderService dtsOrderService;
+
 	@Autowired
 	private DtsAccountService accountService;
 
@@ -228,6 +223,14 @@ public class WxOrderService {
 
 		logger.info("【请求结束】获取订单列表,响应结果:{}", JSONObject.toJSONString(result));
 		return ResponseUtil.ok(result);
+	}
+
+	public List<OrderVO> queryOrderList(String userId, String orderNo, List<String> orderStatusList) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		params.put("orderNo", orderNo);
+		params.put("orderStatusList", orderStatusList);
+		return dtsOrderService.queryOrderList(userId, orderNo, orderStatusList);
 	}
 
 	/**
@@ -337,7 +340,7 @@ public class WxOrderService {
 		}
 
 		// 收货地址
-		DtsAddress checkedAddress = addressService.findById(addressId);
+		DtsAddress checkedAddress = null;
 		if (checkedAddress == null) {
 			return ResponseUtil.badArgument();
 		}
@@ -349,18 +352,6 @@ public class WxOrderService {
 			grouponPrice = grouponRules.getDiscount();
 		}
 
-		// 货品价格
-		List<DtsCart> checkedGoodsList = null;
-		if (cartId.equals(0)) {
-			checkedGoodsList = cartService.queryByUidAndChecked(userId);
-		} else {
-			DtsCart cart = cartService.findById(cartId);
-			checkedGoodsList = new ArrayList<>(1);
-			checkedGoodsList.add(cart);
-		}
-		if (checkedGoodsList.size() == 0) {
-			return ResponseUtil.badArgumentValue();
-		}
 
 		BigDecimal goodsTotalPrice = new BigDecimal(0.00);// 商品总价 （包含团购减免，即减免团购后的商品总价，多店铺需将所有商品相加）
 		BigDecimal totalFreightPrice = new BigDecimal(0.00);// 总配送费 （单店铺模式一个，多店铺模式多个配送费的总和）
@@ -368,25 +359,7 @@ public class WxOrderService {
 		if (SystemConfig.isMultiOrderModel()) {
 			// a.按入驻店铺归类checkout商品
 			List<BrandCartGoods> brandCartgoodsList = new ArrayList<BrandCartGoods>();
-			for (DtsCart cart : checkedGoodsList) {
-				Integer brandId = cart.getBrandId();
-				boolean hasExsist = false;
-				for (int i = 0; i < brandCartgoodsList.size(); i++) {
-					if (brandCartgoodsList.get(i).getBrandId().intValue() == brandId.intValue()) {
-						brandCartgoodsList.get(i).getCartList().add(cart);
-						hasExsist = true;
-						break;
-					}
-				}
-				if (!hasExsist) {// 还尚未加入，则新增一类
-					BrandCartGoods bandCartGoods = new BrandCartGoods();
-					bandCartGoods.setBrandId(brandId);
-					List<DtsCart> dtsCartList = new ArrayList<DtsCart>();
-					dtsCartList.add(cart);
-					bandCartGoods.setCartList(dtsCartList);
-					brandCartgoodsList.add(bandCartGoods);
-				}
-			}
+
 			// b.核算每个店铺的商品总价，用于计算邮费
 			for (BrandCartGoods bcg : brandCartgoodsList) {
 				List<DtsCart> bandCarts = bcg.getCartList();
@@ -411,16 +384,7 @@ public class WxOrderService {
 				totalFreightPrice = totalFreightPrice.add(bandFreightPrice);
 			}
 		} else {// 单个店铺模式
-			for (DtsCart checkGoods : checkedGoodsList) {
-				// 只有当团购规格商品ID符合才进行团购优惠
-				if (grouponRules != null && grouponRules.getGoodsId().equals(checkGoods.getGoodsId())) {
-					goodsTotalPrice = goodsTotalPrice.add(checkGoods.getPrice().subtract(grouponPrice)
-							.multiply(new BigDecimal(checkGoods.getNumber())));
-				} else {
-					goodsTotalPrice = goodsTotalPrice
-							.add(checkGoods.getPrice().multiply(new BigDecimal(checkGoods.getNumber())));
-				}
-			}
+
 			// 根据订单商品总价计算运费，满足条件（例如66元）则免运费，否则需要支付运费（例如6元）；
 			if (goodsTotalPrice.compareTo(SystemConfig.getFreightLimit()) < 0) {
 				totalFreightPrice = SystemConfig.getFreight();
@@ -429,14 +393,14 @@ public class WxOrderService {
 
 		// 获取可用的优惠券信息 使用优惠券减免的金额
 		BigDecimal couponPrice = new BigDecimal(0.00);
-		// 如果couponId=0则没有优惠券，couponId=-1则不使用优惠券
-		if (couponId != 0 && couponId != -1) {
-			DtsCoupon coupon = couponVerifyService.checkCoupon(userId, couponId, goodsTotalPrice);
-			if (coupon == null) {
-				return ResponseUtil.badArgumentValue();
-			}
-			couponPrice = coupon.getDiscount();
-		}
+//		// 如果couponId=0则没有优惠券，couponId=-1则不使用优惠券
+//		if (couponId != 0 && couponId != -1) {
+//			DtsCoupon coupon = couponVerifyService.checkCoupon(userId, couponId, goodsTotalPrice);
+//			if (coupon == null) {
+//				return ResponseUtil.badArgumentValue();
+//			}
+//			couponPrice = coupon.getDiscount();
+//		}
 
 		// 可以使用的其他钱，例如用户积分
 		BigDecimal integralPrice = new BigDecimal(0.00);
@@ -491,51 +455,14 @@ public class WxOrderService {
 		orderService.add(order);
 		orderId = order.getId();
 
-		// 添加订单商品表项
-		for (DtsCart cartGoods : checkedGoodsList) {
-			// 订单商品
-			DtsOrderGoods orderGoods = new DtsOrderGoods();
-			orderGoods.setOrderId(order.getId());
-			orderGoods.setGoodsId(cartGoods.getGoodsId());
-			orderGoods.setGoodsSn(cartGoods.getGoodsSn());
-			orderGoods.setProductId(cartGoods.getProductId());
-			orderGoods.setGoodsName(cartGoods.getGoodsName());
-			orderGoods.setPicUrl(cartGoods.getPicUrl());
-			orderGoods.setPrice(cartGoods.getPrice());
-			orderGoods.setNumber(cartGoods.getNumber());
-			orderGoods.setSpecifications(cartGoods.getSpecifications());
-			orderGoods.setAddTime(LocalDateTime.now());
-
-			orderGoods.setBrandId(cartGoods.getBrandId());// 订单商品需加上入驻店铺标志
-
-			orderGoodsService.add(orderGoods);
-		}
-
-		// 删除购物车里面的商品信息
-		cartService.clearGoods(userId);
-
-		// 商品货品数量减少
-		for (DtsCart checkGoods : checkedGoodsList) {
-			Integer productId = checkGoods.getProductId();
-			DtsGoodsProduct product = productService.findById(productId);
-
-			Integer remainNumber = product.getNumber() - checkGoods.getNumber();
-			if (remainNumber < 0) {
-				throw new RuntimeException("下单的商品货品数量大于库存量");
-			}
-			if (productService.reduceStock(productId, checkGoods.getGoodsId(), checkGoods.getNumber()) == 0) {
-				throw new RuntimeException("商品货品库存减少失败");
-			}
-		}
-
 		// 如果使用了优惠券，设置优惠券使用状态
-		if (couponId != 0 && couponId != -1) {
-			DtsCouponUser couponUser = couponUserService.queryOne(userId, couponId);
-			couponUser.setStatus(CouponUserConstant.STATUS_USED);
-			couponUser.setUsedTime(LocalDateTime.now());
-			couponUser.setOrderSn(order.getOrderSn());
-			couponUserService.update(couponUser);
-		}
+//		if (couponId != 0 && couponId != -1) {
+//			DtsCouponUser couponUser = couponUserService.queryOne(userId, couponId);
+//			couponUser.setStatus(CouponUserConstant.STATUS_USED);
+//			couponUser.setUsedTime(LocalDateTime.now());
+//			couponUser.setOrderSn(order.getOrderSn());
+//			couponUserService.update(couponUser);
+//		}
 
 		// 如果是团购项目，添加团购信息
 		if (grouponRulesId != null && grouponRulesId > 0) {
@@ -941,7 +868,7 @@ public class WxOrderService {
 
 	/**
 	 * 将不变的订单属性复制到子订单
-	 * 
+	 *
 	 * @param order
 	 * @param childOrder
 	 * @return
@@ -960,7 +887,7 @@ public class WxOrderService {
 
 	/**
 	 * 将订单中的商品按入驻店铺分离归类
-	 * 
+	 *
 	 * @param orderGoodsList
 	 * @return
 	 */
@@ -1243,7 +1170,7 @@ public class WxOrderService {
 		comment.setContent(content);
 		comment.setHasPicture(hasPicture);
 		comment.setPicUrls(picUrls.toArray(new String[] {}));
-		commentService.save(comment);
+
 
 		// 2. 更新订单商品的评价列表
 		orderGoods.setComment(comment.getId());
@@ -1322,7 +1249,7 @@ public class WxOrderService {
 
 	/**
 	 * 分页查询取款结算记录
-	 * 
+	 *
 	 * @param userId
 	 * @param page
 	 * @param size
@@ -1349,7 +1276,7 @@ public class WxOrderService {
 
 	/**
 	 * 订单物流跟踪
-	 * 
+	 *
 	 * @param userId
 	 * @param orderId
 	 * @return

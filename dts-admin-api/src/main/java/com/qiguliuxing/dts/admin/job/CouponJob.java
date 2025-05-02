@@ -2,6 +2,8 @@ package com.qiguliuxing.dts.admin.job;
 
 import java.util.List;
 
+import com.qiguliuxing.dts.db.util.CouponStatus;
+import com.qiguliuxing.dts.vo.CouponVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +35,10 @@ public class CouponJob {
 	@Scheduled(fixedDelay = 60 * 60 * 1000)
 	public void checkCouponExpired() {
 		logger.info("系统开启任务检查优惠券是否已经过期");
-
-		List<DtsCoupon> couponList = couponService.queryExpired();
-		for (DtsCoupon coupon : couponList) {
-			coupon.setStatus(CouponConstant.STATUS_EXPIRED);
-			couponService.updateById(coupon);
-		}
-
-		List<DtsCouponUser> couponUserList = couponUserService.queryExpired();
-		for (DtsCouponUser couponUser : couponUserList) {
-			couponUser.setStatus(CouponUserConstant.STATUS_EXPIRED);
-			couponUserService.update(couponUser);
+		List<CouponVO> couponList = couponService.selectExpiredCoupons();
+		for (CouponVO coupon : couponList) {
+			coupon.setStatus(CouponStatus.EXPIRED.getCode());
+			couponService.updateCoupon(coupon);
 		}
 	}
 

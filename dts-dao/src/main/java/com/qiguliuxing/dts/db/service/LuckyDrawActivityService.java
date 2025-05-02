@@ -2,10 +2,12 @@ package com.qiguliuxing.dts.db.service;
 
 import com.qiguliuxing.dts.db.dao.LuckyDrawActivityMapper;
 import com.qiguliuxing.dts.vo.LuckyDrawActivityVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -47,5 +49,20 @@ public class LuckyDrawActivityService {
 
     public LuckyDrawActivityVo findByPeriodNumber(Integer periodNumber) {
         return activityMapper.findByPeriodNumber(periodNumber);
+    }
+
+    /**
+     * 查询指定开奖日期的有效活动
+     */
+    public LuckyDrawActivityVo selectValidActivitiy(){
+        return activityMapper.selectValidActivitiy();
+    }
+
+    /**
+     * 更新活动状态
+     */
+    void updateActivityStatus(@Param("activityId") Integer activityId,
+                              @Param("isActive") Integer isActive){
+        activityMapper.updateActivityStatus(activityId, isActive);
     }
 }

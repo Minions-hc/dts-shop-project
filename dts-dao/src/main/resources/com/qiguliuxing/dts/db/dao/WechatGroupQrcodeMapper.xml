@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.WechatGroupQrcodeMapper">
+
+    <resultMap id="BaseResultMap" type="com.qiguliuxing.dts.vo.WechatGroupQrcodeVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="qrcode_url" property="qrcodeUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.WechatGroupQrcodeVO">
+        INSERT INTO wechat_group_qrcode (qrcode_url)
+        VALUES (#{qrcodeUrl})
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM wechat_group_qrcode
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.qiguliuxing.dts.vo.WechatGroupQrcodeVO">
+        UPDATE wechat_group_qrcode
+        SET qrcode_url = #{qrcodeUrl}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+            id,
+            qrcode_url,
+            create_time
+        FROM wechat_group_qrcode
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+            id,
+            qrcode_url,
+            create_time
+        FROM wechat_group_qrcode
+        ORDER BY create_time DESC
+    </select>
+</mapper>

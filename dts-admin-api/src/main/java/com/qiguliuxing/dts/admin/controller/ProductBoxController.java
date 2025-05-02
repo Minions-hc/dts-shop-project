@@ -6,9 +6,8 @@ import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
 import com.qiguliuxing.dts.db.service.IBoxProductRelationService;
 import com.qiguliuxing.dts.db.service.IProductBoxService;
-import com.qiguliuxing.dts.db.service.IProductService;
+import com.qiguliuxing.dts.db.service.ProductService;
 import com.qiguliuxing.dts.vo.ProductBoxVO;
-import com.qiguliuxing.dts.vo.ProductCategoryVO;
 import com.qiguliuxing.dts.vo.ProductVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -34,7 +33,7 @@ public class ProductBoxController {
     private IProductBoxService productBoxService;
 
     @Autowired
-    private IProductService productService;
+    private ProductService productService;
 
     @Autowired
     private IBoxProductRelationService boxProductRelationService;

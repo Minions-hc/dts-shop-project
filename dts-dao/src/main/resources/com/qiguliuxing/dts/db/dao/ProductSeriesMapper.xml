@@ -2,25 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qiguliuxing.dts.db.dao.ProductSeriesMapper">
 
+    <resultMap id="ProductSeriesVOResultMap" type="com.qiguliuxing.dts.vo.ProductSeriesVO">
+        <!-- 基本字段映射 -->
+        <id column="series_id" property="seriesId" jdbcType="INTEGER"/>
+        <result column="category_id" property="categoryId" jdbcType="INTEGER"/>
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="series_name" property="seriesName" jdbcType="VARCHAR"/>
+        <result column="series_image" property="seriesImage" jdbcType="VARCHAR"/>
+        <result column="series_description" property="seriesDescription" jdbcType="LONGVARCHAR"/>
+        <result column="is_hot" property="isHot" jdbcType="TINYINT"/>
+        <result column="is_avoid" property="isAvoid" jdbcType="TINYINT"/>
+        <result column="is_popular_new" property="isPopularNew" jdbcType="TINYINT"/>
+        <result column="is_hot_recommend" property="isHotRecommend" jdbcType="TINYINT"/>
+        <result column="purchase_count" property="purchaseCount" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
+
+        <!-- 价格区间JSON字段映射 -->
+        <result column="price_ranges" property="priceRanges" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <!-- 动态查询商品系列 -->
-    <select id="getProductSeries" parameterType="java.util.Map" resultType="com.qiguliuxing.dts.vo.ProductSeriesVO">
+    <select id="getProductSeries" parameterType="java.util.Map" resultMap="ProductSeriesVOResultMap">
         SELECT
-        ser.series_id AS seriesId,
-        ser.category_id AS categoryId,
-        category.category_name as categoryName,
-        ser.series_name AS seriesName,
-        ser.series_image AS seriesImage,
-        ser.series_description AS seriesDescription,
-        ser.is_hot AS isHot,
-        ser.is_avoid AS isAvoid,
-        ser.price as price,
-        ser.purchase_count AS purchaseCount,
-        ser.created_by AS createdBy,
-        ser.created_time AS createdTime,
-        ser.updated_by AS updatedBy,
-        ser.updated_time AS updatedTime
+        ser.series_id,
+        ser.category_id,
+        category.category_name,
+        ser.series_name,
+        ser.series_image,
+        ser.series_description,
+        ser.is_hot,
+        ser.is_avoid,
+        ser.is_popular_new,
+        ser.is_hot_recommend,
+        ser.price,
+        ser.purchase_count,
+        ser.price_ranges,
+        ser.created_by,
+        ser.created_time,
+        ser.updated_by,
+        ser.updated_time
         FROM product_series as ser
-        left join product_category as category
+        inner join product_category as category
         on category.category_id = ser.category_id
         <where>
             <if test="seriesId != null and seriesId != ''">
@@ -35,7 +61,41 @@
             <if test="isAvoid != null">
                 AND is_avoid = #{isAvoid}
             </if>
+            <if test="isHot != null">
+                AND is_popular_new = #{isPopularNew}
+            </if>
+            <if test="isAvoid != null">
+                AND is_hot_recommend = #{isHotRecommend}
+            </if>
         </where>
+        ORDER BY series_id
+    </select>
+
+
+
+    <!-- 动态查询商品系列 -->
+    <select id="getProductSeriesByCategoryId" parameterType="java.lang.Integer" resultMap="ProductSeriesVOResultMap">
+        select ser.series_id,
+               ser.category_id,
+               category.category_name,
+               ser.series_name,
+               ser.series_image,
+               ser.series_description,
+               ser.is_hot,
+               ser.is_avoid,
+               ser.is_popular_new,
+               ser.is_hot_recommend,
+               ser.price,
+               ser.purchase_count,
+               ser.price_ranges,
+               ser.created_by,
+               ser.created_time,
+               ser.updated_by,
+               ser.updated_time
+        from product_category category
+            join product_series ser
+            on category.category_id = ser.category_id
+        where category.category_id = #{categoryId}
         ORDER BY series_id
     </select>
 
@@ -48,8 +108,11 @@
             series_description,
             is_hot,
             is_avoid,
+            is_popular_new,
+            is_hot_recommend,
             price,
             purchase_count,
+            price_ranges,
             created_by,
             created_time,
             updated_by,
@@ -61,8 +124,11 @@
                      #{seriesDescription},
                      #{isHot},
                      #{isAvoid},
+                     #{isPopularNew},
+                     #{isHotRecommend},
                      #{price},
                      #{purchaseCount},
+                     #{priceRanges},
                      #{createdBy},
                      NOW(),
                      #{updatedBy},
@@ -80,8 +146,11 @@
             series_description = #{seriesDescription},
             is_hot = #{isHot},
             is_avoid = #{isAvoid},
+            is_popular_new = #{isPopularNew},
+            is_hot_recommend = #{isHotRecommend},
             price = #{price},
             purchase_count = #{purchaseCount},
+            price_ranges = #{priceRanges},
             updated_by = #{updatedBy},
             updated_time = NOW()
         WHERE series_id = #{seriesId}

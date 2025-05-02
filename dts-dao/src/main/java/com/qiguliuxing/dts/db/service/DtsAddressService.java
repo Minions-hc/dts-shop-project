@@ -2,15 +2,16 @@ package com.qiguliuxing.dts.db.service;
 
 import com.github.pagehelper.PageHelper;
 import com.qiguliuxing.dts.db.dao.DtsAddressMapper;
-import com.qiguliuxing.dts.db.domain.DtsAddress;
-import com.qiguliuxing.dts.db.domain.DtsAddressExample;
+
 
 import com.qiguliuxing.dts.vo.AddressVO;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,50 +21,56 @@ public class DtsAddressService {
 	@Resource
 	private DtsAddressMapper addressMapper;
 
-	public List<DtsAddress> queryByUid(Integer uid) {
-		DtsAddressExample example = new DtsAddressExample();
-		example.or().andUserIdEqualTo(uid).andDeletedEqualTo(false);
-		return null;
+
+	public List<AddressVO> queryAddressList(String userId){
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		return addressMapper.queryAddressList(params);
 	}
 
-	public DtsAddress findById(Integer id) {
-		return addressMapper.selectByPrimaryKey(id);
+
+	public AddressVO findById(Long addressId) {
+		return addressMapper.findById(addressId);
 	}
 
-	public int add(DtsAddress address) {
-		address.setAddTime(LocalDateTime.now());
-		address.setUpdateTime(LocalDateTime.now());
-		return addressMapper.insertSelective(address);
-	}
 
-	public int update(DtsAddress address) {
-		address.setUpdateTime(LocalDateTime.now());
-		return addressMapper.updateByPrimaryKeySelective(address);
-	}
+	/**
+	 * 保存或更新地址
+	 * 1. 处理默认地址状态
+	 * 2. 处理自提地址状态
+	 */
+	@Transactional
+	public int saveOrUpdate(AddressVO addressVO) {
+		// 处理默认地址状态
+		if (addressVO.getDefault()) {
+			addressMapper.resetDefault(addressVO.getUserId());
+		}
 
-	public void delete(Integer id) {
-		addressMapper.logicalDeleteByPrimaryKey(id);
-	}
+		// 处理自提地址状态
+		if (addressVO.getPickup()) {
+			addressMapper.resetPickup(addressVO.getUserId());
+		}
 
-	public DtsAddress findDefault(Integer userId) {
-		DtsAddressExample example = new DtsAddressExample();
-		example.or().andUserIdEqualTo(userId).andIsDefaultEqualTo(true).andDeletedEqualTo(false);
-		return addressMapper.selectOneByExample(example);
+		if (addressVO.getAddressId() == null) {
+			// 新增地址
+			return addressMapper.add(addressVO);
+		} else {
+			// 更新地址
+			return addressMapper.update(addressVO);
+		}
 	}
 
 	/**
-	 * 取消用户的默认地址配置
-	 * 
-	 * @param userId
+	 * 删除用户地址
+	 * @param userId 用户ID
+	 * @param addressId 地址ID
+	 * @return 删除影响的行数
 	 */
-	public void resetDefault(Integer userId) {
-		DtsAddress address = new DtsAddress();
-		address.setIsDefault(false);
-		address.setUpdateTime(LocalDateTime.now());
-		DtsAddressExample example = new DtsAddressExample();
-		example.or().andUserIdEqualTo(userId).andDeletedEqualTo(false).andIsDefaultEqualTo(true);
-		addressMapper.updateByExampleSelective(address, example);
+	@Transactional
+	public int delete(String userId, Long addressId) {
+		return addressMapper.deleteByUserIdAndId(userId, addressId);
 	}
+
 
 	public List<AddressVO> queryAddressList(String userId, String userName, String receiverName, Integer page, Integer limit) {
 		Map<String, Object> params = new HashMap<String, Object>();

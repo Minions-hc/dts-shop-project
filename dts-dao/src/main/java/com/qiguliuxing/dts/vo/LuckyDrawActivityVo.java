@@ -1,6 +1,7 @@
 package com.qiguliuxing.dts.vo;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 幸运大抽奖活动VO
@@ -15,6 +16,8 @@ public class LuckyDrawActivityVo {
     private boolean isActive;
     private Date createdAt;          // 创建时间
     private Date updatedAt;          // 更新时间
+
+    private List<LuckyDrawPrizeVo> prizeList;
 
     // 构造方法
     public LuckyDrawActivityVo() {
@@ -98,5 +101,13 @@ public class LuckyDrawActivityVo {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void setPrizeList(List<LuckyDrawPrizeVo> prizeList) {
+        this.prizeList = prizeList;
+    }
+
+    public List<LuckyDrawPrizeVo> getPrizeList() {
+        return prizeList;
     }
 }

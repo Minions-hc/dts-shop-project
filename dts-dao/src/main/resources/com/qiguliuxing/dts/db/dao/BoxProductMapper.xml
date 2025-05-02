@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BoxProductMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.qiguliuxing.dts.vo.BoxProductVO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="BIGINT"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="product_badge" property="productBadge" jdbcType="INTEGER"/>
+        <result column="product_image" property="productImage" jdbcType="VARCHAR"/>
+        <result column="activity_type" property="activityType" jdbcType="VARCHAR"/>
+        <result column="product_level" property="productLevel" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="box_number" property="boxNumber" jdbcType="VARCHAR"/>
+        <result column="obtain_time" property="obtainTime" jdbcType="TIMESTAMP"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM box_product
+        WHERE user_id = #{userId}
+        and status IN
+        <foreach collection="statusList" item="status" open="(" separator="," close=")">
+            #{status}
+        </foreach>
+        ORDER BY obtain_time DESC
+    </select>
+
+    <!-- 新增商品 -->
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.BoxProductVO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO box_product (
+            user_id, product_id, product_name, product_badge, product_image,
+            activity_type, product_level, status, order_id, box_number, obtain_time,
+            created_time, updated_time
+        ) VALUES (
+                     #{userId}, #{productId}, #{productName}, #{productBadge}, #{productImage},
+                     #{activityType}, #{productLevel}, #{status}, #{orderId}, #{boxNumber}, #{obtainTime},
+                     NOW(), NOW()
+                 )
+    </insert>
+
+    <!-- 动态更新 - 只更新status, order_id, updated_time -->
+    <update id="updateSelective" parameterType="com.qiguliuxing.dts.vo.BoxProductVO">
+        UPDATE box_product
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            updated_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>
