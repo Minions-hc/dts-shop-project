@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BlindBoxRecordMapper">
+
+    <resultMap id="BlindBoxRecordVOResultMap" type="com.qiguliuxing.dts.vo.BlindBoxRecordVO">
+        <result property="userId" column="user_id" />
+        <result property="avatar" column="avatar" />
+        <result property="number" column="number" />
+        <result property="productId" column="product_id" />
+        <result property="productName" column="product_name" />
+        <result property="productImage" column="product_image" />
+        <result property="levelName" column="level_name" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="selectOpenRecordsBySeriesAndBox" resultMap="BlindBoxRecordVOResultMap">
+        SELECT
+            su.user_id,
+            su.avatar,
+            bbr.number,
+            p.product_id,
+            p.product_name,
+            p.product_image,
+            pl.level_name,
+            bbr.created_at
+        FROM blind_box_records bbr
+                 JOIN product p ON p.product_id = bbr.product_id
+                 JOIN shop_user su ON su.user_id = bbr.user_id
+                 JOIN product_level pl ON pl.level_id = p.product_levelid
+        WHERE bbr.series_id = #{seriesId} AND bbr.box_number = #{boxNumber}
+        ORDER BY bbr.created_at DESC
+    </select>
+</mapper>

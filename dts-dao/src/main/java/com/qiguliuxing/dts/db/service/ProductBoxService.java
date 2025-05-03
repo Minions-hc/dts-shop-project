@@ -1,10 +1,8 @@
-package com.qiguliuxing.dts.db.service.impl;
+package com.qiguliuxing.dts.db.service;
 
-import com.qiguliuxing.dts.db.dao.BoxProductRelationMapper;
 import com.qiguliuxing.dts.db.dao.ProductBoxMapper;
-import com.qiguliuxing.dts.db.service.IBoxProductRelationService;
-import com.qiguliuxing.dts.db.service.IProductBoxService;
 import com.qiguliuxing.dts.vo.BoxProductRelationVO;
+import com.qiguliuxing.dts.vo.ProductBoxResultVo;
 import com.qiguliuxing.dts.vo.ProductBoxVO;
 import com.qiguliuxing.dts.vo.ProductVO;
 import org.springframework.stereotype.Service;
@@ -15,17 +13,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductBoxServiceImpl implements IProductBoxService {
+public class ProductBoxService {
 
     @Resource
     private ProductBoxMapper productBoxMapper;
 
     @Resource
-    private IBoxProductRelationService boxProductRelationService;
+    private BoxProductRelationService boxProductRelationService;
 
     private static final Integer BASE_BOX_ID = 1000;
 
-    @Override
+    /**
+     * 新增箱子（后台管理系统）
+     *
+     * @param productBox 箱子数据
+     */
     @Transactional
     public void addProductBox(ProductBoxVO productBox) {
         Integer maxBoxId = productBoxMapper.findMaxBoxId();
@@ -51,14 +53,22 @@ public class ProductBoxServiceImpl implements IProductBoxService {
         boxProductRelationService.batchInsertBoxProductRelations(relations);
     }
 
-    @Override
+    /**
+     * 删除箱子（后台管理系统）
+     *
+     * @param params 参数列表
+     */
     @Transactional
     public void deleteProductBox(Map<String, Object> params) {
         productBoxMapper.deleteProductBox(params);
         boxProductRelationService.deleteProductBoxRelation(params);
     }
 
-    @Override
+    /**
+     * 更新箱子（后台管理系统）
+     *
+     * @param productBox 箱子数据
+     */
     @Transactional
     public void updateProductBox(ProductBoxVO productBox) {
 
@@ -84,6 +94,12 @@ public class ProductBoxServiceImpl implements IProductBoxService {
         }
     }
 
+    /**
+     *  设置箱子与产品关联关系
+     * @param productBox 箱子数据
+     * @param products 产品数据
+     * @param relations 关系数据
+     */
     private void setProductBoxRelations(ProductBoxVO productBox, List<ProductVO> products, List<BoxProductRelationVO> relations) {
         BoxProductRelationVO relationVO;
         for (ProductVO needInsertProduct : products) {
@@ -99,18 +115,36 @@ public class ProductBoxServiceImpl implements IProductBoxService {
         }
     }
 
-    @Override
+    /**
+     * 查询箱子底下的产品（后台管理系统）
+     *
+     * @param seriesId 系列ID
+     * @param boxNumber 箱子编号
+     * @param productId 产品ID
+     * @return
+     */
     public ProductBoxVO getProductBoxById(Integer seriesId, String boxNumber, Integer productId) {
         return productBoxMapper.getProductBoxById(seriesId, boxNumber, productId);
     }
 
-    @Override
-    public List<ProductBoxVO> getProductBoxesBySeriesId(Integer seriesId) {
-        return productBoxMapper.getProductBoxesBySeriesId(seriesId);
+    /**
+     * 根据系列ID查询箱子数据（微信客户端）
+     *
+     * @param seriesId 系列ID
+     * @return
+     */
+    public List<ProductBoxResultVo> getProductBoxBySeriesId(Integer seriesId) {
+        return productBoxMapper.getProductBoxBySeriesId(seriesId);
     }
 
-    @Override
+    /**
+     * 动态查询箱子数据（后台管理系统）
+     *
+     * @param params
+     * @return
+     */
     public List<ProductBoxVO> getProductBoxByCondition(Map<String, Object> params) {
         return productBoxMapper.getProductBoxByCondition(params);
     }
+
 }

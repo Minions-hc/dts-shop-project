@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.db.dao;
 
+import com.qiguliuxing.dts.vo.ProductBoxResultVo;
 import com.qiguliuxing.dts.vo.ProductBoxVO;
 import com.qiguliuxing.dts.vo.ProductVO;
 
@@ -18,7 +19,7 @@ public interface ProductBoxMapper {
 
     ProductBoxVO getProductBoxById( Integer seriesId,  String boxNumber,  Integer productId);
 
-    List<ProductBoxVO> getProductBoxesBySeriesId(Integer seriesId);
+    List<ProductBoxResultVo> getProductBoxBySeriesId(Integer seriesId);
 
     List<ProductBoxVO> getProductBoxByCondition(Map<String, Object> params);
 }

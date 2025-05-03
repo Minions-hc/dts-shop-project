@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
-import com.qiguliuxing.dts.db.service.IBoxProductRelationService;
-import com.qiguliuxing.dts.db.service.IProductBoxService;
+import com.qiguliuxing.dts.db.service.BoxProductRelationService;
+import com.qiguliuxing.dts.db.service.ProductBoxService;
 import com.qiguliuxing.dts.db.service.ProductService;
 import com.qiguliuxing.dts.vo.ProductBoxVO;
 import com.qiguliuxing.dts.vo.ProductVO;
@@ -30,13 +30,13 @@ public class ProductBoxController {
 
 
     @Autowired
-    private IProductBoxService productBoxService;
+    private ProductBoxService productBoxService;
 
     @Autowired
     private ProductService productService;
 
     @Autowired
-    private IBoxProductRelationService boxProductRelationService;
+    private BoxProductRelationService boxProductRelationService;
 
 
 
@@ -118,8 +118,4 @@ public class ProductBoxController {
         return productBoxService.getProductBoxById(seriesId, boxNumber, productId);
     }
 
-    @GetMapping("/{seriesId}")
-    public List<ProductBoxVO> getProductBoxesBySeriesId(@PathVariable Integer seriesId) {
-        return productBoxService.getProductBoxesBySeriesId(seriesId);
-    }
 }

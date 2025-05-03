@@ -1,15 +1,9 @@
 package com.qiguliuxing.dts.admin.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.db.domain.DtsAdmin;
-import com.qiguliuxing.dts.db.service.IProductSeriesService;
 import com.qiguliuxing.dts.db.service.LogisticsService;
 import com.qiguliuxing.dts.vo.LogisticsInfoVO;
-import com.qiguliuxing.dts.vo.ProductSeriesVO;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

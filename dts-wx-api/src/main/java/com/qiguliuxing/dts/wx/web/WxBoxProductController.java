@@ -2,7 +2,9 @@ package com.qiguliuxing.dts.wx.web;
 
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BoxProductService;
+import com.qiguliuxing.dts.db.util.StatusType;
 import com.qiguliuxing.dts.vo.BoxProductVO;
+import com.qiguliuxing.dts.wx.service.WxOrderService;
 import com.qiguliuxing.dts.wx.util.ProductLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +26,9 @@ public class WxBoxProductController {
 
     @Autowired
     private BoxProductService boxProductService;
+
+    @Autowired
+    private WxOrderService wxOrderService;
 
     @GetMapping("/getProductsByUser")
     public Object getProductsByUser(String userId, String status) {
@@ -49,6 +54,11 @@ public class WxBoxProductController {
         return ResponseUtil.ok(data);
     }
 
+    /**
+     * 抽盲盒完成支付
+     * @param boxProduct
+     * @return
+     */
     @PostMapping("/addProduct")
     public Object addProduct(@RequestBody BoxProductVO boxProduct) {
         int result = boxProductService.addProduct(boxProduct);
@@ -58,12 +68,33 @@ public class WxBoxProductController {
         return ResponseUtil.fail();
     }
 
-    @PutMapping("/updateProduct")
-    public Object updateProductStatus(@RequestBody BoxProductVO boxProduct) {
+    /**
+     * 盒柜锁定
+     * @param boxProduct
+     * @return
+     */
+    @PostMapping("/locked")
+    public Object locked(@RequestBody BoxProductVO boxProduct) {
         int result = boxProductService.updateProductStatus(boxProduct);
         if (result == 1) {
             return ResponseUtil.ok();
         }
         return ResponseUtil.fail();
     }
+
+
+    /**
+     * 盒柜提交发货
+     */
+    @PostMapping("/submitDelivery")
+    public Object submitDelivery(@RequestBody BoxProductVO boxProduct) {
+
+
+        // 更新盒柜表状态
+        boxProduct.setStatus(StatusType.SHIPPED.getCode());
+        boxProductService.updateProductStatus(boxProduct);
+        return ResponseUtil.fail();
+    }
+
+
 }

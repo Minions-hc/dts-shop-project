@@ -38,7 +38,7 @@ public class LuckyKingRankService {
      * @return 所有用户的总积分和
      */
     public LuckyKingRankVO getUserLuckyKingPoints(String userId) {
-        LuckyKingRankVO luckyKingRankVO = luckyKingRankMapper.selectUserLuckyKingPoints();
+        LuckyKingRankVO luckyKingRankVO = luckyKingRankMapper.selectUserLuckyKingPoints(userId);
         List<LuckyKingRankVO> list = luckyKingRankMapper.selectLuckyKingTop10();
         // 当出现没有欧皇榜数据时，直接与前十的差距设为0
         if (list.isEmpty()) {

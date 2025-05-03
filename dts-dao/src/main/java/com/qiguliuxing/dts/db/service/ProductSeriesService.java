@@ -1,22 +1,18 @@
-package com.qiguliuxing.dts.db.service.impl;
+package com.qiguliuxing.dts.db.service;
 
 import com.qiguliuxing.dts.db.dao.ProductMapper;
 import com.qiguliuxing.dts.db.dao.ProductSeriesMapper;
-import com.qiguliuxing.dts.db.service.IProductSeriesService;
 import com.qiguliuxing.dts.vo.ProductSeriesVO;
-import com.qiguliuxing.dts.vo.ProductVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductSeriesServiceImpl implements IProductSeriesService {
+public class ProductSeriesService {
 
     @Resource
     private ProductSeriesMapper productSeriesMapper;
@@ -24,36 +20,61 @@ public class ProductSeriesServiceImpl implements IProductSeriesService {
     @Resource
     private ProductMapper productMapper;
 
-    @Override
+    /**
+     * 新增系列（后台管理系统）
+     * @param productSeries 产品系列
+     */
     @Transactional
     public void addProductSeries(ProductSeriesVO productSeries) {
         productSeriesMapper.insertProductSeries(productSeries);
     }
 
-    @Override
+    /**
+     * 删除系列（后台管理系统）
+     * @param seriesId 系列ID
+     */
     @Transactional
     public void deleteProductSeries(Integer seriesId) {
         productSeriesMapper.deleteProductSeries(seriesId);
     }
 
-    @Override
+    /**
+     * 更新系列（后台管理系统）
+     *
+     * @param productSeries 产品系列
+     */
     @Transactional
     public void updateProductSeries(ProductSeriesVO productSeries) {
         productSeriesMapper.updateProductSeries(productSeries);
     }
 
-    @Override
+    /**
+     * 根据系列ID查询系列（后台管理系统）
+     *
+     * @param seriesId 系列ID
+     * @return 系列信息
+     */
     public ProductSeriesVO getProductSeriesById(Integer seriesId) {
         return productSeriesMapper.getProductSeriesById(seriesId);
     }
 
-    @Override
+    /**
+     * 动态查询系列（后台管理系统）
+     *
+     * @param params 动态参数
+     * @return 系列信息
+     */
     public List<ProductSeriesVO> getProductSeries(Map<String, Object> params) {
         return productSeriesMapper.getProductSeries(params);
     }
 
 
-    @Override
+    /**
+     * 动态查询系列（微信客户端）
+     *
+     * @param params params 动态参数
+     * @return 系列信息
+     */
     public List<ProductSeriesVO> getWxProductSeries(Map<String, Object> params) {
         // 根据条件查询对应的系列
         List<ProductSeriesVO> productSeriesVOS = productSeriesMapper.getProductSeries(params);
@@ -67,7 +88,6 @@ public class ProductSeriesServiceImpl implements IProductSeriesService {
         return productSeriesVOS;
     }
 
-    @Override
     public List<ProductSeriesVO> getProductSeriesByCategoryId(Integer categoryId) {
         return productSeriesMapper.getProductSeriesByCategoryId(categoryId);
     }
