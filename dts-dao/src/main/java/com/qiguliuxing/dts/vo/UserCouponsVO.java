@@ -12,6 +12,8 @@ public class UserCouponsVO {
     private Integer status;
     private String orderId;
     private Date useTime;
+    private Integer couponType; // 1-无门槛券, 2-满减券
+    private BigDecimal minOrderAmount; // 仅满减券有效
     private Date createTime;
     private Date updateTime;
 
@@ -111,5 +113,21 @@ public class UserCouponsVO {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
+    }
+
+    public Integer getCouponType() {
+        return couponType;
+    }
+
+    public void setCouponType(Integer couponType) {
+        this.couponType = couponType;
+    }
+
+    public BigDecimal getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(BigDecimal minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 }

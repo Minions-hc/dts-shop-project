@@ -2,61 +2,19 @@ package com.qiguliuxing.dts.vo;
 
 import java.math.BigDecimal;
 
-public class ProductBoxResultVo {
-    /**
-     *  箱子ID
-      */
+/**
+ * 盲盒抽取结果VO
+ */
+public class BlindBoxDrawResultVO {
+
     private Integer boxId;
-
-    /**
-     * 箱子编号
-     */
     private String boxNumber;
-
-    /**
-     * 产品ID
-     */
     private Integer productId;
-
-    /**
-     * 产品名称
-     */
     private String productName;
-
-    /**
-     * 产品数量
-     */
-    private Integer quantity;
-
-    /**
-     * 已售数量
-     */
-    private Integer soldQuantity;
-
-    /**
-     * 产品图片
-     */
     private String productImage;
-
-    /**
-     * 产品价格
-     */
     private BigDecimal productPrice;
-
-    /**
-     * 产品等级（A赏，B赏，终赏）
-     */
     private String levelName;
-
-    /**
-     * 系列参考价格
-     */
-    private BigDecimal seriesPrice;
-
-    /**
-     * 是否已售
-     */
-    private boolean isSoldOut;
+    private Integer number; // 抽取的编号
 
     public Integer getBoxId() {
         return boxId;
@@ -90,22 +48,6 @@ public class ProductBoxResultVo {
         this.productName = productName;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Integer getSoldQuantity() {
-        return soldQuantity;
-    }
-
-    public void setSoldQuantity(Integer soldQuantity) {
-        this.soldQuantity = soldQuantity;
-    }
-
     public String getProductImage() {
         return productImage;
     }
@@ -130,19 +72,11 @@ public class ProductBoxResultVo {
         this.levelName = levelName;
     }
 
-    public BigDecimal getSeriesPrice() {
-        return seriesPrice;
+    public Integer getNumber() {
+        return number;
     }
 
-    public void setSeriesPrice(BigDecimal seriesPrice) {
-        this.seriesPrice = seriesPrice;
-    }
-
-    public boolean isSoldOut() {
-        return isSoldOut;
-    }
-
-    public void setSoldOut(boolean soldOut) {
-        isSoldOut = soldOut;
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 }

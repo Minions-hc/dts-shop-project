@@ -113,6 +113,8 @@ public class WxRedemptionCodeController {
             userCouponsVO.setCouponName(coupon.getCouponName());
             userCouponsVO.setUserId(userId);
             userCouponsVO.setExpireTime(coupon.getExpireTime());
+            userCouponsVO.setCouponType(coupon.getCouponType());
+            userCouponsVO.setMinOrderAmount(coupon.getMinOrderAmount());
 
             // 录入用户优惠券记录
             couponUserService.addUserCoupon(userCouponsVO, coupon);

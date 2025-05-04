@@ -2,7 +2,6 @@ package com.qiguliuxing.dts.wx.web;
 
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BoxProductService;
-import com.qiguliuxing.dts.db.util.StatusType;
 import com.qiguliuxing.dts.vo.BoxProductVO;
 import com.qiguliuxing.dts.wx.service.WxOrderService;
 import com.qiguliuxing.dts.wx.util.ProductLevel;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public class WxBoxProductController {
         if (status.equals("all")) {
             statusList.add("pending");
             statusList.add("locked");
-            statusList.add("locked");
+            statusList.add("shipped");
         } else {
             statusList.add(status);
         }
@@ -52,20 +52,6 @@ public class WxBoxProductController {
         data.put("finalProducts", finalProducts);
         data.put("otherProducts", otherProducts);
         return ResponseUtil.ok(data);
-    }
-
-    /**
-     * 抽盲盒完成支付
-     * @param boxProduct
-     * @return
-     */
-    @PostMapping("/addProduct")
-    public Object addProduct(@RequestBody BoxProductVO boxProduct) {
-        int result = boxProductService.addProduct(boxProduct);
-        if (result == 1) {
-            return ResponseUtil.ok();
-        }
-        return ResponseUtil.fail();
     }
 
     /**
@@ -87,14 +73,11 @@ public class WxBoxProductController {
      * 盒柜提交发货
      */
     @PostMapping("/submitDelivery")
-    public Object submitDelivery(@RequestBody BoxProductVO boxProduct) {
-
-
-        // 更新盒柜表状态
-        boxProduct.setStatus(StatusType.SHIPPED.getCode());
-        boxProductService.updateProductStatus(boxProduct);
-        return ResponseUtil.fail();
+    public Object submitDelivery(@PathParam ("userId") String userId, @RequestBody List<Integer> productIds) {
+        boxProductService.shipProducts(userId, productIds);
+        return ResponseUtil.ok();
     }
+
 
 
 }

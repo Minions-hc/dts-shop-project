@@ -69,6 +69,7 @@
         <result property="productPrice" column="product_price"/>
         <result property="levelName" column="level_name"/>
         <result property="seriesPrice" column="price"/>
+        <result property="priceRanges" column="price_ranges"/>
         <result property="isSoldOut" column="is_sold_out"/>
     </resultMap>
 
@@ -84,6 +85,7 @@
             p.product_price,
             pl.level_name,
             ps.price,
+            ps.price_ranges,
             CASE
                 WHEN bpr.sold_quantity >= bpr.quantity THEN 1
                 ELSE 0

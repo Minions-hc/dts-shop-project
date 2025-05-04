@@ -9,7 +9,9 @@ import javax.annotation.Resource;
 
 import com.qiguliuxing.dts.vo.InvitationRecordVO;
 import com.qiguliuxing.dts.vo.UserVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.github.pagehelper.PageHelper;
@@ -29,6 +31,8 @@ public class DtsUserService {
 
 	@Resource
 	private DtsUserAccountMapper userAccountMapper;
+    @Autowired
+    private DtsUserMapper dtsUserMapper;
 
 	public DtsUser findById(Integer userId) {
 		return userMapper.selectByPrimaryKey(userId);
@@ -158,5 +162,40 @@ public class DtsUserService {
 
 		DtsUserAccount dbAccount = userAccountMapper.selectOneByExample(example);
 		return dbAccount;
+	}
+
+
+	/**
+	 * 用户注册
+	 * @return 注册成功的用户ID
+	 */
+	@Transactional
+	public String register(String wxOpenId, String inviterId, String userName, String avatar, String phone) {
+
+		// 1. 检查微信用户是否已注册
+		if (dtsUserMapper.existsByWxOpenId(wxOpenId)) {
+			throw new RuntimeException("该微信用户已注册");
+		}
+		// 2. 获取下一个用户ID
+		String userId = dtsUserMapper.getNextUserId();
+		if (userId == null) {
+			userId = "U1000"; // 第一个用户
+		}
+		// 4. 构建用户实体
+		UserVO user = new UserVO();
+		user.setWxOpenId(wxOpenId);
+		user.setUserId(userId);
+		user.setUserName(userName);
+		user.setAvatar(avatar);
+		user.setPoints(0); // 初始积分
+		user.setInviterId(inviterId);
+		user.setPhone(phone);
+		user.setCreateBy("system"); // 系统创建
+		// 5. 保存用户
+		int result = dtsUserMapper.insertUser(user);
+		if (result <= 0) {
+			throw new RuntimeException("用户注册失败");
+		}
+		return user.getUserId();
 	}
 }

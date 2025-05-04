@@ -242,41 +242,7 @@ public class WxAuthController {
 		return ResponseUtil.ok(result);
 	}
 
-	/**
-	 * 请求验证码
-	 *
-	 * @param body
-	 *            手机号码{mobile}
-	 * @return
-	 */
-	@PostMapping("regCaptcha")
-	public Object registerCaptcha(@RequestBody String body) {
-		logger.info("【请求开始】请求验证码,请求参数，body:{}", body);
 
-		String phoneNumber = JacksonUtil.parseString(body, "mobile");
-		if (StringUtils.isEmpty(phoneNumber)) {
-			return ResponseUtil.badArgument();
-		}
-		if (!RegexUtil.isMobileExact(phoneNumber)) {
-			return ResponseUtil.badArgumentValue();
-		}
-
-		if (!notifyService.isSmsEnable()) {
-			logger.error("请求验证码出错:{}", AUTH_CAPTCHA_UNSUPPORT.desc());
-			return WxResponseUtil.fail(AUTH_CAPTCHA_UNSUPPORT);
-		}
-		String code = CharUtil.getRandomNum(6);
-		notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[] { code, "1" });
-
-		boolean successful = CaptchaCodeManager.addToCache(phoneNumber, code);
-		if (!successful) {
-			logger.error("请求验证码出错:{}", AUTH_CAPTCHA_FREQUENCY.desc());
-			return WxResponseUtil.fail(AUTH_CAPTCHA_FREQUENCY);
-		}
-
-		logger.info("【请求结束】请求验证码成功");
-		return ResponseUtil.ok();
-	}
 
 	/**
 	 * 账号注册
@@ -391,96 +357,6 @@ public class WxAuthController {
 		return ResponseUtil.ok(result);
 	}
 
-	/**
-	 * 账号密码重置
-	 *
-	 * @param body
-	 *            请求内容 { password: xxx, mobile: xxx code: xxx }
-	 *            其中code是手机验证码，目前还不支持手机短信验证码
-	 * @param request
-	 *            请求对象
-	 * @return 登录结果 成功则 { errno: 0, errmsg: '成功' } 失败则 { errno: XXX, errmsg: XXX }
-	 */
-	@PostMapping("reset")
-	public Object reset(@RequestBody String body, HttpServletRequest request) {
-		logger.info("【请求开始】账号密码重置,请求参数，body:{}", body);
-
-		String password = JacksonUtil.parseString(body, "password");
-		String mobile = JacksonUtil.parseString(body, "mobile");
-		String code = JacksonUtil.parseString(body, "code");
-
-		if (mobile == null || code == null || password == null) {
-			return ResponseUtil.badArgument();
-		}
-
-		// 判断验证码是否正确
-		String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
-		if (cacheCode == null || cacheCode.isEmpty() || !cacheCode.equals(code)) {
-			logger.error("账号密码重置出错:{}", AUTH_CAPTCHA_UNMATCH.desc());
-			return WxResponseUtil.fail(AUTH_CAPTCHA_UNMATCH);
-		}
-
-		List<DtsUser> userList = userService.queryByMobile(mobile);
-
-		DtsUser user = null;
-		if (userList.size() > 1) {
-			logger.error("账号密码重置出错,账户不唯一,查询手机号:{}", mobile);
-			return ResponseUtil.serious();
-		} else if (userList.size() == 0) {
-			logger.error("账号密码重置出错,账户不存在,查询手机号:{},{}", mobile, AUTH_MOBILE_UNREGISTERED.desc());
-			return WxResponseUtil.fail(AUTH_MOBILE_UNREGISTERED);
-		} else {
-			user = userList.get(0);
-		}
-
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String encodedPassword = encoder.encode(password);
-		user.setPassword(encodedPassword);
-
-		if (userService.updateById(user) == 0) {
-			logger.error("账号密码重置更新用户信息出错,id：{}", user.getId());
-			return ResponseUtil.updatedDataFailed();
-		}
-
-		logger.info("【请求结束】账号密码重置成功!");
-		return ResponseUtil.ok();
-	}
-
-	/**
-	 * 绑定手机号码
-	 *
-	 * @param userId
-	 * @param body
-	 * @return
-	 */
-	@PostMapping("bindPhone")
-	public Object bindPhone(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】绑定手机号码,请求参数，body:{}", body);
-
-		String sessionKey = UserTokenManager.getSessionKey(userId);
-		String encryptedData = JacksonUtil.parseString(body, "encryptedData");
-		String iv = JacksonUtil.parseString(body, "iv");
-		WxMaPhoneNumberInfo phoneNumberInfo = null;
-		try {
-			phoneNumberInfo = this.wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
-		} catch (Exception e) {
-			logger.error("绑定手机号码失败,获取微信绑定的手机号码出错：{}", body);
-			e.printStackTrace();
-			return ResponseUtil.fail();
-		}
-		String phone = phoneNumberInfo.getPhoneNumber();
-		DtsUser user = userService.findById(userId);
-		user.setMobile(phone);
-		if (userService.updateById(user) == 0) {
-			logger.error("绑定手机号码,更新用户信息出错,id：{}", user.getId());
-			return ResponseUtil.updatedDataFailed();
-		}
-		Map<Object, Object> data = new HashMap<Object, Object>();
-		data.put("phone", phone);
-
-		logger.info("【请求结束】绑定手机号码,响应结果：{}", JSONObject.toJSONString(data));
-		return ResponseUtil.ok(data);
-	}
 
 	/**
 	 * 注销登录
@@ -501,7 +377,6 @@ public class WxAuthController {
 			e.printStackTrace();
 			return ResponseUtil.fail();
 		}
-
 		logger.info("【请求结束】注销登录成功!");
 		return ResponseUtil.ok();
 	}

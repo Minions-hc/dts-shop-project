@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.wx.web;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
@@ -57,4 +59,18 @@ public class WxCouponController {
 		return ResponseUtil.ok(data);
 	}
 
+
+	/**
+	 * 查询用户可用优惠券
+	 * @param userId 用户ID
+	 * @param orderAmount 订单金额(可选，用于满减券判断)
+	 * @return 可用优惠券列表
+	 */
+	@GetMapping("/available")
+	public Object getAvailableCoupons(
+			@RequestParam String userId,
+			@RequestParam(required = false) BigDecimal orderAmount) {
+		List<UserCouponsVO> coupons = couponUserService.getAvailableCoupons(userId, orderAmount);
+		return ResponseUtil.ok(coupons);
+	}
 }

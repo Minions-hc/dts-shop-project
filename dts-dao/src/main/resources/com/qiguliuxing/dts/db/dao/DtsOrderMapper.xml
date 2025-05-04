@@ -273,6 +273,22 @@
   </select>
 
 
+  <insert id="insertOrderItem" parameterType="com.qiguliuxing.dts.vo.OrderItemVO" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO shop_order_item (
+      order_id,
+      product_id,
+      quantity,
+      create_by,
+      update_by
+    ) VALUES (
+               #{orderId},
+               #{productId},
+               #{quantity},
+               #{createBy},
+               #{updateBy}
+             )
+  </insert>
+
   <select id="queryOrderByOrderNo" parameterType="java.lang.String" resultType="com.qiguliuxing.dts.vo.OrderVO">
     SELECT
       o.order_id as orderId,

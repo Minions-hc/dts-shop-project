@@ -103,4 +103,23 @@
     DELETE FROM shop_address
     WHERE address_id = #{addressId} AND user_id = #{userId}
   </delete>
+
+  <select id="selectDefaultAddressByUserId" resultMap="addressResultMap">
+    SELECT
+      address_id,
+      user_id,
+      receiver_name,
+      phone,
+      region,
+      detail_address,
+      tag,
+      is_default,
+      is_pickup
+    FROM
+      shop_address
+    WHERE
+      user_id = #{userId}
+      AND is_default = 1
+      LIMIT 1
+  </select>
 </mapper>

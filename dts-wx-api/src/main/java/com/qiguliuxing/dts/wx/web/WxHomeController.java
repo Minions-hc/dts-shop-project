@@ -64,11 +64,6 @@ public class WxHomeController {
 	private DtsGrouponRulesService grouponRulesService;
 
 	@Autowired
-	private DtsCouponService couponService;
-
-
-
-	@Autowired
 	private ProductSeriesService productSeriesService;
 
 	@Autowired
