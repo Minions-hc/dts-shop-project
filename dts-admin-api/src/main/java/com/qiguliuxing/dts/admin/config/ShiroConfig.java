@@ -31,6 +31,7 @@ public class ShiroConfig {
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 		filterChainDefinitionMap.put("/admin/auth/login", "anon");
+		filterChainDefinitionMap.put("/admin/auth/captchaImage", "anon");
 		filterChainDefinitionMap.put("/admin/auth/401", "anon");
 		filterChainDefinitionMap.put("/admin/auth/index", "anon");
 		filterChainDefinitionMap.put("/admin/auth/403", "anon");
