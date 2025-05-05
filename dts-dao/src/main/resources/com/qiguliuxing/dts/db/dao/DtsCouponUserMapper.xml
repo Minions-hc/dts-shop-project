@@ -12,6 +12,8 @@
       status,
       order_id AS orderId,
       use_time AS useTime,
+      coupon_type AS couponType,
+      min_order_amount AS minOrderAmount,
       create_time AS createTime,
       update_time AS updateTime
       FROM user_coupons
@@ -44,6 +46,8 @@
       status,
       order_id,
       use_time,
+      coupon_type,
+      min_order_amount,
       create_time,
       update_time
     )
@@ -56,6 +60,8 @@
              #{status},
              #{orderId,jdbcType=VARCHAR},
              #{useTime,jdbcType=TIMESTAMP},
+             #{couponType},
+             #{minOrderAmount},
              NOW(),
              NOW()
            )
@@ -71,10 +77,43 @@
             status,
             order_id AS orderId,
             use_time AS useTime,
+            coupon_type AS couponType,
+            min_order_amount AS minOrderAmount,
             create_time AS createTime,
             update_time AS updateTime
         FROM user_coupons
         WHERE user_id = #{userId}
         ORDER BY create_time DESC
+    </select>
+
+
+    <select id="selectAvailableCoupons" resultType="com.qiguliuxing.dts.vo.UserCouponsVO">
+        SELECT
+            coupon_id as couponId,
+            coupon_name as couponName,
+            coupon_amount as couponAmount,
+            coupon_type as couponType,
+            min_order_amount as minOrderAmount,
+            expire_time as expireTime,
+            status as status,
+            create_time as createTime
+        FROM
+            user_coupons
+        WHERE
+            user_id = #{userId}
+          AND status = 1  -- 未使用
+          AND expire_time > NOW()  -- 未过期
+          AND (
+            coupon_type = 1  -- 无门槛券
+                OR (
+                coupon_type = 2  -- 满减券
+                    AND (
+                    min_order_amount IS NULL  -- 没有最低限制
+                        OR #{orderAmount} >= min_order_amount  -- 订单金额满足最低要求
+                    )
+                )
+            )
+        ORDER BY
+            coupon_amount DESC, expire_time ASC
     </select>
 </mapper>

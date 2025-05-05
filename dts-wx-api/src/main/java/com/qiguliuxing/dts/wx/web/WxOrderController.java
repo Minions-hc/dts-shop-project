@@ -95,20 +95,6 @@ public class WxOrderController {
 		return wxOrderService.submit(userId, body);
 	}
 
-	/**
-	 * 取消订单
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param body
-	 *            订单信息，{ orderId：xxx }
-	 * @return 取消订单操作结果
-	 */
-	@PostMapping("cancel")
-	public Object cancel(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】取消用户订单,请求参数,userId:{},body:{}", userId, body);
-		return wxOrderService.cancel(userId, body);
-	}
 
 	/**
 	 * 付款订单的预支付会话标识
@@ -140,83 +126,6 @@ public class WxOrderController {
 	public Object payNotify(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("【请求开始】微信付款成功或失败回调...");
 		return wxOrderService.dtsPayNotify(request, response);
-	}
-
-	/**
-	 * 订单申请退款
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param body
-	 *            订单信息，{ orderId：xxx }
-	 * @return 订单退款操作结果
-	 */
-	@PostMapping("refund")
-	public Object refund(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】订单申请退款,请求参数,userId:{},body:{}", userId, body);
-		return wxOrderService.refund(userId, body);
-	}
-
-	/**
-	 * 确认收货
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param body
-	 *            订单信息，{ orderId：xxx }
-	 * @return 订单操作结果
-	 */
-	@PostMapping("confirm")
-	public Object confirm(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】用户确认收货,请求参数,userId:{},body:{}", userId, body);
-		return wxOrderService.confirm(userId, body);
-	}
-
-	/**
-	 * 删除订单
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param body
-	 *            订单信息，{ orderId：xxx }
-	 * @return 订单操作结果
-	 */
-	@PostMapping("delete")
-	public Object delete(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】用户删除订单,请求参数,userId:{},body:{}", userId, body);
-		return wxOrderService.delete(userId, body);
-	}
-
-	/**
-	 * 待评价订单商品信息
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param orderId
-	 *            订单ID
-	 * @param goodsId
-	 *            商品ID
-	 * @return 待评价订单商品信息
-	 */
-	@GetMapping("goods")
-	public Object goods(@LoginUser Integer userId, @NotNull Integer orderId, @NotNull Integer goodsId) {
-		logger.info("【请求开始】获取待评价订单商品信息,请求参数,userId:{},orderId:{},goodsId:{}", userId, orderId, goodsId);
-		return wxOrderService.goods(userId, orderId, goodsId);
-	}
-
-	/**
-	 * 评价订单商品
-	 *
-	 * @param userId
-	 *            用户ID
-	 * @param body
-	 *            订单信息，{ orderId：xxx }
-	 * @return 订单操作结果
-	 */
-	@PostMapping("comment")
-	public Object comment(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】评价订单商品,请求参数,userId:{},body:{}", userId, body);
-		return wxOrderService.comment(userId, body);
 	}
 
 }

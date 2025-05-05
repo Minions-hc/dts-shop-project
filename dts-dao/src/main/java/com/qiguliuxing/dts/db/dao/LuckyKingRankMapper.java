@@ -2,6 +2,7 @@ package com.qiguliuxing.dts.db.dao;
 
 import com.qiguliuxing.dts.vo.LuckyKingRankVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface LuckyKingRankMapper {
      * 查询当前用户当月欧皇榜积分
      * @return 查询当前用户当月欧皇榜积分
      */
-    LuckyKingRankVO selectUserLuckyKingPoints();
+    LuckyKingRankVO selectUserLuckyKingPoints(@Param("userId") String userId);
 }

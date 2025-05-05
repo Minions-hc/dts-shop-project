@@ -29,7 +29,7 @@ public class DtsAddressService {
 	}
 
 
-	public AddressVO findById(Long addressId) {
+	public AddressVO findById(Integer addressId) {
 		return addressMapper.findById(addressId);
 	}
 
@@ -67,7 +67,7 @@ public class DtsAddressService {
 	 * @return 删除影响的行数
 	 */
 	@Transactional
-	public int delete(String userId, Long addressId) {
+	public int delete(String userId, Integer addressId) {
 		return addressMapper.deleteByUserIdAndId(userId, addressId);
 	}
 
@@ -79,5 +79,14 @@ public class DtsAddressService {
 		params.put("receiverName", receiverName);
 		PageHelper.startPage(page, limit);
 		return addressMapper.queryAddressList(params);
+	}
+
+	/**
+	 * 获取用户默认收货地址
+	 * @param userId 用户ID
+	 * @return 默认收货地址信息，没有则返回null
+	 */
+	public AddressVO getUserDefaultAddress(String userId) {
+		return addressMapper.selectDefaultAddressByUserId(userId);
 	}
 }

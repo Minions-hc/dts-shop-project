@@ -5,10 +5,10 @@ import java.util.Date;
 public class UserVO {
 
     private String userId;          // 用户ID（微信ID）
+    private String wxOpenId;
     private String userName;        // 用户名称
     private String avatar;          // 头像URL
     private Integer points;         // 积分
-    private String inviteCode;      // 邀请码
     private String inviterId;       // 上级邀请人ID
     private String phone;           // 手机号码
     private Double redPacketBalance; // 红包余额
@@ -43,14 +43,6 @@ public class UserVO {
 
     public void setPoints(Integer points) {
         this.points = points;
-    }
-
-    public String getInviteCode() {
-        return inviteCode;
-    }
-
-    public void setInviteCode(String inviteCode) {
-        this.inviteCode = inviteCode;
     }
 
     public void setUserName(String userName) {
@@ -111,5 +103,13 @@ public class UserVO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getWxOpenId() {
+        return wxOpenId;
+    }
+
+    public void setWxOpenId(String wxOpenId) {
+        this.wxOpenId = wxOpenId;
     }
 }

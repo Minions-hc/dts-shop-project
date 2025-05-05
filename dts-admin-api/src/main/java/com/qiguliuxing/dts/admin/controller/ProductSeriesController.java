@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
-import com.qiguliuxing.dts.db.service.IProductSeriesService;
+import com.qiguliuxing.dts.db.service.ProductSeriesService;
 import com.qiguliuxing.dts.vo.ProductSeriesVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -24,7 +24,7 @@ public class ProductSeriesController {
     private static final Logger logger = LoggerFactory.getLogger(ProductSeriesController.class);
 
     @Autowired
-    private IProductSeriesService productSeriesService;
+    private ProductSeriesService productSeriesService;
 
     @PostMapping("/addProductSeries")
     public Object addProductSeries(@RequestBody ProductSeriesVO productSeries) {

@@ -11,6 +11,8 @@
     <result property="expireTime" column="expire_time"/>
     <result property="redemptionCode" column="redemption_code"/>
     <result property="status" column="status"/>
+    <result property="couponType" column="coupon_type"/>
+    <result property="minOrderAmount" column="min_order_amount"/>
     <result property="createTime" column="create_time"/>
     <result property="updateTime" column="update_time"/>
   </resultMap>
@@ -19,11 +21,11 @@
     INSERT INTO coupons (
       coupon_id, coupon_name, coupon_amount,
       total_quantity, remaining_quantity,
-      expire_time, redemption_code, status
+      expire_time, redemption_code, status,coupon_type,min_order_amount
     ) VALUES (
                #{couponId}, #{couponName}, #{couponAmount},
                #{totalQuantity}, #{remainingQuantity},
-               #{expireTime}, #{redemptionCode}, #{status}
+               #{expireTime}, #{redemptionCode}, #{status},#{couponType},#{minOrderAmount}
              )
   </insert>
 
@@ -39,7 +41,9 @@
                      remaining_quantity = #{remainingQuantity},
                      expire_time = #{expireTime},
                      redemption_code = #{redemptionCode},
-                     status = #{status}
+                     status = #{status},
+                     coupon_type = #{couponType},
+                     min_order_amount = #{minOrderAmount}
     WHERE coupon_id = #{couponId}
   </update>
 
@@ -57,6 +61,8 @@
         expire_time,
         redemption_code,
         status,
+        coupon_type,
+        min_order_amount,
         create_time,
         update_time
         FROM coupons
@@ -91,6 +97,8 @@
             expire_time,
             redemption_code,
             status,
+            coupon_type,
+            min_order_amount,
             create_time,
             update_time
         FROM coupons
@@ -108,6 +116,8 @@
             expire_time,
             redemption_code,
             status,
+            coupon_type,
+            min_order_amount,
             create_time,
             update_time
         FROM coupons

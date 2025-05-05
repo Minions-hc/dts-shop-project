@@ -12,6 +12,8 @@ public class CouponVO {
     private Date expireTime;
     private String redemptionCode;
     private Integer status;
+    private Integer couponType; // 1-无门槛券, 2-满减券
+    private BigDecimal minOrderAmount; // 仅满减券有效
     private Date createTime;
     private Date updateTime;
 
@@ -94,5 +96,21 @@ public class CouponVO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getCouponType() {
+        return couponType;
+    }
+
+    public void setCouponType(Integer couponType) {
+        this.couponType = couponType;
+    }
+
+    public BigDecimal getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(BigDecimal minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 }

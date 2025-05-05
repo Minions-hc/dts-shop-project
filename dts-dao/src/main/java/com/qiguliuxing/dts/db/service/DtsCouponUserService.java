@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,5 +43,18 @@ public class DtsCouponUserService {
 	 */
 	public List<UserCouponsVO> getUserCoupons(String userId) {
 		return couponUserMapper.selectByUserId(userId);
+	}
+
+	/**
+	 * 查询用户可用优惠券
+	 * @param userId 用户ID
+	 * @param orderAmount 订单金额(用于满减券判断)
+	 * @return 可用优惠券列表
+	 */
+	public List<UserCouponsVO> getAvailableCoupons(String userId, BigDecimal orderAmount) {
+		if (orderAmount == null) {
+			orderAmount = BigDecimal.ZERO; // 如果没有订单金额，默认0，只返回无门槛券
+		}
+		return couponUserMapper.selectAvailableCoupons(userId, orderAmount);
 	}
 }

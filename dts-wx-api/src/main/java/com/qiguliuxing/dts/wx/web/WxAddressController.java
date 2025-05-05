@@ -43,15 +43,6 @@ public class WxAddressController extends GetRegionService {
 	@Autowired
 	private DtsAddressService addressService;
 
-	@Autowired
-	private DtsRegionService regionService;
-
-	private final static ArrayBlockingQueue<Runnable> WORK_QUEUE = new ArrayBlockingQueue<>(6);
-
-	private final static RejectedExecutionHandler HANDLER = new ThreadPoolExecutor.CallerRunsPolicy();
-
-	private static ThreadPoolExecutor executorService = new ThreadPoolExecutor(3, 6, 1000, TimeUnit.MILLISECONDS,
-			WORK_QUEUE, HANDLER);
 
 	/**
 	 * 用户收货地址列表

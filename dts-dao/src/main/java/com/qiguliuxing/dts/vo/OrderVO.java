@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.vo;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.List;
 public class OrderVO {
 
 
-    private Long orderId;           // 订单ID
+    private Integer orderId;           // 订单ID
     private String userId;
     private String userName;// 用户ID
     private String orderNo;         // 订单编号
-    private Long addressId;         // 收货地址ID
-    private Double orderAmount;     // 订单金额
-    private Double paymentAmount;   // 支付金额
+    private Integer addressId;         // 收货地址ID
+    private BigDecimal orderAmount;     // 订单金额
+    private BigDecimal paymentAmount;   // 支付金额
     private Date paymentTime;      // 支付时间
     private Date deliveryTime;
     private String shippingChannel; // 物流渠道
@@ -27,27 +28,27 @@ public class OrderVO {
     /**
      * 快递费用
      */
-    private Double shippingFee;
+    private BigDecimal shippingFee;
 
     /**
      * 优惠减免
      */
-    private Double discountAmount;
+    private BigDecimal discountAmount;
 
     /**
      * 积分减免
      */
-    private Double pointsDeduction;
+    private BigDecimal pointsDeduction;
 
     // 非数据库字段
     private List<OrderItemVO> items;  // 订单商品列表
 
 
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
@@ -67,11 +68,11 @@ public class OrderVO {
         this.orderNo = orderNo;
     }
 
-    public Long getAddressId() {
+    public Integer getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(Long addressId) {
+    public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }
 
@@ -107,19 +108,19 @@ public class OrderVO {
         this.updateTime = updateTime;
     }
 
-    public Double getOrderAmount() {
+    public BigDecimal getOrderAmount() {
         return orderAmount;
     }
 
-    public void setOrderAmount(Double orderAmount) {
+    public void setOrderAmount(BigDecimal orderAmount) {
         this.orderAmount = orderAmount;
     }
 
-    public Double getPaymentAmount() {
+    public BigDecimal getPaymentAmount() {
         return paymentAmount;
     }
 
-    public void setPaymentAmount(Double paymentAmount) {
+    public void setPaymentAmount(BigDecimal paymentAmount) {
         this.paymentAmount = paymentAmount;
     }
 
@@ -171,27 +172,27 @@ public class OrderVO {
         this.userName = userName;
     }
 
-    public Double getShippingFee() {
+    public BigDecimal getShippingFee() {
         return shippingFee;
     }
 
-    public void setShippingFee(Double shippingFee) {
+    public void setShippingFee(BigDecimal shippingFee) {
         this.shippingFee = shippingFee;
     }
 
-    public Double getDiscountAmount() {
+    public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(Double discountAmount) {
+    public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }
 
-    public Double getPointsDeduction() {
+    public BigDecimal getPointsDeduction() {
         return pointsDeduction;
     }
 
-    public void setPointsDeduction(Double pointsDeduction) {
+    public void setPointsDeduction(BigDecimal pointsDeduction) {
         this.pointsDeduction = pointsDeduction;
     }
 

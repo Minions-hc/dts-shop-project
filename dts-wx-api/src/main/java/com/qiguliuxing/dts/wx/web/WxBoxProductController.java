@@ -3,11 +3,13 @@ package com.qiguliuxing.dts.wx.web;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BoxProductService;
 import com.qiguliuxing.dts.vo.BoxProductVO;
+import com.qiguliuxing.dts.wx.service.WxOrderService;
 import com.qiguliuxing.dts.wx.util.ProductLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +27,16 @@ public class WxBoxProductController {
     @Autowired
     private BoxProductService boxProductService;
 
+    @Autowired
+    private WxOrderService wxOrderService;
+
     @GetMapping("/getProductsByUser")
     public Object getProductsByUser(String userId, String status) {
         List<String> statusList = new ArrayList<>();
         if (status.equals("all")) {
             statusList.add("pending");
             statusList.add("locked");
-            statusList.add("locked");
+            statusList.add("shipped");
         } else {
             statusList.add(status);
         }
@@ -49,21 +54,30 @@ public class WxBoxProductController {
         return ResponseUtil.ok(data);
     }
 
-    @PostMapping("/addProduct")
-    public Object addProduct(@RequestBody BoxProductVO boxProduct) {
-        int result = boxProductService.addProduct(boxProduct);
-        if (result == 1) {
-            return ResponseUtil.ok();
-        }
-        return ResponseUtil.fail();
-    }
-
-    @PutMapping("/updateProduct")
-    public Object updateProductStatus(@RequestBody BoxProductVO boxProduct) {
+    /**
+     * 盒柜锁定
+     * @param boxProduct
+     * @return
+     */
+    @PostMapping("/locked")
+    public Object locked(@RequestBody BoxProductVO boxProduct) {
         int result = boxProductService.updateProductStatus(boxProduct);
         if (result == 1) {
             return ResponseUtil.ok();
         }
         return ResponseUtil.fail();
     }
+
+
+    /**
+     * 盒柜提交发货
+     */
+    @PostMapping("/submitDelivery")
+    public Object submitDelivery(@PathParam ("userId") String userId, @RequestBody List<Integer> productIds) {
+        boxProductService.shipProducts(userId, productIds);
+        return ResponseUtil.ok();
+    }
+
+
+
 }

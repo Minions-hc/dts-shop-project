@@ -134,9 +134,6 @@ public class WxOrderService {
 	private ExpressService expressService;
 
 	@Autowired
-	private DtsCouponUserService couponUserService;
-
-	@Autowired
 	DtsOrderService dtsOrderService;
 
 	@Autowired

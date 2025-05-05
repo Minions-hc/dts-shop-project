@@ -2,6 +2,8 @@ package com.qiguliuxing.dts.db.dao;
 
 import com.qiguliuxing.dts.db.domain.DtsCouponUser;
 import com.qiguliuxing.dts.db.domain.DtsCouponUserExample;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.qiguliuxing.dts.vo.UserCouponsVO;
@@ -28,4 +30,15 @@ public interface DtsCouponUserMapper {
      * @return 用户优惠券列表
      */
     List<UserCouponsVO> selectByUserId(@Param("userId") String userId);
+
+
+    /**
+     * 查询用户可用优惠券
+     * @param userId 用户ID
+     * @param orderAmount 订单金额(用于满减券判断)
+     * @return 可用优惠券列表
+     */
+    List<UserCouponsVO> selectAvailableCoupons(
+            @Param("userId") String userId,
+            @Param("orderAmount") BigDecimal orderAmount);
 }

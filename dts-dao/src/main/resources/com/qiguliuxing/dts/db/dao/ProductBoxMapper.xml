@@ -56,4 +56,52 @@
         WHERE box_id = #{boxId}
         and box_number = #{boxNumber}
     </delete>
+
+
+    <resultMap id="ProductBoxResultMap" type="com.qiguliuxing.dts.vo.ProductBoxResultVo">
+        <result property="boxId" column="box_id"/>
+        <result property="boxNumber" column="box_number"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="soldQuantity" column="sold_quantity"/>
+        <result property="productImage" column="product_image"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="levelName" column="level_name"/>
+        <result property="seriesPrice" column="price"/>
+        <result property="priceRanges" column="price_ranges"/>
+        <result property="isSoldOut" column="is_sold_out"/>
+    </resultMap>
+
+    <select id="getProductBoxBySeriesId" resultMap="ProductBoxResultMap">
+        SELECT
+            pb.box_id,
+            pb.box_number,
+            p.product_id,
+            p.product_name,
+            bpr.quantity,
+            bpr.sold_quantity,
+            p.product_image,
+            p.product_price,
+            pl.level_name,
+            ps.price,
+            ps.price_ranges,
+            CASE
+                WHEN bpr.sold_quantity >= bpr.quantity THEN 1
+                ELSE 0
+                END AS is_sold_out
+        FROM
+            product_box pb
+                JOIN
+            box_product_relation bpr ON pb.box_id = bpr.box_id
+                JOIN
+            product p ON p.product_id = bpr.product_id
+                JOIN
+            product_level pl ON p.product_levelid = pl.level_id
+                JOIN
+            product_series ps ON pb.series_id = ps.series_id
+        WHERE
+            pb.series_id = #{seriesId}
+    </select>
+
 </mapper>

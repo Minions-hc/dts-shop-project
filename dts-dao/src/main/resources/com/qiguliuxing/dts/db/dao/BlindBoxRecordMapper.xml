@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BlindBoxRecordMapper">
+
+    <resultMap id="BlindBoxRecordVOResultMap" type="com.qiguliuxing.dts.vo.BlindBoxRecordVO">
+        <result property="userId" column="user_id" />
+        <result property="avatar" column="avatar" />
+        <result property="number" column="number" />
+        <result property="productId" column="product_id" />
+        <result property="productName" column="product_name" />
+        <result property="productImage" column="product_image" />
+        <result property="levelName" column="level_name" />
+        <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <select id="selectOpenRecordsBySeriesAndBox" resultMap="BlindBoxRecordVOResultMap">
+        SELECT
+            su.user_id,
+            su.avatar,
+            bbr.number,
+            p.product_id,
+            p.product_name,
+            p.product_image,
+            pl.level_name,
+            bbr.created_at
+        FROM blind_box_records bbr
+                 JOIN product p ON p.product_id = bbr.product_id
+                 JOIN shop_user su ON su.user_id = bbr.user_id
+                 JOIN product_level pl ON pl.level_id = p.product_levelid
+        WHERE bbr.series_id = #{seriesId} AND bbr.box_number = #{boxNumber}
+        ORDER BY bbr.created_at DESC
+    </select>
+
+
+    <resultMap id="ProductBoxVOResultMap" type="com.qiguliuxing.dts.vo.ProductBoxResultVo">
+        <result property="boxId" column="box_id"/>
+        <result property="boxNumber" column="box_number"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="soldQuantity" column="sold_quantity"/>
+        <result property="productImage" column="product_image"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="levelName" column="level_name"/>
+        <result property="seriesPrice" column="price"/>
+        <result property="isSoldOut" column="is_sold_out"/>
+    </resultMap>
+
+    <select id="selectAvailableProducts" resultMap="ProductBoxVOResultMap">
+        SELECT
+            pb.box_id,
+            pb.box_number,
+            p.product_id,
+            p.product_name,
+            bpr.quantity,
+            bpr.sold_quantity,
+            p.product_image,
+            p.product_price,
+            pl.level_name,
+            ps.price,
+            CASE
+                WHEN bpr.sold_quantity &gt;= bpr.quantity THEN 1
+                ELSE 0
+                END AS is_sold_out
+        FROM
+            product_box pb
+                JOIN
+            box_product_relation bpr ON pb.box_id = bpr.box_id
+                JOIN
+            product p ON p.product_id = bpr.product_id
+                JOIN
+            product_level pl ON p.product_levelid = pl.level_id
+                JOIN
+            product_series ps ON pb.series_id = ps.series_id
+        WHERE
+            pb.series_id = #{seriesId}
+          AND pb.box_number = #{boxNumber}
+          AND bpr.sold_quantity &lt; bpr.quantity
+    </select>
+
+
+    <select id="selectAllProducts" resultMap="ProductBoxVOResultMap">
+        SELECT
+            pb.box_id,
+            pb.box_number,
+            p.product_id,
+            p.product_name,
+            bpr.quantity,
+            bpr.sold_quantity,
+            p.product_image,
+            p.product_price,
+            pl.level_name,
+            ps.price,
+            CASE
+                WHEN bpr.sold_quantity &gt;= bpr.quantity THEN 1
+                ELSE 0
+                END AS is_sold_out
+        FROM
+            product_box pb
+                JOIN
+            box_product_relation bpr ON pb.box_id = bpr.box_id
+                JOIN
+            product p ON p.product_id = bpr.product_id
+                JOIN
+            product_level pl ON p.product_levelid = pl.level_id
+                JOIN
+            product_series ps ON pb.series_id = ps.series_id
+        WHERE
+            pb.series_id = #{seriesId}
+          AND pb.box_number = #{boxNumber}
+    </select>
+
+
+    <update id="updateSoldQuantity">
+        UPDATE box_product_relation
+        SET sold_quantity = sold_quantity + #{quantity}
+        WHERE box_id = #{boxId} AND product_id = #{productId}
+          AND sold_quantity + #{quantity} &lt;= quantity
+    </update>
+
+    <insert id="insertDrawRecord">
+        INSERT INTO blind_box_records
+            (user_id, number, series_id, box_number, product_id, created_at)
+        VALUES
+            (#{userId}, #{number}, #{seriesId}, #{boxNumber}, #{productId}, NOW())
+    </insert>
+</mapper>

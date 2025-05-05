@@ -3,7 +3,7 @@ package com.qiguliuxing.dts.vo;
 import java.util.Date;
 
 public class BoxProductVO {
-    private Long id;
+    private Integer id;
     private String userId;
     private Integer productId;
     private String productName;
@@ -12,18 +12,18 @@ public class BoxProductVO {
     private String activityType;
     private String productLevel;
     private String status;
-    private Long orderId;
+    private Integer orderId;
     private String boxNumber;
     private Date obtainTime;
     private Date createdTime;
     private Date updatedTime;
 
     // Getters and Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -91,11 +91,11 @@ public class BoxProductVO {
         this.status = status;
     }
 
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 

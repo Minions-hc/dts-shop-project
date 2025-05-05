@@ -16,7 +16,7 @@ public interface DtsAddressMapper {
      */
     List<AddressVO> queryAddressList(Map<String, Object> params);
 
-    AddressVO findById(Long id);
+    AddressVO findById(Integer id);
 
     int update(AddressVO address);
 
@@ -33,5 +33,12 @@ public interface DtsAddressMapper {
      * @return 删除的行数
      */
     int deleteByUserIdAndId(@Param("userId") String userId,
-                            @Param("addressId") Long addressId);
+                            @Param("addressId") Integer addressId);
+
+    /**
+     * 查询用户默认收货地址
+     * @param userId 用户ID
+     * @return 默认收货地址信息，没有则返回null
+     */
+    AddressVO selectDefaultAddressByUserId(@Param("userId") String userId);
 }

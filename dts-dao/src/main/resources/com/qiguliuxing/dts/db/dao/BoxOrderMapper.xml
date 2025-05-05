@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BoxOrderMapper">
+
+    <resultMap id="BoxOrderVOResultMap" type="com.qiguliuxing.dts.vo.BoxOrderVO">
+        <id property="id" column="id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="pointDeduction" column="point_deduction"/>
+        <result property="couponDeduction" column="coupon_deduction"/>
+        <result property="orderAmount" column="order_amount"/>
+        <result property="paymentAmount" column="payment_amount"/>
+        <result property="paymentTime" column="payment_time"/>
+        <result property="shippingFee" column="shipping_fee"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.BoxOrderVO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO box_order (
+            record_id,
+            order_id,
+            point_deduction,
+            coupon_deduction,
+            order_amount,
+            payment_amount,
+            payment_time,
+            shipping_fee
+        ) VALUES (
+                     #{recordId},
+                     #{orderId},
+                     #{pointDeduction},
+                     #{couponDeduction},
+                     #{orderAmount},
+                     #{paymentAmount},
+                     #{paymentTime},
+                     #{shippingFee}
+                 )
+    </insert>
+
+    <update id="update" parameterType="com.qiguliuxing.dts.vo.BoxOrderVO">
+        UPDATE box_order
+        SET
+            order_id = #{orderId},
+            point_deduction = #{pointDeduction},
+            coupon_deduction = #{couponDeduction},
+            payment_amount = #{paymentAmount},
+            payment_time = #{paymentTime},
+            shipping_fee = #{shippingFee}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByRecordId" resultMap="BoxOrderVOResultMap">
+        SELECT * FROM box_order WHERE record_id = #{recordId}
+    </select>
+
+    <select id="selectByOrderId" resultMap="BoxOrderVOResultMap">
+        SELECT * FROM box_order WHERE order_id = #{orderId}
+    </select>
+</mapper>

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class AddressVO {
 
-    private Long addressId;         // 地址ID
+    private Integer addressId;         // 地址ID
     private String userId;          // 用户ID
     private String userName;
     private String receiverName;    // 收货人姓名
@@ -19,11 +19,11 @@ public class AddressVO {
     private String updateBy;        // 修改人
     private Date updateTime;        // 修改时间
 
-    public Long getAddressId() {
+    public Integer getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(Long addressId) {
+    public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }
 
