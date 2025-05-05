@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -43,5 +44,33 @@ public class CheckInService {
             return 0;
         }
         return userCheckIn.getCheckInDay();
+    }
+
+    public Boolean userConsumptionInFirday(String userId) {
+        UserCheckInVO userCheckIn = userCheckInMapper.findUserCheckInByUserId(userId);
+        if (userCheckIn == null) {
+            return false;
+        }
+        Calendar current = Calendar.getInstance();
+        Calendar old = Calendar.getInstance();
+        old.setTime(userCheckIn.getCheckInDate());
+
+        // 清除时间部分（仅比较日期）
+        clearTime(current);
+        clearTime(old);
+
+        // 计算毫秒差并转换为天数
+        long diffMillis = current.getTimeInMillis() - old.getTimeInMillis();
+        long daysBetween = diffMillis / (24 * 60 * 60 * 1000);
+
+        // 判断是否超过5天
+        return  daysBetween > 5;
+    }
+
+    private static void clearTime(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
     }
 }

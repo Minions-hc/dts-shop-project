@@ -54,4 +54,12 @@ public class WxCheckInController {
         return ResponseUtil.ok(data);
     }
 
+    @PostMapping("userConsumptionInFirday")
+    public Object userConsumptionInFirday(String userId) {
+        Boolean userConsumptionInFirday = checkInService.userConsumptionInFirday(userId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("userConsumptionInFirday", userConsumptionInFirday);
+        return ResponseUtil.ok(data);
+    }
+
 }
