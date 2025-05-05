@@ -86,7 +86,7 @@
                ser.is_popular_new,
                ser.is_hot_recommend,
                ser.price,
-               ser.purchase_count,
+               (select count(1) from blind_box_records bbr where bbr.series_id = ser.series_id) as purchaseCount,
                ser.price_ranges,
                ser.created_by,
                ser.created_time,

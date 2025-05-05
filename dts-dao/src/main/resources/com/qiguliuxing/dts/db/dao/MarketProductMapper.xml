@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.MarketProductMapper">
+
+
+    <insert id="insertMarketProduct" parameterType="com.qiguliuxing.dts.vo.MarketProductVO" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO market_product (
+            product_name,
+            product_image,
+            product_seriesid,
+            product_levelid,
+            product_badge,
+            product_detail,
+            available,
+            created_by,
+            created_time,
+            updated_by,
+            updated_time
+        ) VALUES (
+                     #{productName},
+                     #{productImage},
+                     #{productSeriesId},
+                     #{productLevelId},
+                     #{productBadge},
+                     #{productDetail},
+                     #{available},
+                     #{createdBy},
+                     NOW(),
+                     #{updatedBy},
+                     NOW()
+                 )
+    </insert>
+
+
+    <delete id="deleteMarketProduct" parameterType="java.lang.Integer">
+        DELETE FROM market_product
+        WHERE product_id = #{productId}
+    </delete>
+
+
+    <update id="updateMarketProduct" parameterType="com.qiguliuxing.dts.vo.MarketProductVO">
+        UPDATE market_product
+        SET
+            product_image = #{productImage},
+            product_name = #{productName},
+            product_seriesid = #{productSeriesId},
+            product_levelid = #{productLevelId},
+            product_badge = #{productBadge},
+            product_detail = #{productDetail},
+            available = #{available},
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE product_id = #{productId}
+    </update>
+
+
+    <select id="getMarketProductById" parameterType="java.lang.Integer" resultType="com.qiguliuxing.dts.vo.MarketProductVO">
+        SELECT
+            p.product_id as productId,
+            p.product_name AS productName,
+            p.product_image AS productImage,
+            p.product_seriesid AS productSeriesId,
+            ps.series_name AS productSeriesName,
+            p.product_levelid AS productLevelId,
+            pl.level_name AS productLevelName,
+            p.product_badge as productBadge,
+            p.product_detail as productDetail,
+            p.available as available,
+            p.created_by AS createdBy,
+            p.created_time AS createdTime,
+            p.updated_by AS updatedBy,
+            p.updated_time AS updatedTime
+        FROM market_product p
+        LEFT JOIN market_series ps ON p.product_seriesid = ps.series_id
+        LEFT JOIN product_level pl ON p.product_levelid = pl.level_id
+        WHERE p.product_id = #{productId}
+    </select>
+
+
+    <select id="selectAllMarketProducts" resultType="com.qiguliuxing.dts.vo.MarketProductVO">
+        SELECT
+            product_id AS productId,
+            product_name as productName,
+            product_image AS productImage,
+            product_seriesid as productSeriesId,
+            product_levelid as productLevelId,
+            product_badge as productBadge,
+            product_detail as productDetail,
+            available as available,
+            created_by AS createdBy,
+            created_time AS createdTime,
+            updated_by AS updatedBy,
+            updated_time AS updatedTime
+        FROM market_product
+    </select>
+
+
+    <!-- 多条件动态查询 -->
+    <select id="getMarketProductsByCondition" parameterType="map" resultType="com.qiguliuxing.dts.vo.MarketProductVO">
+        SELECT
+        p.product_id as productId,
+        p.product_name AS productName,
+        p.product_image AS productImage,
+        p.product_seriesid AS productSeriesId,
+        ps.series_name AS productSeriesName,
+        p.product_levelid AS productLevelId,
+        pl.level_name AS productLevelName,
+        p.product_badge as productBadge,
+        p.product_detail as productDetail,
+        p.available as available,
+        p.created_by AS createdBy,
+        p.created_time AS createdTime,
+        p.updated_by AS updatedBy,
+        p.updated_time AS updatedTime
+        FROM market_product p
+        LEFT JOIN market_series ps ON p.product_seriesid = ps.series_id
+        LEFT JOIN product_level pl ON p.product_levelid = pl.level_id
+        WHERE 1=1
+        <if test="productId != null">
+            AND p.product_id = #{productId}
+        </if>
+        <if test="productName != null and productName != ''">
+            AND p.product_name LIKE CONCAT('%', #{productName}, '%')
+        </if>
+        <if test="productSeriesId != null">
+            AND p.product_seriesid = #{productSeriesId}
+        </if>
+        <if test="productLevelId != null">
+            AND p.product_levelid = #{productLevelId}
+        </if>
+        ORDER BY p.product_id
+    </select>
+
+</mapper>

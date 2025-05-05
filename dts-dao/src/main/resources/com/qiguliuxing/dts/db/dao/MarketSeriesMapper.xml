@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.MarketSeriesMapper">
+
+    <resultMap id="MarketSeriesVOResultMap" type="com.qiguliuxing.dts.vo.MarketProductSeriesVO">
+        <!-- 基本字段映射 -->
+        <id column="series_id" property="seriesId" jdbcType="INTEGER"/>
+        <result column="series_name" property="seriesName" jdbcType="VARCHAR"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 动态查询集市换娃系列 -->
+    <select id="getMarketSeries" parameterType="java.util.Map" resultType="com.qiguliuxing.dts.vo.MarketProductSeriesVO">
+        select
+        series_id as seriesId,
+        series_name as seriesName,
+        created_by as createBy,
+        created_time as createTime,
+        updated_by as updatedBy,
+        updated_time as updatedTime
+        from market_series
+        where 0=0
+        <if test="seriesId != null and seriesId != ''">
+            and series_id = #{seriesId}
+        </if>
+        <if test="seriesName != null and seriesName != ''">
+            and series_name like CONCAT('%', #{seriesName}, '%')
+        </if>
+    </select>
+
+    <insert id="insertMarketSeries" parameterType="com.qiguliuxing.dts.vo.MarketProductSeriesVO" useGeneratedKeys="true" keyProperty="seriesId">
+        INSERT INTO market_series (
+            series_name,
+            created_by,
+            created_time,
+            updated_by,
+            updated_time
+        ) VALUES (
+                     #{seriesName},
+                     #{createdBy},
+                     NOW(),
+                     #{updatedBy},
+                     NOW()
+                 )
+    </insert>
+
+    <!-- 根据 seriesId 删除集市换娃系列 -->
+    <delete id="deleteMarketSeries" parameterType="java.lang.Integer">
+        DELETE FROM market_series
+        WHERE series_id = #{seriesId}
+    </delete>
+
+    <!-- 根据 seriesId 更新集市换娃系列 -->
+    <update id="updateMarketSeries" parameterType="com.qiguliuxing.dts.vo.MarketProductSeriesVO">
+        UPDATE market_series
+        SET
+            series_name = #{seriesName},
+            updated_by = #{updatedBy},
+            updated_time = NOW()
+        WHERE series_id = #{seriesId}
+    </update>
+</mapper>

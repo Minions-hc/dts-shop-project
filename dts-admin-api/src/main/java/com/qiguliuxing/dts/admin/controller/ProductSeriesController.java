@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
 import com.qiguliuxing.dts.db.service.IProductSeriesService;
-import com.qiguliuxing.dts.vo.ProductCategoryVO;
 import com.qiguliuxing.dts.vo.ProductSeriesVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
