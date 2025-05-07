@@ -195,4 +195,18 @@ public interface DtsUserMapper {
      * @return 用户ID
      */
     String getNextUserId();
+
+    /**
+     * 统计用户数量
+     * @return
+     */
+    int countUser();
+
+    int updateSpiritPower(
+            @Param("userId") String userId,
+            @Param("value") int value,
+            @Param("isAdd") boolean isAdd
+    );
+
+    Integer selectSpiritPower(@Param("userId") String userId);
 }

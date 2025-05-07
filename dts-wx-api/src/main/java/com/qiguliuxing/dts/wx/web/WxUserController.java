@@ -50,4 +50,10 @@ public class WxUserController {
 		}
 		return ResponseUtil.ok(userId);
 	}
+
+	@GetMapping("/currentSpiritPower")
+	public Object currentSpiritPower(String userId) {
+		return ResponseUtil.ok(dtsUserService.currentSpiritPower(userId));
+	}
+
 }

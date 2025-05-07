@@ -131,4 +131,64 @@
         ORDER BY p.product_id
     </select>
 
+
+    <select id="getCurrentBadge" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select sum(t.product_badge) from box_product t where t.user_id =  #{userId} and status = 'pending'
+    </select>
+
+    <resultMap id="BoxProductResult" type="com.qiguliuxing.dts.vo.BoxProductVO">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="product_id" property="productId" jdbcType="BIGINT"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="product_badge" property="productBadge" jdbcType="INTEGER"/>
+        <result column="product_image" property="productImage" jdbcType="VARCHAR"/>
+        <result column="activity_type" property="activityType" jdbcType="VARCHAR"/>
+        <result column="product_level" property="productLevel" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="box_number" property="boxNumber" jdbcType="VARCHAR"/>
+        <result column="obtain_time" property="obtainTime" jdbcType="TIMESTAMP"/>
+        <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getBoxProductList" parameterType="java.lang.String" resultMap="BoxProductResult">
+        SELECT
+            bp.id,
+            bp.user_id,
+            bp.product_id,
+            bp.product_name,
+            bp.product_badge,
+            bp.product_image,
+            bp.activity_type,
+            bp.product_level,
+            bp.`status`,
+            bp.order_id,
+            bp.box_number,
+            bp.obtain_time
+        FROM
+            box_product bp
+        WHERE
+            bp.user_id = #{userId}
+          AND bp.`status` = 'pending'
+          AND bp.activity_type &lt;&gt; '集市换娃'
+            and bp.product_badge > 0
+    </select>
+
+    <update id="batchUpdateUserId">
+        UPDATE box_product
+        SET
+        user_id = CASE
+        <foreach collection="list" item="item">
+            WHEN id = #{item.id} THEN #{item.userId}
+        </foreach>
+        END,
+        updated_time = NOW()
+        WHERE id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
 </mapper>

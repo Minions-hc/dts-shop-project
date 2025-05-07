@@ -12,6 +12,7 @@ public class BlindBoxDrawRequestVO {
     private List<Integer> numbers; // 抽取的编号数组
     private String boxNumber;
     private Integer seriesId;
+    private Integer spiritPower;
 
     /**
      * 盲盒类型（踩雷赏/一番赏/魂力赏）
@@ -108,5 +109,13 @@ public class BlindBoxDrawRequestVO {
 
     public void setPaymentAmount(BigDecimal paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public Integer getSpiritPower() {
+        return spiritPower;
+    }
+
+    public void setSpiritPower(Integer spiritPower) {
+        this.spiritPower = spiritPower;
     }
 }

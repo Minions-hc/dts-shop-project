@@ -10,6 +10,7 @@ public class ProductSeriesVO {
     private String seriesName; // 系列名称
     private String seriesImage; // 系列主图
     private String seriesDescription; // 系列描述
+    private Boolean isSpiritPower; // 是魂力赏
     private Boolean isHot; // 是否热榜
     private Boolean isAvoid; // 是否踩雷
     private Boolean isPopularNew;
@@ -158,5 +159,13 @@ public class ProductSeriesVO {
 
     public void setPriceRanges(String priceRanges) {
         this.priceRanges = priceRanges;
+    }
+
+    public Boolean getIsSpiritPower() {
+        return isSpiritPower;
+    }
+
+    public void setIsSpiritPower(Boolean isSpiritPower) {
+       this.isSpiritPower = isSpiritPower;
     }
 }

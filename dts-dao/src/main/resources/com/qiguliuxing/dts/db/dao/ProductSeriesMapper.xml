@@ -10,6 +10,7 @@
         <result column="series_name" property="seriesName" jdbcType="VARCHAR"/>
         <result column="series_image" property="seriesImage" jdbcType="VARCHAR"/>
         <result column="series_description" property="seriesDescription" jdbcType="LONGVARCHAR"/>
+        <result column="is_spiritpower" property="isSpiritPower" jdbcType="TINYINT"/>
         <result column="is_hot" property="isHot" jdbcType="TINYINT"/>
         <result column="is_avoid" property="isAvoid" jdbcType="TINYINT"/>
         <result column="is_popular_new" property="isPopularNew" jdbcType="TINYINT"/>
@@ -34,6 +35,7 @@
         ser.series_name,
         ser.series_image,
         ser.series_description,
+        ser.is_spiritpower,
         ser.is_hot,
         ser.is_avoid,
         ser.is_popular_new,
@@ -61,16 +63,47 @@
             <if test="isAvoid != null">
                 AND is_avoid = #{isAvoid}
             </if>
-            <if test="isHot != null">
+            <if test="isPopularNew != null">
                 AND is_popular_new = #{isPopularNew}
             </if>
-            <if test="isAvoid != null">
+            <if test="isHotRecommend != null">
                 AND is_hot_recommend = #{isHotRecommend}
+            </if>
+            <if test="isSpiritPower != null">
+                AND is_spiritpower = #{isSpiritPower}
             </if>
         </where>
         ORDER BY series_id
     </select>
 
+
+    <!-- 根据系列ID查询产品系列 -->
+    <select id="getProductSeriesById" parameterType="java.lang.Integer" resultMap="ProductSeriesVOResultMap">
+        SELECT
+        ser.series_id,
+        ser.category_id,
+        category.category_name,
+        ser.series_name,
+        ser.series_image,
+        ser.series_description,
+        ser.is_spiritpower,
+        ser.is_hot,
+        ser.is_avoid,
+        ser.is_popular_new,
+        ser.is_hot_recommend,
+        ser.price,
+        ser.purchase_count,
+        ser.price_ranges,
+        ser.created_by,
+        ser.created_time,
+        ser.updated_by,
+        ser.updated_time
+        FROM product_series as ser
+        inner join product_category as category
+        on category.category_id = ser.category_id
+       where series_id = #{seriesId}
+        ORDER BY series_id
+    </select>
 
 
     <!-- 动态查询商品系列 -->
@@ -81,6 +114,7 @@
                ser.series_name,
                ser.series_image,
                ser.series_description,
+               ser.is_spiritpower,
                ser.is_hot,
                ser.is_avoid,
                ser.is_popular_new,
@@ -106,6 +140,7 @@
             series_name,
             series_image,
             series_description,
+            is_spiritpower,
             is_hot,
             is_avoid,
             is_popular_new,
@@ -122,6 +157,7 @@
                      #{seriesName},
                      #{seriesImage},
                      #{seriesDescription},
+                     #{isSpiritPower},
                      #{isHot},
                      #{isAvoid},
                      #{isPopularNew},
@@ -144,6 +180,7 @@
             series_name = #{seriesName},
             series_image = #{seriesImage},
             series_description = #{seriesDescription},
+            is_spiritpower = #{isSpiritPower},
             is_hot = #{isHot},
             is_avoid = #{isAvoid},
             is_popular_new = #{isPopularNew},

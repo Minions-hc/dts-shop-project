@@ -606,6 +606,7 @@
     <result property="userName" column="user_name"/>
     <result property="avatar" column="avatar"/>
     <result property="points" column="points"/>
+    <result property="productSpiritPower" column="product_spirit_power"/>
     <result property="inviteCode" column="invite_code"/>
     <result property="inviterId" column="inviter_id"/>
     <result property="phone" column="phone"/>
@@ -623,6 +624,7 @@
     user_name,
     avatar,
     points,
+    product_spirit_power,
     invite_code,
     inviter_id,
     phone,
@@ -679,6 +681,7 @@
       user_name,
       avatar,
       points,
+      product_spirit_power,
       invite_code,
       inviter_id,
       phone,
@@ -690,6 +693,7 @@
                #{userName},
                #{avatar},
                #{points},
+               #{productSpiritPower},
                #{inviteCode},
                #{inviterId},
                #{phone},
@@ -702,6 +706,29 @@
     SELECT COUNT(1) > 0
     FROM shop_user
     WHERE wx_openid = #{wxOpenid}
+  </select>
+
+
+  <select id="countUser" resultType="java.lang.Integer">
+    select count(1) from shop_user
+  </select>
+
+  <!-- 更新魂力值（原子操作） -->
+  <update id="updateSpiritPower">
+    UPDATE shop_user
+    SET
+      product_spirit_power = product_spirit_power +
+                             CASE WHEN #{isAdd} THEN #{value} ELSE -#{value} END
+    WHERE
+      user_id = #{userId}
+      AND (#{isAdd} = true OR product_spirit_power >= #{value})
+  </update>
+
+  <!-- 查询当前魂力值 -->
+  <select id="selectSpiritPower" resultType="java.lang.Integer">
+    SELECT product_spirit_power
+    FROM shop_user
+    WHERE user_id = #{userId}
   </select>
 
 </mapper>

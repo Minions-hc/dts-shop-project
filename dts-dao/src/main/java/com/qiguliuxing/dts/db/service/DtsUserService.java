@@ -100,10 +100,7 @@ public class DtsUserService {
 	}
 
 	public int count() {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andDeletedEqualTo(false);
-
-		return (int) userMapper.countByExample(example);
+		return userMapper.countUser();
 	}
 
 	public List<DtsUser> queryByUsername(String username) {
@@ -197,5 +194,26 @@ public class DtsUserService {
 			throw new RuntimeException("用户注册失败");
 		}
 		return user.getUserId();
+	}
+
+
+	/**
+	 * 更新用户魂力值
+	 * @param userId 用户ID
+	 * @param value 变动值（必须为正数）
+	 * @param isAdd true=增加, false=扣减
+	 * @return 更新后的魂力值
+	 */
+	@Transactional
+	public void updateSpiritPower(String userId, int value, boolean isAdd) {
+		if (value <= 0) {
+			throw new IllegalArgumentException("变动值必须为正数");
+		}
+		// 执行更新
+		userMapper.updateSpiritPower(userId, value, isAdd);
+	}
+
+	public int currentSpiritPower(String userId) {
+		return userMapper.selectSpiritPower(userId);
 	}
 }

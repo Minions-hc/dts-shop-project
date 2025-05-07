@@ -9,6 +9,7 @@ public class UserVO {
     private String userName;        // 用户名称
     private String avatar;          // 头像URL
     private Integer points;         // 积分
+    private Integer productSpiritPower; // 魂力值
     private String inviterId;       // 上级邀请人ID
     private String phone;           // 手机号码
     private Double redPacketBalance; // 红包余额
@@ -111,5 +112,13 @@ public class UserVO {
 
     public void setWxOpenId(String wxOpenId) {
         this.wxOpenId = wxOpenId;
+    }
+
+    public Integer getProductSpiritPower() {
+        return productSpiritPower;
+    }
+
+    public void setProductSpiritPower(Integer productSpiritPower) {
+        this.productSpiritPower = productSpiritPower;
     }
 }
