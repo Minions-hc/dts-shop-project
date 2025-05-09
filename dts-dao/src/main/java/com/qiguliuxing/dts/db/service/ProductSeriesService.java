@@ -78,6 +78,7 @@ public class ProductSeriesService {
     public List<ProductSeriesVO> getWxProductSeries(Map<String, Object> params) {
         // 根据条件查询对应的系列
         List<ProductSeriesVO> productSeriesVOS = productSeriesMapper.getProductSeries(params);
+        // 汇总系列的购买次数
         List<ProductSeriesVO> sumSeriesQuantityList = productSeriesMapper.sumSeriesQuantity();
         Map<Integer, Integer> seriesIdToQuantityMap = sumSeriesQuantityList.stream().collect(Collectors.toMap(ProductSeriesVO ::getSeriesId, ProductSeriesVO::getPurchaseCount));
         Integer purchaseCount;

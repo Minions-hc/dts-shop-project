@@ -163,9 +163,17 @@
     </delete>
 
     <select id="sumSeriesQuantity" resultType="com.qiguliuxing.dts.vo.ProductSeriesVO">
-        select p.product_seriesid as seriesId, SUM(o.quantity) as purchaseCount from product p
-            inner join shop_order_item o on p.product_id = o.product_id
-        GROUP BY p.product_seriesid
+        SELECT
+            p.product_seriesid AS seriesId,
+            COUNT(bp.product_id) AS purchaseCount
+        FROM
+            box_product bp
+                INNER JOIN
+            product p ON bp.product_id = p.product_id
+        WHERE
+            bp.activity_type IN ('一番赏', '踩雷赏')
+        GROUP BY
+            p.product_seriesid
     </select>
 
 </mapper>
