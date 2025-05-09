@@ -1,10 +1,12 @@
 package com.qiguliuxing.dts.wx.web;
 
 import com.qiguliuxing.dts.core.util.ResponseUtil;
+import com.qiguliuxing.dts.db.service.IProductCategoryService;
 import com.qiguliuxing.dts.db.service.ProductBoxService;
 import com.qiguliuxing.dts.db.service.ProductSeriesService;
 import com.qiguliuxing.dts.vo.ProductBoxResultVo;
 import com.qiguliuxing.dts.vo.ProductBoxVO;
+import com.qiguliuxing.dts.vo.ProductSeriesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +26,17 @@ public class WxProductSeriesController {
     @Autowired
     private ProductBoxService productBoxService;
 
+    @Autowired
+    private ProductSeriesService productSeriesService;
+
+    @Autowired
+    private IProductCategoryService productCategoryService;
+
     @GetMapping("/getProductBoxBySeriesId")
     public Object getProductBoxBySeriesId(Integer seriesId){
         List<ProductBoxResultVo> productBoxResultVos = productBoxService.getProductBoxBySeriesId(seriesId);
 
+        ProductSeriesVO productSeries = productSeriesService.getProductSeriesById(seriesId);
         // 1. 按照boxNumber分组获取分组后的列表
         Map<String, List<ProductBoxResultVo>> groupedByBoxNumber = productBoxResultVos.stream()
                 .collect(Collectors.groupingBy(ProductBoxResultVo::getBoxNumber));
@@ -57,8 +66,17 @@ public class WxProductSeriesController {
         result.put("productQuantityMap", productQuantityMap);
         result.put("soldQuantityMap", soldQuantityMap);
         result.put("remainingQuantityMap", remainingQuantityMap);
+        result.put("productSeries", productSeries);
         return ResponseUtil.ok(result);
     }
 
+
+    @GetMapping("/getSpiritPowerSeries")
+    public Object getSpiritPowerSeries(){
+        Map<String, Object> params = new HashMap<>();
+        params.put("isSpiritPower", 1);
+        List<ProductSeriesVO> productSeries = productSeriesService.getWxProductSeries(params);
+        return ResponseUtil.ok(productSeries);
+    }
 
 }

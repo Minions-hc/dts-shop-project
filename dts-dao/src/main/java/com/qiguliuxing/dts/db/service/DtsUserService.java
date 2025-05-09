@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.vo.InvitationRecordVO;
 import com.qiguliuxing.dts.vo.UserVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,62 +32,6 @@ public class DtsUserService {
 	@Resource
 	private DtsUserMapper userMapper;
 
-	@Resource
-	private DtsUserAccountMapper userAccountMapper;
-    @Autowired
-    private DtsUserMapper dtsUserMapper;
-
-	public DtsUser findById(Integer userId) {
-		return userMapper.selectByPrimaryKey(userId);
-	}
-
-	public UserVo findUserVoById(Integer userId) {
-		DtsUser user = findById(userId);
-		UserVo userVo = new UserVo();
-		userVo.setNickname(user.getNickname());
-		userVo.setAvatar(user.getAvatar());
-		return userVo;
-	}
-
-	public DtsUser queryByOid(String openId) {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andWeixinOpenidEqualTo(openId).andDeletedEqualTo(false);
-		return userMapper.selectOneByExample(example);
-	}
-
-	public void add(DtsUser user) {
-		user.setAddTime(LocalDateTime.now());
-		user.setUpdateTime(LocalDateTime.now());
-		userMapper.insertSelective(user);
-	}
-
-	public int updateById(DtsUser user) {
-		user.setUpdateTime(LocalDateTime.now());
-		return userMapper.updateByPrimaryKeySelective(user);
-	}
-
-	public List<DtsUser> querySelective(String username, String mobile, Integer page, Integer size, String sort,
-			String order) {
-		DtsUserExample example = new DtsUserExample();
-		DtsUserExample.Criteria criteria = example.createCriteria();
-
-		if (!StringUtils.isEmpty(username)) {
-			criteria.andUsernameLike("%" + username + "%");
-		}
-		if (!StringUtils.isEmpty(mobile)) {
-			criteria.andMobileEqualTo(mobile);
-		}
-		criteria.andDeletedEqualTo(false);
-
-		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
-			example.setOrderByClause(sort + " " + order);
-		}
-
-		PageHelper.startPage(page, size);
-		return userMapper.selectByExample(example);
-	}
-
-
 	public List<UserVO> queryUserList(String userId, String userName, String phone, Integer page, Integer size) {
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -100,102 +47,87 @@ public class DtsUserService {
 	}
 
 	public int count() {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andDeletedEqualTo(false);
-
-		return (int) userMapper.countByExample(example);
-	}
-
-	public List<DtsUser> queryByUsername(String username) {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andUsernameEqualTo(username).andDeletedEqualTo(false);
-		return userMapper.selectByExample(example);
-	}
-
-	public List<DtsUser> queryByMobile(String mobile) {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andMobileEqualTo(mobile).andDeletedEqualTo(false);
-		return userMapper.selectByExample(example);
-	}
-
-	public List<DtsUser> queryByOpenid(String openid) {
-		DtsUserExample example = new DtsUserExample();
-		example.or().andWeixinOpenidEqualTo(openid).andDeletedEqualTo(false);
-		return userMapper.selectByExample(example);
-	}
-
-	public void deleteById(Integer id) {
-		userMapper.logicalDeleteByPrimaryKey(id);
-	}
-
-	/**
-	 * 审批代理申请
-	 * @param userAccount
-	 */
-	public void approveAgency(Integer userId,Integer settlementRate,String shareUrl) {
-		//获取账户数据
-		DtsUserAccountExample example = new DtsUserAccountExample();
-		example.or().andUserIdEqualTo(userId);
-
-		DtsUserAccount dbAccount = userAccountMapper.selectOneByExample(example);
-		if (dbAccount == null) {
-			throw new RuntimeException("申请账户不存在");
-		}
-		dbAccount.setShareUrl(shareUrl);
-		if (!StringUtils.isEmpty(settlementRate)) {
-			dbAccount.setSettlementRate(settlementRate);
-		}
-		dbAccount.setModifyTime(LocalDateTime.now());
-		userAccountMapper.updateByPrimaryKey(dbAccount);
-
-		//更新会员状态和类型
-		DtsUser user = findById(userId);
-		user.setUserLevel((byte) 2);//区域代理用户
-		user.setStatus((byte) 0);//正常状态
-		updateById(user);
-	}
-
-	public DtsUserAccount detailApproveByUserId(Integer userId) {
-		// 获取账户数据
-		DtsUserAccountExample example = new DtsUserAccountExample();
-		example.or().andUserIdEqualTo(userId);
-
-		DtsUserAccount dbAccount = userAccountMapper.selectOneByExample(example);
-		return dbAccount;
+		return userMapper.countUser();
 	}
 
 
 	/**
-	 * 用户注册
-	 * @return 注册成功的用户ID
+	 * 更新用户魂力值
+	 * @param userId 用户ID
+	 * @param value 变动值（必须为正数）
+	 * @param isAdd true=增加, false=扣减
+	 * @return 更新后的魂力值
 	 */
 	@Transactional
-	public String register(String wxOpenId, String inviterId, String userName, String avatar, String phone) {
+	public void updateSpiritPower(String userId, int value, boolean isAdd) {
+		if (value <= 0) {
+			throw new IllegalArgumentException("变动值必须为正数");
+		}
+		// 执行更新
+		userMapper.updateSpiritPower(userId, value, isAdd);
+	}
 
-		// 1. 检查微信用户是否已注册
-		if (dtsUserMapper.existsByWxOpenId(wxOpenId)) {
-			throw new RuntimeException("该微信用户已注册");
+	public int currentSpiritPower(String userId) {
+		return userMapper.selectSpiritPower(userId);
+	}
+
+	/**
+	 * 处理用户登录逻辑
+	 * @param openId 微信openid
+	 * @param wxUserInfo 微信用户信息
+	 * @return 用户对象
+	 */
+	@Transactional
+	public UserVO handleUserLogin(String openId, JSONObject wxUserInfo) {
+		// 1. 检查用户是否已存在
+		UserVO user = userMapper.selectByWxOpenId(openId);
+
+		if (user == null) {
+			// 2. 新用户注册
+			user = new UserVO();
+			user.setWxOpenId(openId);
+			user.setUserId(generateUniqueUserId()); // 生成唯一用户ID
+			user.setNickName(wxUserInfo.getString("nickName"));
+			user.setPhone(wxUserInfo.getString("phoneNumber"));
+			user.setAvatar(wxUserInfo.getString("avatarUrl"));
+			user.setPoints(0); // 初始积分
+			user.setProductSpiritPower(0);
+			user.setInviterId(generateInviteCode()); // 生成邀请码
+			user.setCreateBy("system"); // 系统创建
+
+			// 3. 插入新用户
+			userMapper.insertUser(user);
 		}
-		// 2. 获取下一个用户ID
-		String userId = dtsUserMapper.getNextUserId();
-		if (userId == null) {
-			userId = "U1000"; // 第一个用户
+
+		return user;
+	}
+
+	/**
+	 * 生成唯一的用户ID (U+6位随机数字)
+	 * @return 唯一的用户ID
+	 */
+	private String generateUniqueUserId() {
+		String userId;
+		do {
+			userId = "U" + String.format("%06d", new Random().nextInt(999999));
+		} while (userMapper.checkUserIdExists(userId) > 0);
+
+		return userId;
+	}
+
+	/**
+	 * 生成邀请码 (8位随机字母数字)
+	 * @return 邀请码
+	 */
+	private String generateInviteCode() {
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+
+		for (int i = 0; i < 8; i++) {
+			sb.append(chars.charAt(random.nextInt(chars.length())));
 		}
-		// 4. 构建用户实体
-		UserVO user = new UserVO();
-		user.setWxOpenId(wxOpenId);
-		user.setUserId(userId);
-		user.setUserName(userName);
-		user.setAvatar(avatar);
-		user.setPoints(0); // 初始积分
-		user.setInviterId(inviterId);
-		user.setPhone(phone);
-		user.setCreateBy("system"); // 系统创建
-		// 5. 保存用户
-		int result = dtsUserMapper.insertUser(user);
-		if (result <= 0) {
-			throw new RuntimeException("用户注册失败");
-		}
-		return user.getUserId();
+
+		return sb.toString();
 	}
 }

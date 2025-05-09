@@ -36,18 +36,10 @@ public class WxUserController {
     @Autowired
     private DtsUserService dtsUserService;
 
-	/**
-	 * 用户注册接口
-	 * @param registerVO 注册信息
-	 * @return 注册结果
-	 */
-	@PostMapping("/register")
-	public Object register(@Validated @RequestBody UserRegisterVO registerVO) {
-		String userId = dtsUserService.register(registerVO.getWxOpenId(), registerVO.getInviteId(), registerVO.getUserName(), registerVO.getAvatar(), registerVO.getPhone());
-		if (userId == null) {
-			logger.error("用户注册失败!!");
-			return ResponseUtil.fail(1,"用户注册失败!!");
-		}
-		return ResponseUtil.ok(userId);
+
+	@GetMapping("/currentSpiritPower")
+	public Object currentSpiritPower(String userId) {
+		return ResponseUtil.ok(dtsUserService.currentSpiritPower(userId));
 	}
+
 }

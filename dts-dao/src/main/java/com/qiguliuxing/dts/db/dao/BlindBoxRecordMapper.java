@@ -66,9 +66,12 @@ public interface BlindBoxRecordMapper {
      * @return 影响行数
      */
     int insertDrawRecord(
+            @Param("boxProductId") Integer boxProductId,
             @Param("userId") String userId,
             @Param("number") Integer number,
             @Param("seriesId") Integer seriesId,
             @Param("boxNumber") String boxNumber,
             @Param("productId") Integer productId);
+
+    List<ProductBoxResultVo> selectSpiritPowerProducts(Integer seriesId, String boxNumber);
 }

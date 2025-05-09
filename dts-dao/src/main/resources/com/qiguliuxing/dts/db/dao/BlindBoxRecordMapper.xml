@@ -76,8 +76,42 @@
             pb.series_id = #{seriesId}
           AND pb.box_number = #{boxNumber}
           AND bpr.sold_quantity &lt; bpr.quantity
+          and ps.is_spiritpower = 0
     </select>
 
+
+    <select id="selectSpiritPowerProducts" resultMap="ProductBoxVOResultMap">
+        SELECT
+            pb.box_id,
+            pb.box_number,
+            p.product_id,
+            p.product_name,
+            bpr.quantity,
+            bpr.sold_quantity,
+            p.product_image,
+            p.product_price,
+            pl.level_name,
+            ps.price,
+            CASE
+                WHEN bpr.sold_quantity &gt;= bpr.quantity THEN 1
+                ELSE 0
+                END AS is_sold_out
+        FROM
+            product_box pb
+                JOIN
+            box_product_relation bpr ON pb.box_id = bpr.box_id
+                JOIN
+            product p ON p.product_id = bpr.product_id
+                JOIN
+            product_level pl ON p.product_levelid = pl.level_id
+                JOIN
+            product_series ps ON pb.series_id = ps.series_id
+        WHERE
+            pb.series_id = #{seriesId}
+          AND pb.box_number = #{boxNumber}
+          AND bpr.sold_quantity &lt; bpr.quantity
+          and ps.is_spiritpower = 1
+    </select>
 
     <select id="selectAllProducts" resultMap="ProductBoxVOResultMap">
         SELECT
@@ -120,8 +154,8 @@
 
     <insert id="insertDrawRecord">
         INSERT INTO blind_box_records
-            (user_id, number, series_id, box_number, product_id, created_at)
+            (user_id, number, series_id, box_number, product_id,box_product_id, created_at)
         VALUES
-            (#{userId}, #{number}, #{seriesId}, #{boxNumber}, #{productId}, NOW())
+            (#{userId}, #{number}, #{seriesId}, #{boxNumber}, #{productId},#{boxProductId}, NOW())
     </insert>
 </mapper>

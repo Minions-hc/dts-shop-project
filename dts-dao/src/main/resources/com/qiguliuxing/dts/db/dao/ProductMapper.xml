@@ -11,7 +11,7 @@
             product_seriesid,
             product_levelid,
             product_badge,
-            product_points,
+            product_spirit_power,
             created_by,
             created_time,
             updated_by,
@@ -23,7 +23,7 @@
                      #{productSeriesId},
                      #{productLevelId},
                      #{productBadge},
-                     #{productPoints},
+                     #{productSpiritPower},
                      #{createdBy},
                      NOW(),
                      #{updatedBy},
@@ -47,7 +47,7 @@
             product_seriesid = #{productSeriesId},
             product_levelid = #{productLevelId},
             product_badge = #{productBadge},
-            product_points = #{productPoints},
+            product_spirit_power = #{productSpiritPower},
             updated_by = #{updatedBy},
             updated_time = NOW()
         WHERE product_id = #{productId}
@@ -65,7 +65,7 @@
             p.product_levelid AS productLevelId,
             pl.level_name AS productLevelName,
             p.product_badge as productBadge,
-            p.product_points as productPoints,
+            p.product_spirit_power as productSpiritPower,
             p.created_by AS createdBy,
             p.created_time AS createdTime,
             p.updated_by AS updatedBy,
@@ -86,7 +86,7 @@
             product_seriesid as productSeriesId,
             product_levelid as productLevelId,
             product_badge as productBadge,
-            product_points as productPoints,
+            product_spirit_power as productSpiritPower,
             created_by AS createdBy,
             created_time AS createdTime,
             updated_by AS updatedBy,
@@ -107,7 +107,7 @@
         p.product_levelid AS productLevelId,
         pl.level_name AS productLevelName,
         p.product_badge as productBadge,
-        p.product_points as productPoints,
+        p.product_spirit_power as productSpiritPower,
         p.created_by AS createdBy,
         p.created_time AS createdTime,
         p.updated_by AS updatedBy,
@@ -129,6 +129,10 @@
             AND p.product_levelid = #{productLevelId}
         </if>
         ORDER BY p.product_id
+    </select>
+
+    <select id="countProduct" resultType="java.lang.Integer">
+        select count(1) from product
     </select>
 
 </mapper>

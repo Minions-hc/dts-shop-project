@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.wx.web;
 
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BlindBoxRecordService;
+import com.qiguliuxing.dts.db.util.ActivityType;
 import com.qiguliuxing.dts.vo.BlindBoxDrawResultVO;
 import com.qiguliuxing.dts.vo.BlindBoxRecordVO;
 import com.qiguliuxing.dts.vo.ProductBoxResultVo;
@@ -97,7 +98,12 @@ public class BlindBoxRecordController {
      */
     @PostMapping("/drawBlindBox")
     public Object drawBlindBox(@RequestBody BlindBoxDrawRequestVO request) {
-        List<BlindBoxDrawResultVO> results = blindBoxRecordService.drawBlindBox(request);
+        List<BlindBoxDrawResultVO> results;
+        if(request.getActivityType().equals(ActivityType.SOUL_POWER.getName())) {
+            results = blindBoxRecordService.drawBlindBoxBySpiritPower(request);
+        } else {
+            results = blindBoxRecordService.drawBlindBox(request);
+        }
         return ResponseUtil.ok(results);
     }
 

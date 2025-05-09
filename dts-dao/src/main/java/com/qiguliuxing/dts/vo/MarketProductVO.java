@@ -10,7 +10,7 @@ public class MarketProductVO {
     private String productSeriesName;// 产品系列名称
     private String productLevelName;// 产品级别
     private Integer productLevelId;// 产品级别id
-    private String productBadge; // 产品兑换所需勋章（等于价格）
+    private Integer productBadge; // 产品兑换所需勋章（等于价格）
     private String productDetail;// 产品详请用来记录多个图片
     private Boolean available;// 是否有效0失效，1有效
     private String createdBy; // 创建人
@@ -76,11 +76,11 @@ public class MarketProductVO {
         this.productLevelId = productLevelId;
     }
 
-    public String getProductBadge() {
+    public Integer getProductBadge() {
         return productBadge;
     }
 
-    public void setProductBadge(String productBadge) {
+    public void setProductBadge(Integer productBadge) {
         this.productBadge = productBadge;
     }
 

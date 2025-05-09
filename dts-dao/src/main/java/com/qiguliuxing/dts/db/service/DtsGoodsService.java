@@ -2,6 +2,7 @@ package com.qiguliuxing.dts.db.service;
 
 import com.github.pagehelper.PageHelper;
 import com.qiguliuxing.dts.db.dao.DtsGoodsMapper;
+import com.qiguliuxing.dts.db.dao.ProductMapper;
 import com.qiguliuxing.dts.db.domain.DtsGoods;
 import com.qiguliuxing.dts.db.domain.DtsGoodsExample;
 import com.qiguliuxing.dts.db.domain.DtsGoods.Column;
@@ -20,6 +21,9 @@ public class DtsGoodsService {
 			Column.counterPrice, Column.retailPrice };
 	@Resource
 	private DtsGoodsMapper goodsMapper;
+
+	@Resource
+	private ProductMapper productMapper;
 
 	/**
 	 * 获取热卖商品
@@ -204,9 +208,7 @@ public class DtsGoodsService {
 	 * @return
 	 */
 	public int count() {
-		DtsGoodsExample example = new DtsGoodsExample();
-		example.or().andDeletedEqualTo(false);
-		return (int) goodsMapper.countByExample(example);
+		return productMapper.countProduct();
 	}
 
 	public List<Integer> getCatIds(Integer brandId, String keywords, Boolean isHot, Boolean isNew) {
@@ -251,7 +253,7 @@ public class DtsGoodsService {
 
 	/**
 	 * 根据店铺，获取店铺对应类别的商品
-	 * 
+	 *
 	 * @param brandId
 	 * @param i
 	 * @param related
@@ -268,7 +270,7 @@ public class DtsGoodsService {
 
 	/**
 	 * 同类商品，且不同店铺
-	 * 
+	 *
 	 * @param brandId
 	 * @param cid
 	 * @param i

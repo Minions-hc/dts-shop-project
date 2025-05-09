@@ -3,7 +3,7 @@ package com.qiguliuxing.dts.wx.dao;
 import java.time.LocalDateTime;
 
 public class UserToken {
-	private Integer userId;
+	private String userId;
 	private String token;
 	private String sessionKey;
 	private LocalDateTime expireTime;
@@ -17,11 +17,11 @@ public class UserToken {
 		this.sessionKey = sessionKey;
 	}
 
-	public Integer getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

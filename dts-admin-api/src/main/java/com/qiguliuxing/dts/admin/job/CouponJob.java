@@ -26,8 +26,6 @@ public class CouponJob {
 
 	@Autowired
 	private DtsCouponService couponService;
-	@Autowired
-	private DtsCouponUserService couponUserService;
 
 	/**
 	 * 每隔一个小时检查

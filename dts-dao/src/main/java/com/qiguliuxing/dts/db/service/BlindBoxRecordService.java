@@ -1,6 +1,7 @@
 package com.qiguliuxing.dts.db.service;
 
 import com.qiguliuxing.dts.db.dao.BlindBoxRecordMapper;
+import com.qiguliuxing.dts.db.dao.DtsUserMapper;
 import com.qiguliuxing.dts.db.util.ActivityType;
 import com.qiguliuxing.dts.db.util.StatusType;
 import com.qiguliuxing.dts.vo.*;
@@ -30,6 +31,10 @@ public class BlindBoxRecordService {
 
     @Autowired
     private BoxOrderService boxOrderService;
+    @Autowired
+    private DtsUserMapper dtsUserMapper;
+    @Autowired
+    private DtsUserService dtsUserService;
 
     /**
      * 获取指定系列和箱子的开赏记录
@@ -54,6 +59,103 @@ public class BlindBoxRecordService {
         return blindBoxRecordMapper.selectAllProducts(seriesId, boxNumber);
     }
 
+
+    /**
+     * 抽取盲盒(魂力值抽奖)
+     * @param request 请求参数
+     * @return
+     */
+    @Transactional
+    public List<BlindBoxDrawResultVO> drawBlindBoxBySpiritPower(BlindBoxDrawRequestVO request) {
+        // 1. 查询可用的产品列表
+        List<ProductBoxResultVo> spiritPowerProducts = blindBoxRecordMapper.selectSpiritPowerProducts(
+                request.getSeriesId(), request.getBoxNumber());
+        if (spiritPowerProducts.isEmpty()) {
+            throw new RuntimeException("该盲盒已售罄或不存在");
+        }
+        // 2. 准备抽取的产品池（考虑库存数量）
+        List<ProductBoxResultVo> productPool = new ArrayList<>();
+        for (ProductBoxResultVo product : spiritPowerProducts) {
+            int availableCount = product.getQuantity() - product.getSoldQuantity();
+            for (int i = 0; i < availableCount; i++) {
+                productPool.add(product);
+            }
+        }
+        if (productPool.isEmpty()) {
+            throw new RuntimeException("该盲盒已售罄");
+        }
+        // 3. 随机抽取产品
+        List<BlindBoxDrawResultVO> results = new ArrayList<>();
+        Random random = new Random();
+        for (Integer number : request.getNumbers()) {
+            // 随机选择一个产品
+            ProductBoxResultVo selectedProduct = productPool.get(random.nextInt(productPool.size()));
+            // 4. 更新库存
+            int updated = blindBoxRecordMapper.updateSoldQuantity(
+                    selectedProduct.getBoxId(),
+                    selectedProduct.getProductId(),
+                    1);
+            if (updated == 0) {
+                throw new RuntimeException("产品库存更新失败，可能已被其他用户购买");
+            }
+
+
+            ProductVO product = productService.getProductById(selectedProduct.getProductId());
+            BoxProductVO boxProductVO = new BoxProductVO();
+            boxProductVO.setActivityType(ActivityType.SOUL_POWER.getName());
+            boxProductVO.setProductId(selectedProduct.getProductId());
+            boxProductVO.setProductName(selectedProduct.getProductName());
+            boxProductVO.setProductImage(product.getProductImage());
+            boxProductVO.setProductLevel(product.getProductLevelName());
+            boxProductVO.setStatus(StatusType.PENDING.getCode());
+            boxProductVO.setProductLevel(product.getProductLevelName());
+            boxProductVO.setBoxNumber(request.getBoxNumber());
+            boxProductVO.setObtainTime(new Date());
+            boxProductVO.setCreatedTime(new Date());
+            boxProductVO.setUpdatedTime(new Date());
+            boxProductVO.setUserId(request.getUserId());
+            boxProductVO.setProductBadge(product.getProductBadge());
+            // 抽中的产品入盒柜表
+            int id = boxProductService.addProduct(boxProductVO);
+
+            // 5. 记录抽取记录
+            blindBoxRecordMapper.insertDrawRecord(
+                    id,
+                    request.getUserId(),
+                    number,
+                    request.getSeriesId(),
+                    request.getBoxNumber(),
+                    selectedProduct.getProductId());
+
+            //写子表数据
+            BoxOrderVO boxOrderVO = new BoxOrderVO();
+            boxOrderVO.setOrderAmount(BigDecimal.valueOf(request.getSpiritPower()));
+            boxOrderVO.setCouponDeduction(BigDecimal.valueOf(0));
+            boxOrderVO.setShippingFee(BigDecimal.valueOf(0));
+            boxOrderVO.setPointDeduction(BigDecimal.valueOf(0));
+            boxOrderVO.setPaymentAmount(BigDecimal.valueOf(request.getSpiritPower()));
+            boxOrderVO.setRecordId(boxProductVO.getId());
+            boxOrderVO.setCreatedTime(new Date());
+            boxOrderVO.setPaymentTime(new Date());
+            boxOrderVO.setUpdatedTime(new Date());
+            boxOrderService.createBoxOrder(boxOrderVO);
+
+            // 6. 构建返回结果
+            BlindBoxDrawResultVO result = new BlindBoxDrawResultVO();
+            result.setBoxId(selectedProduct.getBoxId());
+            result.setBoxNumber(selectedProduct.getBoxNumber());
+            result.setProductId(selectedProduct.getProductId());
+            result.setProductName(selectedProduct.getProductName());
+            result.setProductImage(selectedProduct.getProductImage());
+            result.setProductPrice(selectedProduct.getProductPrice());
+            result.setLevelName(selectedProduct.getLevelName());
+            result.setNumber(number);
+            results.add(result);
+        }
+        // 更新用户魂力值
+        dtsUserService.updateSpiritPower(request.getUserId(), request.getSpiritPower(), true);
+        return results;
+    }
 
     /**
      * 抽取盲盒
@@ -82,6 +184,7 @@ public class BlindBoxRecordService {
         // 3. 随机抽取产品
         List<BlindBoxDrawResultVO> results = new ArrayList<>();
         Random random = new Random();
+        int spiritPower = 0;
         for (Integer number : request.getNumbers()) {
             // 随机选择一个产品
             ProductBoxResultVo selectedProduct = productPool.get(random.nextInt(productPool.size()));
@@ -93,17 +196,11 @@ public class BlindBoxRecordService {
             if (updated == 0) {
                 throw new RuntimeException("产品库存更新失败，可能已被其他用户购买");
             }
-            // 5. 记录抽取记录
-            blindBoxRecordMapper.insertDrawRecord(
-                    request.getUserId(),
-                    number,
-                    request.getSeriesId(),
-                    request.getBoxNumber(),
-                    selectedProduct.getProductId());
 
             ProductVO product = productService.getProductById(selectedProduct.getProductId());
+            spiritPower += product.getProductSpiritPower();
             BoxProductVO boxProductVO = new BoxProductVO();
-            boxProductVO.setActivityType(ActivityType.LUCKY_DRAW.getName());
+            boxProductVO.setActivityType(request.getActivityType());
             boxProductVO.setProductId(selectedProduct.getProductId());
             boxProductVO.setProductName(selectedProduct.getProductName());
             boxProductVO.setProductImage(product.getProductImage());
@@ -114,8 +211,19 @@ public class BlindBoxRecordService {
             boxProductVO.setObtainTime(new Date());
             boxProductVO.setCreatedTime(new Date());
             boxProductVO.setUpdatedTime(new Date());
+            boxProductVO.setUserId(request.getUserId());
+            boxProductVO.setProductBadge(product.getProductBadge());
             // 抽中的产品入盒柜表
-            boxProductService.addProduct(boxProductVO);
+            int id = boxProductService.addProduct(boxProductVO);
+
+            // 5. 记录抽取记录
+            blindBoxRecordMapper.insertDrawRecord(
+                    id,
+                    request.getUserId(),
+                    number,
+                    request.getSeriesId(),
+                    request.getBoxNumber(),
+                    selectedProduct.getProductId());
 
             //写子表数据
             BoxOrderVO boxOrderVO = new BoxOrderVO();
@@ -142,6 +250,8 @@ public class BlindBoxRecordService {
             result.setNumber(number);
             results.add(result);
         }
+        // 更新用户魂力值
+        dtsUserService.updateSpiritPower(request.getUserId(), spiritPower, true);
         return results;
     }
 }

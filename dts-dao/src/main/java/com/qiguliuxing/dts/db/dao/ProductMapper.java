@@ -17,4 +17,6 @@ public interface ProductMapper {
     List<ProductVO> getAllProducts();
 
     List<ProductVO> getProductsByCondition(Map<String, Object> condition);
+
+    int countProduct();
 }

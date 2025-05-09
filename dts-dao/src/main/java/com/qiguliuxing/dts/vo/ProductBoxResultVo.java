@@ -58,6 +58,16 @@ public class ProductBoxResultVo {
      */
     private boolean isSoldOut;
 
+    private String priceRanges; // 改为String类型存储JSON字符串
+
+    public String getPriceRanges() {
+        return priceRanges;
+    }
+
+    public void setPriceRanges(String priceRanges) {
+        this.priceRanges = priceRanges;
+    }
+
     public Integer getBoxId() {
         return boxId;
     }
