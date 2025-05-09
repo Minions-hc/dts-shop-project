@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.wx.web;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.IMarketSeriesService;
 import com.qiguliuxing.dts.db.service.MarketProductService;
+import com.qiguliuxing.dts.vo.BoxProductRequestVO;
 import com.qiguliuxing.dts.vo.BoxProductVO;
 import com.qiguliuxing.dts.vo.MarketProductVO;
 import com.qiguliuxing.dts.wx.service.GetRegionService;
@@ -10,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.HashMap;
@@ -80,13 +78,12 @@ public class WxMarketController extends GetRegionService {
 
 	/**
 	 * 集市换娃
-	 * @param boxProductList
-	 * @param productId
+	 * @param boxProductRequestVO
 	 * @return
 	 */
 	@PostMapping("/redeemProduct")
-	public Object redeemProduct(List<BoxProductVO> boxProductList, @PathParam("productId") Integer productId) {
-		marketProductService.redeemProduct(boxProductList, productId);
+	public Object redeemProduct(@RequestBody BoxProductRequestVO boxProductRequestVO) {
+		marketProductService.redeemProduct(boxProductRequestVO);
 		return ResponseUtil.ok();
 	}
 }

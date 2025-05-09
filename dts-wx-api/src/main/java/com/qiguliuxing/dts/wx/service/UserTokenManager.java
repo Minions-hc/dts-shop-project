@@ -12,9 +12,9 @@ import com.qiguliuxing.dts.wx.dao.UserToken;
  */
 public class UserTokenManager {
 	private static Map<String, UserToken> tokenMap = new HashMap<>();
-	private static Map<Integer, UserToken> idMap = new HashMap<>();
+	private static Map<String, UserToken> idMap = new HashMap<>();
 
-	public static Integer getUserId(String token) {
+	public static String getUserId(String token) {
 		UserToken userToken = tokenMap.get(token);
 		if (userToken == null) {
 			return null;
@@ -29,14 +29,8 @@ public class UserTokenManager {
 		return userToken.getUserId();
 	}
 
-	public static UserToken generateToken(Integer id) {
+	public static UserToken generateToken(String userId) {
 		UserToken userToken = null;
-
-		// userToken = idMap.get(id);
-		// if(userToken != null) {
-		// tokenMap.remove(userToken.getToken());
-		// idMap.remove(id);
-		// }
 
 		String token = CharUtil.getRandomString(32);
 		while (tokenMap.containsKey(token)) {
@@ -50,9 +44,9 @@ public class UserTokenManager {
 		userToken.setToken(token);
 		userToken.setUpdateTime(update);
 		userToken.setExpireTime(expire);
-		userToken.setUserId(id);
+		userToken.setUserId(userId);
 		tokenMap.put(token, userToken);
-		idMap.put(id, userToken);
+		idMap.put(userId, userToken);
 
 		return userToken;
 	}

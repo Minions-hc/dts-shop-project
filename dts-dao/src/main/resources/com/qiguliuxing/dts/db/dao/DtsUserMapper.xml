@@ -678,6 +678,7 @@
     INSERT INTO shop_user (
       user_id,
       wx_openid,
+      nick_name,
       user_name,
       avatar,
       points,
@@ -689,7 +690,8 @@
       create_by
     ) VALUES (
                #{userId},
-               #{wxOpenid},
+               #{wxOpenId},
+               #{nickName},
                #{userName},
                #{avatar},
                #{points},
@@ -705,7 +707,7 @@
   <select id="existsByWxOpenId" resultType="boolean">
     SELECT COUNT(1) > 0
     FROM shop_user
-    WHERE wx_openid = #{wxOpenid}
+    WHERE wx_openid = #{wxOpenId}
   </select>
 
 
@@ -727,6 +729,35 @@
   <!-- 查询当前魂力值 -->
   <select id="selectSpiritPower" resultType="java.lang.Integer">
     SELECT product_spirit_power
+    FROM shop_user
+    WHERE user_id = #{userId}
+  </select>
+
+  <!-- 根据微信openid查询用户 -->
+  <select id="selectByWxOpenId" resultType="com.qiguliuxing.dts.vo.UserVO">
+    SELECT
+      user_id,
+      wx_openid,
+      nick_name,
+      user_name,
+      avatar,
+      points,
+      invite_code,
+      inviter_id,
+      phone,
+      red_packet_balance,
+      create_by,
+      create_time,
+      update_by,
+      update_time
+    FROM shop_user
+    WHERE wx_openid = #{wxOpenId}
+      LIMIT 1
+  </select>
+
+  <!-- 检查用户ID是否存在 -->
+  <select id="checkUserIdExists" resultType="int">
+    SELECT COUNT(1)
     FROM shop_user
     WHERE user_id = #{userId}
   </select>

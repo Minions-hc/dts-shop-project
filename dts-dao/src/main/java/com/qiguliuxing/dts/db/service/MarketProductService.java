@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.db.service;
 import com.qiguliuxing.dts.db.dao.MarketProductMapper;
 import com.qiguliuxing.dts.db.util.ActivityType;
 import com.qiguliuxing.dts.db.util.StatusType;
+import com.qiguliuxing.dts.vo.BoxProductRequestVO;
 import com.qiguliuxing.dts.vo.BoxProductVO;
 import com.qiguliuxing.dts.vo.MarketProductVO;
 import com.qiguliuxing.dts.vo.ProductVO;
@@ -75,16 +76,15 @@ public class MarketProductService {
         return marketProductMapper.getBoxProductList(userId);
     }
 
-    public void redeemProduct(List<BoxProductVO> boxProductList, Integer productId) {
-        if (CollectionUtils.isEmpty(boxProductList)){
+    @Transactional
+    public void redeemProduct(BoxProductRequestVO boxProductRequestVO) {
+        if (CollectionUtils.isEmpty(boxProductRequestVO.getIds())){
             return;
         }
-        MarketProductVO marketProduct = marketProductMapper.getMarketProductById(productId);
-        String userId = boxProductList.get(0).getUserId();
-        int totalBadges = boxProductList.stream()
-                .mapToInt(BoxProductVO::getProductBadge)
-                .sum();
-        if (totalBadges < marketProduct.getProductBadge()){
+        MarketProductVO marketProduct = marketProductMapper.getMarketProductById(boxProductRequestVO.getProductId());
+        String userId = boxProductRequestVO.getUserId();
+
+        if (boxProductRequestVO.getTotalProductBadge() < marketProduct.getProductBadge()){
             return;
         }
         BoxProductVO boxProductVO = new BoxProductVO();
@@ -101,10 +101,6 @@ public class MarketProductService {
         boxProductVO.setProductBadge(0);
         // 兑换产品入盒柜表
         boxProductService.addProduct(boxProductVO);
-
-        for (BoxProductVO boxProduct : boxProductList) {
-            boxProduct.setUserId("admin");
-        }
-        marketProductMapper.batchUpdateUserId(boxProductList);
+        marketProductMapper.batchUpdateUserId(boxProductRequestVO.getIds());
     }
 }

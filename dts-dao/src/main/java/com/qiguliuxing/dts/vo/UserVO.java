@@ -6,6 +6,7 @@ public class UserVO {
 
     private String userId;          // 用户ID（微信ID）
     private String wxOpenId;
+    private String nickName;
     private String userName;        // 用户名称
     private String avatar;          // 头像URL
     private Integer points;         // 积分
@@ -120,5 +121,13 @@ public class UserVO {
 
     public void setProductSpiritPower(Integer productSpiritPower) {
         this.productSpiritPower = productSpiritPower;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

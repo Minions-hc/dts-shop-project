@@ -76,7 +76,7 @@
             pb.series_id = #{seriesId}
           AND pb.box_number = #{boxNumber}
           AND bpr.sold_quantity &lt; bpr.quantity
-          and pb.is_spiritpower = 0
+          and ps.is_spiritpower = 0
     </select>
 
 

@@ -30,5 +30,5 @@ public interface MarketProductMapper {
      * 批量更新用户ID
      * @param list 包含id和userId的实体列表
      */
-    void batchUpdateUserId(@Param("list") List<BoxProductVO> list);
+    void batchUpdateUserId(@Param("list") List<Integer> list);
 }

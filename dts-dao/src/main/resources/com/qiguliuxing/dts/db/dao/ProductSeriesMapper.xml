@@ -15,7 +15,6 @@
         <result column="is_avoid" property="isAvoid" jdbcType="TINYINT"/>
         <result column="is_popular_new" property="isPopularNew" jdbcType="TINYINT"/>
         <result column="is_hot_recommend" property="isHotRecommend" jdbcType="TINYINT"/>
-        <result column="purchase_count" property="purchaseCount" jdbcType="INTEGER"/>
         <result column="price" property="price" jdbcType="DECIMAL"/>
         <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
         <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
@@ -41,7 +40,6 @@
         ser.is_popular_new,
         ser.is_hot_recommend,
         ser.price,
-        ser.purchase_count,
         ser.price_ranges,
         ser.created_by,
         ser.created_time,
@@ -92,7 +90,6 @@
         ser.is_popular_new,
         ser.is_hot_recommend,
         ser.price,
-        ser.purchase_count,
         ser.price_ranges,
         ser.created_by,
         ser.created_time,
@@ -146,7 +143,6 @@
             is_popular_new,
             is_hot_recommend,
             price,
-            purchase_count,
             price_ranges,
             created_by,
             created_time,
@@ -163,7 +159,6 @@
                      #{isPopularNew},
                      #{isHotRecommend},
                      #{price},
-                     #{purchaseCount},
                      #{priceRanges},
                      #{createdBy},
                      NOW(),
@@ -186,7 +181,6 @@
             is_popular_new = #{isPopularNew},
             is_hot_recommend = #{isHotRecommend},
             price = #{price},
-            purchase_count = #{purchaseCount},
             price_ranges = #{priceRanges},
             updated_by = #{updatedBy},
             updated_time = NOW()

@@ -172,22 +172,18 @@
         WHERE
             bp.user_id = #{userId}
           AND bp.`status` = 'pending'
-          AND bp.activity_type &lt;&gt; '集市换娃'
+          AND bp.activity_type in ('踩雷赏','一番赏')
             and bp.product_badge > 0
     </select>
 
     <update id="batchUpdateUserId">
         UPDATE box_product
         SET
-        user_id = CASE
-        <foreach collection="list" item="item">
-            WHEN id = #{item.id} THEN #{item.userId}
-        </foreach>
-        END,
+        user_id = 'admin',
         updated_time = NOW()
         WHERE id IN
-        <foreach collection="list" item="item" open="(" separator="," close=")">
-            #{item.id}
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
         </foreach>
     </update>
 
