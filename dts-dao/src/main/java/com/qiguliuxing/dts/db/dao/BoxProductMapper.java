@@ -21,4 +21,17 @@ public interface BoxProductMapper {
 
     // 动态更新
     int updateSelective(BoxProductVO boxProduct);
+
+
+    /**
+     * 动态查询盒柜商品
+     * @param userId 用户ID
+     * @param activityTypeList 活动类型
+     * @param statusList 状态
+     * @return 盒柜商品列表
+     */
+    List<BoxProductVO> selectBoxProducts(
+            @Param("userId") String userId,
+            @Param("activityTypeList") List<String> activityTypeList,
+            @Param("statusList") List<String> statusList);
 }

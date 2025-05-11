@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -120,5 +121,26 @@ public class BoxProductService {
                 throw new RuntimeException("盒柜产品状态更新失败");
             }
         }
+    }
+
+    /**
+     * 动态查询盒柜商品
+     * @param userId 用户ID
+     * @param activityType 活动类型
+     * @param status 状态
+     * @return 盒柜商品列表
+     */
+    public List<BoxProductVO> queryBoxProducts(String userId, String activityType, String status) {
+        // 将逗号分隔的字符串转换为List
+        List<String> activityTypeList = null;
+        if (StringUtils.hasText(activityType)) {
+            activityTypeList = Arrays.asList(activityType.split(","));
+        }
+
+        List<String> statusList = null;
+        if (StringUtils.hasText(status)) {
+            statusList = Arrays.asList(status.split(","));
+        }
+        return boxProductMapper.selectBoxProducts(userId, activityTypeList, statusList);
     }
 }

@@ -59,4 +59,42 @@
         WHERE id = #{id}
     </update>
 
+
+    <select id="selectBoxProducts" resultType="com.qiguliuxing.dts.vo.BoxProductVO">
+        SELECT
+        id,
+        user_id AS userId,
+        product_id AS productId,
+        product_name AS productName,
+        product_badge AS productBadge,
+        product_image AS productImage,
+        activity_type AS activityType,
+        product_level AS productLevel,
+        status,
+        order_id AS orderId,
+        box_number AS boxNumber,
+        obtain_time AS obtainTime,
+        created_time AS createdTime,
+        updated_time AS updatedTime
+        FROM box_product
+        <where>
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId}
+            </if>
+            <if test="activityTypeList != null and activityTypeList.size() > 0">
+                AND activity_type IN
+                <foreach collection="activityTypeList" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+            <if test="statusList != null and statusList.size() > 0">
+                AND status IN
+                <foreach collection="statusList" item="s" open="(" separator="," close=")">
+                    #{s}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+
 </mapper>

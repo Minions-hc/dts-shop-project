@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.db.service.DtsGoodsProductService;
 import com.qiguliuxing.dts.db.service.DtsGoodsService;
 import com.qiguliuxing.dts.db.service.DtsOrderService;
 import com.qiguliuxing.dts.db.service.DtsUserService;
@@ -28,8 +27,7 @@ public class AdminDashbordController {
 	private DtsUserService userService;
 	@Autowired
 	private DtsGoodsService goodsService;
-	@Autowired
-	private DtsGoodsProductService productService;
+
 	@Autowired
 	private DtsOrderService orderService;
 
@@ -39,12 +37,10 @@ public class AdminDashbordController {
 
 		int userTotal = userService.count();
 		int goodsTotal = goodsService.count();
-		int productTotal = productService.count();
 		int orderTotal = orderService.count();
 		Map<String, Integer> data = new HashMap<>();
 		data.put("userTotal", userTotal);
 		data.put("goodsTotal", goodsTotal);
-		data.put("productTotal", productTotal);
 		data.put("orderTotal", orderTotal);
 
 		logger.info("【请求结束】系统管理->首页仪表盘查询:响应结果:{}", JSONObject.toJSONString(data));

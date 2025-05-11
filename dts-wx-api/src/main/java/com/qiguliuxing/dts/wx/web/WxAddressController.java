@@ -1,17 +1,6 @@
 package com.qiguliuxing.dts.wx.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.validation.constraints.NotNull;
 
 import com.qiguliuxing.dts.vo.AddressVO;
 import org.slf4j.Logger;
@@ -22,12 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
-import com.qiguliuxing.dts.core.util.RegexUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.db.domain.DtsAddress;
-import com.qiguliuxing.dts.db.domain.DtsRegion;
 import com.qiguliuxing.dts.db.service.DtsAddressService;
-import com.qiguliuxing.dts.db.service.DtsRegionService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.service.GetRegionService;
 

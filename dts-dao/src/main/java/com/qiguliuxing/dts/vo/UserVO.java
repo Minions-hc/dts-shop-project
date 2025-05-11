@@ -12,6 +12,7 @@ public class UserVO {
     private Integer points;         // 积分
     private Integer productSpiritPower; // 魂力值
     private String inviterId;       // 上级邀请人ID
+    private String inviteCode;
     private String phone;           // 手机号码
     private Double redPacketBalance; // 红包余额
     private String createBy;        // 创建人
@@ -129,5 +130,13 @@ public class UserVO {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 }

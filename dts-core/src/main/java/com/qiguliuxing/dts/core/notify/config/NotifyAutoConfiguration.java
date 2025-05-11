@@ -4,7 +4,6 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.qiguliuxing.dts.core.notify.NotifyService;
 import com.qiguliuxing.dts.core.notify.SslMailSender;
 import com.qiguliuxing.dts.core.notify.TencentSmsSender;
-import com.qiguliuxing.dts.core.notify.WxTemplateSender;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +43,6 @@ public class NotifyAutoConfiguration {
 
 		NotifyProperties.Wx wxConfig = properties.getWx();
 		if (wxConfig.isEnable()) {
-			notifyService.setWxTemplateSender(wxTemplateSender());
 			notifyService.setWxTemplate(wxConfig.getTemplate());
 		}
 		return notifyService;
@@ -77,11 +75,6 @@ public class NotifyAutoConfiguration {
 		return sslMailSender;
 	}
 
-	@Bean
-	public WxTemplateSender wxTemplateSender() {
-		WxTemplateSender wxTemplateSender = new WxTemplateSender();
-		return wxTemplateSender;
-	}
 
 	@Bean
 	public TencentSmsSender tencentSmsSender() {

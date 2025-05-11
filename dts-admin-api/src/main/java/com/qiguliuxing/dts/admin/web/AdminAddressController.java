@@ -1,6 +1,5 @@
 package com.qiguliuxing.dts.admin.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.core.validator.Order;
-import com.qiguliuxing.dts.core.validator.Sort;
-import com.qiguliuxing.dts.db.domain.DtsAddress;
 import com.qiguliuxing.dts.db.service.DtsAddressService;
-import com.qiguliuxing.dts.db.service.DtsRegionService;
 
 @RestController
 @RequestMapping("/admin/address")
