@@ -156,4 +156,6 @@ public interface DtsRoleMapper {
      * @project https://github.com/itfsw/mybatis-generator-plugin
      */
     int logicalDeleteByPrimaryKey(Integer id);
+
+    List<DtsRole> queryAllRoles();
 }

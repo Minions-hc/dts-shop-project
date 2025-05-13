@@ -80,8 +80,6 @@ public class DtsRoleService {
 	}
 
 	public List<DtsRole> queryAll() {
-		DtsRoleExample example = new DtsRoleExample();
-		example.or().andDeletedEqualTo(false);
-		return roleMapper.selectByExample(example);
+		return roleMapper.queryAllRoles();
 	}
 }
