@@ -1,8 +1,5 @@
 package com.qiguliuxing.dts.db.dao;
 
-import com.qiguliuxing.dts.db.domain.DtsCouponUser;
-import com.qiguliuxing.dts.db.domain.DtsCouponUserExample;
-
 import java.math.BigDecimal;
 import java.util.List;
 

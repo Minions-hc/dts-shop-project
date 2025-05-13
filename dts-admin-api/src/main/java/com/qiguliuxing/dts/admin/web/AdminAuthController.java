@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.qiguliuxing.dts.admin.util.*;
+import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -33,7 +34,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
-import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import com.qiguliuxing.dts.db.service.DtsRoleService;
 
 import javax.imageio.ImageIO;

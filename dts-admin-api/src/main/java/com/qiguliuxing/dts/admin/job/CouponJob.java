@@ -10,12 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.qiguliuxing.dts.db.domain.DtsCoupon;
-import com.qiguliuxing.dts.db.domain.DtsCouponUser;
 import com.qiguliuxing.dts.db.service.DtsCouponService;
-import com.qiguliuxing.dts.db.service.DtsCouponUserService;
-import com.qiguliuxing.dts.db.util.CouponConstant;
-import com.qiguliuxing.dts.db.util.CouponUserConstant;
 
 /**
  * 检测优惠券过期情况

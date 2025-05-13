@@ -6,14 +6,12 @@ import com.qiguliuxing.dts.db.service.MarketProductService;
 import com.qiguliuxing.dts.vo.BoxProductRequestVO;
 import com.qiguliuxing.dts.vo.BoxProductVO;
 import com.qiguliuxing.dts.vo.MarketProductVO;
-import com.qiguliuxing.dts.wx.service.GetRegionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/wx/market")
 @Validated
-public class WxMarketController extends GetRegionService {
+public class WxMarketController {
 	private static final Logger logger = LoggerFactory.getLogger(WxMarketController.class);
 
 	@Autowired

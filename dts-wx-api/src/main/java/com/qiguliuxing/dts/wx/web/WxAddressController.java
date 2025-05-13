@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.DtsAddressService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
-import com.qiguliuxing.dts.wx.service.GetRegionService;
 
 /**
  * 用户收货地址服务
@@ -22,7 +21,7 @@ import com.qiguliuxing.dts.wx.service.GetRegionService;
 @RestController
 @RequestMapping("/wx/address")
 @Validated
-public class WxAddressController extends GetRegionService {
+public class WxAddressController {
 	private static final Logger logger = LoggerFactory.getLogger(WxAddressController.class);
 
 	@Autowired

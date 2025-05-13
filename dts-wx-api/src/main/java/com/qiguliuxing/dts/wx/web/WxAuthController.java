@@ -1,31 +1,10 @@
 package com.qiguliuxing.dts.wx.web;
 
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_CAPTCHA_FREQUENCY;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_CAPTCHA_UNMATCH;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_CAPTCHA_UNSUPPORT;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_INVALID_ACCOUNT;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_INVALID_MOBILE;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_MOBILE_REGISTERED;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_MOBILE_UNREGISTERED;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_NAME_REGISTERED;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_OPENID_BINDED;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_OPENID_UNACCESS;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.qiguliuxing.dts.vo.UserVO;
 import com.qiguliuxing.dts.wx.service.WxLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,29 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.qiguliuxing.dts.core.consts.CommConsts;
-import com.qiguliuxing.dts.core.notify.NotifyService;
-import com.qiguliuxing.dts.core.notify.NotifyType;
-import com.qiguliuxing.dts.core.type.UserTypeEnum;
-import com.qiguliuxing.dts.core.util.CharUtil;
-import com.qiguliuxing.dts.core.util.JacksonUtil;
-import com.qiguliuxing.dts.core.util.RegexUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
-import com.qiguliuxing.dts.core.util.bcrypt.BCryptPasswordEncoder;
-import com.qiguliuxing.dts.db.domain.DtsUser;
 import com.qiguliuxing.dts.db.service.DtsUserService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
-import com.qiguliuxing.dts.wx.dao.UserInfo;
 import com.qiguliuxing.dts.wx.dao.UserToken;
-import com.qiguliuxing.dts.wx.dao.WxLoginInfo;
-import com.qiguliuxing.dts.wx.service.CaptchaCodeManager;
 import com.qiguliuxing.dts.wx.service.UserTokenManager;
-import com.qiguliuxing.dts.wx.util.IpUtil;
-import com.qiguliuxing.dts.wx.util.WxResponseUtil;
-
-import cn.binarywang.wx.miniapp.api.WxMaService;
-import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
-import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 
 /**
  * 鉴权服务

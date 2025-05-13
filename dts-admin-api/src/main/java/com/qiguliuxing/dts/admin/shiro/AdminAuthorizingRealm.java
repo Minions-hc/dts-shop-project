@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.admin.shiro;
 import java.util.List;
 import java.util.Set;
 
+import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -24,12 +25,11 @@ import org.springframework.util.StringUtils;
 import com.qiguliuxing.dts.core.util.bcrypt.BCryptPasswordEncoder;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
 import com.qiguliuxing.dts.db.service.DtsAdminService;
-import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import com.qiguliuxing.dts.db.service.DtsRoleService;
 
 /**
  * 授权相关服务-shiro
- * 
+ *
  * @author qiguliuxing
  * @since 1.0.0
  */

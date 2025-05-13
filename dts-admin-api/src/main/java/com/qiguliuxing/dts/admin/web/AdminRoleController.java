@@ -38,7 +38,6 @@ import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
 import com.qiguliuxing.dts.db.domain.DtsPermission;
 import com.qiguliuxing.dts.db.domain.DtsRole;
-import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import com.qiguliuxing.dts.db.service.DtsRoleService;
 
 @RestController
@@ -49,8 +48,7 @@ public class AdminRoleController {
 
 	@Autowired
 	private DtsRoleService roleService;
-	@Autowired
-	private DtsPermissionService permissionService;
+
 
 	@RequiresPermissions("admin:role:list")
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "角色查询")
@@ -163,92 +161,5 @@ public class AdminRoleController {
 		return ResponseUtil.ok();
 	}
 
-	@Autowired
-	private ApplicationContext context;
-	private List<PermVo> systemPermissions = null;
-	private Set<String> systemPermissionsString = null;
-
-	private List<PermVo> getSystemPermissions() {
-		final String basicPackage = "com.qiguliuxing.dts.admin";
-		if (systemPermissions == null) {
-			List<Permission> permissions = PermissionUtil.listPermission(context, basicPackage);
-			systemPermissions = PermissionUtil.listPermVo(permissions);
-			systemPermissionsString = PermissionUtil.listPermissionString(permissions);
-		}
-		return systemPermissions;
-	}
-
-	private Set<String> getAssignedPermissions(Integer roleId) {
-		// 这里需要注意的是，如果存在超级权限*，那么这里需要转化成当前所有系统权限。
-		// 之所以这么做，是因为前端不能识别超级权限，所以这里需要转换一下。
-		Set<String> assignedPermissions = null;
-		if (permissionService.checkSuperPermission(roleId)) {
-			getSystemPermissions();
-			assignedPermissions = systemPermissionsString;
-		} else {
-			assignedPermissions = permissionService.queryByRoleId(roleId);
-		}
-
-		return assignedPermissions;
-	}
-
-	/**
-	 * 管理员的权限情况
-	 *
-	 * @return 系统所有权限列表和管理员已分配权限
-	 */
-	@RequiresPermissions("admin:role:permission:get")
-	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "权限详情")
-	@GetMapping("/permissions")
-	public Object getPermissions(Integer roleId) {
-		logger.info("【请求开始】系统管理->角色管理->权限详情,请求参数,roleId:{}", roleId);
-
-		List<PermVo> systemPermissions = getSystemPermissions();
-		Set<String> assignedPermissions = getAssignedPermissions(roleId);
-
-		Map<String, Object> data = new HashMap<>();
-		data.put("systemPermissions", systemPermissions);
-		data.put("assignedPermissions", assignedPermissions);
-
-		logger.info("【请求结束】系统管理->角色管理->权限详情,响应结果:{}", JSONObject.toJSONString(data));
-		return ResponseUtil.ok(data);
-	}
-
-	/**
-	 * 更新管理员的权限
-	 *
-	 * @param body
-	 * @return
-	 */
-	@RequiresPermissions("admin:role:permission:update")
-	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "权限变更")
-	@PostMapping("/permissions")
-	public Object updatePermissions(@RequestBody String body) {
-		logger.info("【请求开始】系统管理->角色管理->权限变更,请求参数,body:{}", body);
-
-		Integer roleId = JacksonUtil.parseInteger(body, "roleId");
-		List<String> permissions = JacksonUtil.parseStringList(body, "permissions");
-		if (roleId == null || permissions == null) {
-			return ResponseUtil.badArgument();
-		}
-
-		// 如果修改的角色是超级权限，则拒绝修改。
-		if (permissionService.checkSuperPermission(roleId)) {
-			logger.error("系统管理->角色管理->权限变更 错误:{}", AdminResponseCode.ROLE_SUPER_SUPERMISSION.desc());
-			return AdminResponseUtil.fail(AdminResponseCode.ROLE_SUPER_SUPERMISSION);
-		}
-
-		// 先删除旧的权限，再更新新的权限
-		permissionService.deleteByRoleId(roleId);
-		for (String permission : permissions) {
-			DtsPermission DtsPermission = new DtsPermission();
-			DtsPermission.setRoleId(roleId);
-			DtsPermission.setPermission(permission);
-			permissionService.add(DtsPermission);
-		}
-
-		logger.info("【请求结束】系统管理->角色管理->权限变更,响应结果:{}", "成功!");
-		return ResponseUtil.ok();
-	}
 
 }
