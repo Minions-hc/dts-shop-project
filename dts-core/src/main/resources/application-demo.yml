@@ -102,8 +102,8 @@ dts:
     # 阿里云对象存储配置信息
     aliyun:
       endpoint: oss-cn-shenzhen.aliyuncs.com
-      accessKeyId: XXXXXXX
-      accessKeySecret: XXXXXXX
+      accessKeyId: XXXXXXXXXXX
+      accessKeySecret: XXXXXXXXXXXXXX
       bucketName: chaoshangshiduo-public-static
     # 腾讯对象存储配置信息
     # 请参考 https://cloud.tencent.com/document/product/436/6249
@@ -128,10 +128,10 @@ pagehelper:
 spring:
   datasource:
     druid:
-      url:  jdbc:mysql://localhost:3306/demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+      url:  jdbc:mysql://localhost:3306/chillshangshop?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
       driver-class-name:  com.mysql.jdbc.Driver
       username:  root
-      password:  123456
+      password:  Syw8023lby@
       initial-size:  10
       max-active:  50
       min-idle:  10
