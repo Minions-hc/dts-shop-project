@@ -7,6 +7,7 @@ import com.qiguliuxing.dts.vo.OrderDetailVO;
 import com.qiguliuxing.dts.vo.OrderItemVO;
 import com.qiguliuxing.dts.vo.OrderVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -55,5 +56,10 @@ public class DtsOrderService {
 		List<OrderItemVO> orderItems = dtsOrderMapper.queryOrderItems(orderId);
 		orderDetail.setOrderItems(orderItems);
 		return orderDetail;
+	}
+
+	@Transactional
+	public int insertOrder(OrderVO order){
+		return dtsOrderMapper.insertOrder(order);
 	}
 }

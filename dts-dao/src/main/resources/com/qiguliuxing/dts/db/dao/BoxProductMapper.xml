@@ -31,6 +31,15 @@
         ORDER BY obtain_time DESC
     </select>
 
+    <!-- 根据用户ID查询 -->
+    <select id="selectByIdAndUserId" resultMap="BaseResultMap">
+        SELECT * FROM box_product
+        WHERE user_id = #{userId}
+        and id = #{id}
+        ORDER BY obtain_time DESC
+    </select>
+
+
     <!-- 新增商品 -->
     <insert id="insert" parameterType="com.qiguliuxing.dts.vo.BoxProductVO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO box_product (

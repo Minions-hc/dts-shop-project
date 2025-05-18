@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 盒柜订单支付信息服务
  */
@@ -45,6 +47,13 @@ public class BoxOrderService {
      */
     public BoxOrderVO getBoxOrderByRecordId(Integer recordId) {
         return boxOrderMapper.selectByRecordId(recordId);
+    }
+
+    /**
+     * 根据盒柜商品ID查询支付信息
+     */
+    public List<BoxOrderVO> getBoxOrderByRecordIds(List<Integer> recordIds) {
+        return boxOrderMapper.selectByRecordIds(recordIds);
     }
 
     /**

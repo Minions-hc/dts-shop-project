@@ -51,8 +51,33 @@
     </update>
 
     <select id="selectByRecordId" resultMap="BoxOrderVOResultMap">
-        SELECT * FROM box_order WHERE record_id = #{recordId}
+        SELECT  record_id,
+                order_id,
+                point_deduction,
+                coupon_deduction,
+                order_amount,
+                payment_amount,
+                payment_time,
+                shipping_fee
+        FROM box_order WHERE record_id = #{recordId}
     </select>
+
+    <select id="selectByRecordIds" resultMap="BoxOrderVOResultMap">
+        SELECT  record_id,
+                order_id,
+                point_deduction,
+                coupon_deduction,
+                order_amount,
+                payment_amount,
+                payment_time,
+                shipping_fee
+        FROM box_order WHERE record_id in
+        <foreach collection="recordIds" item="recordId" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+
+    </select>
+
 
     <select id="selectByOrderId" resultMap="BoxOrderVOResultMap">
         SELECT * FROM box_order WHERE order_id = #{orderId}

@@ -157,6 +157,45 @@
              )
   </insert>
 
+  <insert id="insertOrder" parameterType="com.qiguliuxing.dts.vo.OrderVO">
+      <selectKey resultType="java.lang.Integer" keyProperty="orderId" order="AFTER">
+          SELECT LAST_INSERT_ID()
+      </selectKey>
+    INSERT INTO shop_order (
+      user_id,
+      order_no,
+      address_id,
+      order_amount,
+      payment_amount,
+      payment_time,
+      delivery_time,
+      shipping_channel,
+      tracking_number,
+      order_status,
+      create_by,
+      update_by,
+      shipping_fee,
+      discount_amount,
+      points_deduction
+    ) VALUES (
+               #{userId},
+               #{orderNo},
+               #{addressId},
+               #{orderAmount},
+               #{paymentAmount},
+               #{paymentTime},
+               #{deliveryTime},
+               #{shippingChannel},
+               #{trackingNumber},
+               #{orderStatus},
+               #{createBy},
+               #{updateBy},
+               #{shippingFee},
+               #{discountAmount},
+               #{pointsDeduction}
+             )
+  </insert>
+
   <select id="queryOrderByOrderNo" parameterType="java.lang.String" resultType="com.qiguliuxing.dts.vo.OrderVO">
     SELECT
       o.order_id as orderId,

@@ -1,5 +1,6 @@
 package com.qiguliuxing.dts.wx.web;
 
+import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BoxProductService;
 import com.qiguliuxing.dts.vo.BoxProductVO;
@@ -73,11 +74,20 @@ public class WxBoxProductController {
      * 盒柜提交发货
      */
     @PostMapping("/submitDelivery")
-    public Object submitDelivery(@PathParam ("userId") String userId, @RequestBody List<Integer> productIds) {
-        boxProductService.shipProducts(userId, productIds);
+    public Object submitDelivery(@RequestBody String body) {
+        String userId = JacksonUtil.parseString(body, "userId");
+        List<Integer> ids = JacksonUtil.parseIntegerList(body, "ids");
+        boxProductService.shipProducts(userId, ids);
         return ResponseUtil.ok();
     }
 
-
+    /**
+     * 盒柜提交发货
+     */
+    @GetMapping("/boxProductInfo")
+    public Object boxProductInfo(@PathParam("userId") String userId, @PathParam("id") Integer id) {
+        BoxProductVO boxProductVO = boxProductService.selectByIdAndUserId(id, userId);
+        return ResponseUtil.ok(boxProductVO);
+    }
 
 }
