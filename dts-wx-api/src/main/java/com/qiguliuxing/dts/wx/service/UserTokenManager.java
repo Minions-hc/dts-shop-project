@@ -66,7 +66,7 @@ public class UserTokenManager {
 		return userToken.getSessionKey();
 	}
 
-	public static void removeToken(Integer userId) {
+	public static void removeToken(String userId) {
 		UserToken userToken = idMap.get(userId);
 		String token = userToken.getToken();
 		idMap.remove(userId);

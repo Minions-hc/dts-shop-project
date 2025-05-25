@@ -604,6 +604,7 @@
     <id property="userId" column="user_id"/>
     <result property="wxOpenId" column="wx_openid"/>
     <result property="userName" column="user_name"/>
+    <result property="nickName" column="nick_name"/>
     <result property="avatar" column="avatar"/>
     <result property="points" column="points"/>
     <result property="productSpiritPower" column="product_spirit_power"/>
@@ -734,7 +735,7 @@
   </select>
 
   <!-- 根据微信openid查询用户 -->
-  <select id="selectByWxOpenId" resultType="com.qiguliuxing.dts.vo.UserVO">
+  <select id="selectByWxOpenId" resultMap="userResultMap">
     SELECT
       user_id,
       wx_openid,
@@ -762,4 +763,30 @@
     WHERE user_id = #{userId}
   </select>
 
+
+  <!-- 更新用户信息 - 动态SQL -->
+  <update id="updateUserInfo" parameterType="com.qiguliuxing.dts.vo.UserVO">
+    UPDATE shop_user
+    <set>
+      <if test="userName != null and userName != ''">
+        user_name = #{userName},
+      </if>
+      <if test="avatar != null and avatar != ''">
+        avatar = #{avatar},
+      </if>
+      <if test="phone != null and phone != ''">
+        phone = #{phone},
+      </if>
+      update_by = #{updateBy},
+      update_time = NOW()
+    </set>
+    WHERE user_id = #{userId}
+  </update>
+
+
+  <!-- 删除用户 - 物理删除 -->
+  <delete id="deleteUser">
+    DELETE FROM shop_user
+    WHERE user_id = #{userId}
+  </delete>
 </mapper>

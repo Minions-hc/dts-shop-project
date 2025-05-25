@@ -212,10 +212,10 @@ public interface DtsUserMapper {
 
     /**
      * 根据微信openid查询用户
-     * @param wxOpenid 微信openid
+     * @param wxOpenId 微信openid
      * @return 用户对象
      */
-    UserVO selectByWxOpenId(@Param("wxOpenid") String wxOpenid);
+    UserVO selectByWxOpenId(@Param("wxOpenId") String wxOpenId);
 
     /**
      * 检查用户ID是否已存在
@@ -223,4 +223,18 @@ public interface DtsUserMapper {
      * @return 存在返回1，不存在返回0
      */
     int checkUserIdExists(@Param("userId") String userId);
+
+    /**
+     * 更新用户信息
+     * @param userVO 用户信息
+     * @return
+     */
+    int updateUserInfo(UserVO userVO);
+
+    /**
+     * 用户注销
+     * @param userId 用户ID
+     * @return
+     */
+    int deleteUser(@Param("userId") String userId);
 }

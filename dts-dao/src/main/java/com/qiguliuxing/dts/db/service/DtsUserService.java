@@ -77,6 +77,7 @@ public class DtsUserService {
 			user = new UserVO();
 			user.setWxOpenId(openId);
 			user.setUserId(generateUniqueUserId()); // 生成唯一用户ID
+			user.setUserName(wxUserInfo.getString("nickName"));
 			user.setNickName(wxUserInfo.getString("nickName"));
 			user.setPhone(wxUserInfo.getString("phoneNumber"));
 			user.setAvatar(wxUserInfo.getString("avatarUrl"));
@@ -119,5 +120,18 @@ public class DtsUserService {
 		}
 
 		return sb.toString();
+	}
+
+	public boolean updateUserInfo(UserVO userVO) {
+		return userMapper.updateUserInfo(userVO) > 0;
+	}
+
+	/**
+	 * 用户注销
+	 * @param userId 用户ID
+	 * @return
+	 */
+	public boolean deleteUser(String userId) {
+		return userMapper.deleteUser(userId) > 0;
 	}
 }

@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
@@ -33,15 +30,56 @@ public class WxAuthController {
 	@Autowired
 	private WxLoginService wxLoginService;
 
+	/**
+	 * 更新用户信息
+	 * @param params
+	 * @return 更新结果
+	 */
+	@PostMapping("/update")
+	public Object updateUserInfo(@RequestBody JSONObject params) {
+		String userId = params.getString("userId");
+		String userName = params.getString("userName");
+		String phone = params.getString("phone");
+		String avatar = params.getString("avatar");
+		UserVO userVO = new UserVO();
+		userVO.setUserId(userId);
+		userVO.setUserName(userName);
+		userVO.setPhone(phone);
+		userVO.setAvatar(avatar);
+		userVO.setUpdateBy(userId);
+		boolean success = userService.updateUserInfo(userVO);
+		if (success) {
+			return ResponseUtil.ok();
+		} else {
+			return ResponseUtil.fail();
+		}
+	}
+
+
+	/**
+	 * 用户注销接口
+	 * @param userId 用户ID
+	 * @return 注销结果
+	 */
+	@PostMapping("/delete/{userId}")
+	public Object deleteUser(@PathVariable String userId) {
+		boolean success = userService.deleteUser(userId);
+		if (success) {
+			return ResponseUtil.ok();
+		} else {
+			return ResponseUtil.fail();
+		}
+	}
 
 	/**
 	 * 注销登录
 	 *
-	 * @param userId
+	 * @param params
 	 * @return
 	 */
-	@PostMapping("logout")
-	public Object logout(@LoginUser Integer userId) {
+	@PostMapping("/logout")
+	public Object logout(@RequestBody JSONObject params) {
+		String userId = params.getString("userId");
 		logger.info("【请求开始】注销登录,请求参数，userId:{}", userId);
 		if (userId == null) {
 			return ResponseUtil.unlogin();

@@ -2,11 +2,11 @@ package com.qiguliuxing.dts.admin.util;
 
 /**
  * 返回码定义
- * 
+ *
  * @author CHENBO
  * @since 1.0.0
  * @QQ 623659388
- * 
+ *
  */
 public enum AdminResponseCode {
 
@@ -14,7 +14,7 @@ public enum AdminResponseCode {
 	ADMIN_NAME_EXIST(602, "管理员已经存在"),
 	// ADMIN_ALTER_NOT_ALLOWED(603,""),
 	// ADMIN_DELETE_NOT_ALLOWED(604,""),
-	ADMIN_INVALID_ACCOUNT_OR_PASSWORD(605, "用户帐号或密码不正确"), ADMIN_LOCK_ACCOUNT(606, "用户帐号已锁定不可用"),
+	ADMIN_INVALID_ACCOUNT_OR_PASSWORD(605, "用户帐号或密码不正确"), ADMIN_LOCK_ACCOUNT(606, "用户帐号已锁定不可用"), ADMIN_INVALID_CAPTCHA (608, "验证码错误"),
 	ADMIN_INVALID_AUTH(607, "认证失败"), GOODS_UPDATE_NOT_ALLOWED(610, "商品已经在订单或购物车中，不能修改"),
 	GOODS_NAME_EXIST(611, "商品名已经存在"), ORDER_CONFIRM_NOT_ALLOWED(620, "当前订单状态不能确认收货"),
 	ORDER_REFUND_FAILED(621, "当前订单状态不能退款"), ORDER_REPLY_EXIST(622, "订单商品已回复！"),

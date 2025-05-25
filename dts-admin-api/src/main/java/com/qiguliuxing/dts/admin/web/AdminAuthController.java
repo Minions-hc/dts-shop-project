@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.qiguliuxing.dts.admin.util.*;
 import com.qiguliuxing.dts.db.service.DtsPermissionService;
@@ -22,13 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
@@ -37,6 +38,7 @@ import com.qiguliuxing.dts.db.domain.DtsAdmin;
 import com.qiguliuxing.dts.db.service.DtsRoleService;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/admin/auth")
@@ -49,40 +51,63 @@ public class AdminAuthController {
 	@Autowired
 	private DtsPermissionService permissionService;
 
+	// 存储验证码
+	private Map<String, String> captchaCache = new ConcurrentHashMap<>();
+
 	@GetMapping("/captchaImage")
-	public byte[] getCaptchaImage() throws IOException {
+	public ResponseEntity<byte[]> getCaptchaImage(@RequestParam String uuid) throws IOException {
+		// 生成验证码
 		CaptchaUtil.Captcha captcha = CaptchaUtil.generateCaptcha();
+		String captchaCode = captcha.getText();
+
+		// 存储验证码（实际项目中建议使用Redis等缓存，设置过期时间）
+		captchaCache.put(uuid, captchaCode);
 
 		// 将验证码图片转换为字节数组
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(captcha.getImage(), "png", baos);
-		return baos.toByteArray();
+		byte[] imageBytes = baos.toByteArray();
+
+		// 设置响应头
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		headers.setCacheControl("no-store, no-cache, must-revalidate");
+		headers.setPragma("no-cache");
+
+		return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
 	}
 
-	/*
-	 * { username : value, password : value }
-	 */
 	@PostMapping("/login")
 	public Object login(@RequestBody String body) {
 		logger.info("【请求开始】系统管理->用户登录,请求参数:body:{}", body);
 
 		String username = JacksonUtil.parseString(body, "username");
 		String password = JacksonUtil.parseString(body, "password");
+		String captchaCode = JacksonUtil.parseString(body, "code");
+		String uuid  = JacksonUtil.parseString(body, "uuid");
 
-		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+		// 验证基本参数
+		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(captchaCode)) {
 			return ResponseUtil.badArgument();
 		}
+		String storedCaptcha = captchaCache.get(uuid);
+
+		if (storedCaptcha == null || !storedCaptcha.equalsIgnoreCase(captchaCode)) {
+			logger.error("系统管理->用户登录 错误:验证码错误");
+			return AdminResponseUtil.fail(AdminResponseCode.ADMIN_INVALID_CAPTCHA);
+		}
+		// 验证通过后移除验证码
+		captchaCache.remove(uuid);
 
 		Subject currentUser = SecurityUtils.getSubject();
 		try {
 			currentUser.login(new UsernamePasswordToken(username, password));
 		} catch (UnknownAccountException uae) {
-			logger.error("系统管理->用户登录  错误:{}", AdminResponseCode.ADMIN_INVALID_ACCOUNT_OR_PASSWORD.desc());
+			logger.error("系统管理->用户登录 错误:{}", AdminResponseCode.ADMIN_INVALID_ACCOUNT_OR_PASSWORD.desc());
 			return AdminResponseUtil.fail(AdminResponseCode.ADMIN_INVALID_ACCOUNT_OR_PASSWORD);
 		} catch (LockedAccountException lae) {
 			logger.error("系统管理->用户登录 错误:{}", AdminResponseCode.ADMIN_LOCK_ACCOUNT.desc());
 			return AdminResponseUtil.fail(AdminResponseCode.ADMIN_LOCK_ACCOUNT);
-
 		} catch (AuthenticationException ae) {
 			logger.error("系统管理->用户登录 错误:{}", AdminResponseCode.ADMIN_LOCK_ACCOUNT.desc());
 			return AdminResponseUtil.fail(AdminResponseCode.ADMIN_INVALID_AUTH);
