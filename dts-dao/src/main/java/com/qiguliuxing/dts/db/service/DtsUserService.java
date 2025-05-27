@@ -134,4 +134,8 @@ public class DtsUserService {
 	public boolean deleteUser(String userId) {
 		return userMapper.deleteUser(userId) > 0;
 	}
+
+	public UserVO getUserById(String userId) {
+		return userMapper.selectUserById(userId);
+	}
 }

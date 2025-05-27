@@ -756,6 +756,28 @@
       LIMIT 1
   </select>
 
+  <!-- 根据用户ID查询用户信息 -->
+  <select id="selectUserById" resultMap="userResultMap">
+    SELECT
+      user_id,
+      user_name,
+      avatar,
+      points,
+      invite_code,
+      inviter_id,
+      phone,
+      red_packet_balance,
+      create_by,
+      create_time,
+      update_by,
+      update_time,
+      product_spirit_power,
+      wx_openid,
+      nick_name
+    FROM shop_user
+    WHERE user_id = #{userId}
+  </select>
+
   <!-- 检查用户ID是否存在 -->
   <select id="checkUserIdExists" resultType="int">
     SELECT COUNT(1)

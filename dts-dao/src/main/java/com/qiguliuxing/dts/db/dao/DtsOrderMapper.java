@@ -7,6 +7,7 @@ import com.qiguliuxing.dts.vo.OrderDetailVO;
 import com.qiguliuxing.dts.vo.OrderItemVO;
 import com.qiguliuxing.dts.vo.OrderVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface DtsOrderMapper {
 
@@ -30,4 +31,10 @@ public interface DtsOrderMapper {
      * 插入订单
      */
     int insertOrder(OrderVO order);
+
+    /**
+     * 检查订单号是否存在
+     */
+    @Select("SELECT COUNT(1) FROM shop_order WHERE order_no = #{orderNo}")
+    boolean existsByOrderNo(@Param("orderNo") String orderNo);
 }

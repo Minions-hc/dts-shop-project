@@ -237,4 +237,6 @@ public interface DtsUserMapper {
      * @return
      */
     int deleteUser(@Param("userId") String userId);
+
+    UserVO selectUserById(String userId);
 }
