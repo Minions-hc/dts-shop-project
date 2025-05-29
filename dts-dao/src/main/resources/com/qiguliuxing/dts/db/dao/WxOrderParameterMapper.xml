@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.WxOrderParameterMapper">
+
+    <!-- 插入订单参数 -->
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.WxOrderParameter" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wx_orderparameter (
+            user_id, numbers, box_number, series_id, spirit_power, activity_type,
+            point_deduction, coupon_deduction, order_amount, payment_amount,
+            ids, business_type, out_trade_no
+        ) VALUES (
+                     #{userId},
+                     #{numbers, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
+                     #{boxNumber},
+                     #{seriesId},
+                     #{spiritPower},
+                     #{activityType},
+                     #{pointDeduction},
+                     #{couponDeduction},
+                     #{orderAmount},
+                     #{paymentAmount},
+                     #{ids, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
+                     #{businessType},
+                     #{outTradeNo}
+                 )
+    </insert>
+
+    <!-- 根据商户订单号查询 -->
+    <select id="selectByOutTradeNo" resultType="com.qiguliuxing.dts.vo.WxOrderParameter">
+        SELECT
+            id, user_id as userId, numbers, box_number as boxNumber,
+            series_id as seriesId, spirit_power as spiritPower, activity_type as activityType,
+            point_deduction as pointDeduction, coupon_deduction as couponDeduction,
+            order_amount as orderAmount, payment_amount as paymentAmount,
+            ids, business_type as businessType, out_trade_no as outTradeNo,
+            create_time as createTime, update_time as updateTime
+        FROM wx_orderparameter
+        WHERE out_trade_no = #{outTradeNo}
+    </select>
+
+    <!-- 根据用户ID查询 -->
+    <select id="selectByUserId" resultType="com.qiguliuxing.dts.vo.WxOrderParameter">
+        SELECT
+            id, user_id as userId, numbers, box_number as boxNumber,
+            series_id as seriesId, spirit_power as spiritPower, activity_type as activityType,
+            point_deduction as pointDeduction, coupon_deduction as couponDeduction,
+            order_amount as orderAmount, payment_amount as paymentAmount,
+            ids, business_type as businessType, out_trade_no as outTradeNo,
+            create_time as createTime, update_time as updateTime
+        FROM wx_orderparameter
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+</mapper>

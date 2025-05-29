@@ -82,7 +82,7 @@ public class WxBoxProductController {
     }
 
     /**
-     * 盒柜提交发货
+     * 盒柜详细信息
      */
     @GetMapping("/boxProductInfo")
     public Object boxProductInfo(@PathParam("userId") String userId, @PathParam("id") Integer id) {

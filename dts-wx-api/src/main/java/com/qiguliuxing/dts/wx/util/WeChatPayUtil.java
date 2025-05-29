@@ -32,7 +32,7 @@ public class WeChatPayUtil {
     private static final String API_V3_KEY = "chillShangShiDuo1717472713666888";
     private static final String MCH_SERIAL_NO = "45D52E94F1332F4D5E0BD68A838BCA2E3C2C9E50";
     private static final String PRIVATE_KEY_PATH = "apiclient_key.pem";
-    private static final String NOTIFY_URL = "http://huangcheng.chaoshangshiduo.com/wx/wxpay/notify";
+    private static final String NOTIFY_URL = "https://chaoshangshiduo.com/admin/wxpay/notify";
 
     private static final String API_URL = "https://api.mch.weixin.qq.com";
 

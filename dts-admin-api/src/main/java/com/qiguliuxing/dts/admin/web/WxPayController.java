@@ -1,31 +1,27 @@
-package com.qiguliuxing.dts.wx.web;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+package com.qiguliuxing.dts.admin.web;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import com.qiguliuxing.dts.db.service.BlindBoxRecordService;
 import com.qiguliuxing.dts.db.service.BoxProductService;
 import com.qiguliuxing.dts.db.service.WxOrderParameterService;
-import com.qiguliuxing.dts.vo.BlindBoxDrawResultVO;
 import com.qiguliuxing.dts.vo.WxOrderParameter;
-import com.qiguliuxing.dts.wx.service.WxOrderService;
-import com.qiguliuxing.dts.wx.util.WeChatPayUtil;
 import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
 import com.wechat.pay.contrib.apache.httpclient.util.AesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wx/wxpay")
+@RequestMapping("admin/wxpay")
 public class WxPayController {
 
     private static final Logger logger = LoggerFactory.getLogger(WxPayController.class);
@@ -43,55 +39,6 @@ public class WxPayController {
     private BoxProductService boxProductService;
 
     private static final String API_V3_KEY = "chillShangShiDuo1717472713666888";
-    /**
-     * 创建JSAPI支付订单
-     * body
-     * @return 支付参数
-     */
-    @PostMapping("/create")
-    public Map<String, String> createOrder(@RequestBody String body ) throws Exception {
-        JSONObject data = JSON.parseObject(body);
-        String openId = data.getString("openId");
-        Integer amount = data.getInteger("amount");
-        String description = data.getString("description");
-        Integer businessType = data.getInteger("businessType");
-        WxOrderParameter wxOrderParameter = new WxOrderParameter();
-        String userId = data.getString("userId");
-        wxOrderParameter.setUserId(userId);
-        wxOrderParameter.setBusinessType(businessType);
-        if (businessType.equals(1)){
-            List<Integer> numbers = new ArrayList<>();
-            String boxNumber = data.getString("boxNumber");
-            Integer seriesId = data.getInteger("seriesId");
-            Integer spiritPower = data.getInteger("spiritPower");
-            String activityType = data.getString("activityType");
-            BigDecimal pointDeduction = data.getBigDecimal("pointDeduction");
-            BigDecimal couponDeduction = data.getBigDecimal("couponDeduction");
-            BigDecimal orderAmount = data.getBigDecimal("orderAmount");
-            BigDecimal paymentAmount = data.getBigDecimal("paymentAmount");
-            wxOrderParameter.setNumbers(numbers);
-            wxOrderParameter.setBoxNumber(boxNumber);
-            wxOrderParameter.setSeriesId(seriesId);
-            wxOrderParameter.setSpiritPower(spiritPower);
-            wxOrderParameter.setActivityType(activityType);
-            wxOrderParameter.setPointDeduction(pointDeduction);
-            wxOrderParameter.setCouponDeduction(couponDeduction);
-            wxOrderParameter.setOrderAmount(orderAmount);
-            wxOrderParameter.setPaymentAmount(paymentAmount);
-        } else if (businessType.equals(2)){
-            List<Integer> ids = new ArrayList<>();
-            wxOrderParameter.setIds(ids);
-        }
-        // 生成商户订单号(实际项目中应该有自己的订单号生成规则)
-        String outTradeNo = "ORDER_" + System.currentTimeMillis();
-        Map<String, String> jsapiOrder = WeChatPayUtil.createJsapiOrder(openId, amount, description, outTradeNo);
-        wxOrderParameter.setOutTradeNo(outTradeNo);
-        int result = wxOrderParameterService.saveOrderParameter(wxOrderParameter);
-        if (result < 1) {
-            logger.error("微信支付参数写入错误！ outTradeNo：{}", outTradeNo);
-        }
-        return jsapiOrder;
-    }
 
     /**
      * 支付回调通知
@@ -100,12 +47,26 @@ public class WxPayController {
      */
     @PostMapping("/notify")
     public String payNotify(HttpServletRequest request, @RequestBody String requestBody) {
+        // 1. 记录请求基本信息
+        logger.info("\n========== 微信支付回调通知开始 ==========");
+        logger.info("请求方法: {}", request.getMethod());  // 应该是 POST
+        logger.info("请求URL: {}", request.getRequestURL());
+        logger.info("Content-Type: {}", request.getContentType());
+        logger.info("请求Body数据: \n{}", requestBody);
 
+
+
+        System.out.println("********************进入微信回调*****************");
         // 1. 获取并验证请求头
         String signature = request.getHeader("Wechatpay-Signature");
         String timestamp = request.getHeader("Wechatpay-Timestamp");
         String nonce = request.getHeader("Wechatpay-Nonce");
         String serialNo = request.getHeader("Wechatpay-Serial");
+
+        logger.info("微信回调请求头 - Signature: {}", signature);
+        logger.info("微信回调请求头 - Timestamp: {}", timestamp);
+        logger.info("微信回调请求头 - Nonce: {}", nonce);
+        logger.info("微信回调请求头 - SerialNo: {}", serialNo);
 
         if (signature == null || timestamp == null || nonce == null || serialNo == null) {
             logger.error("微信支付回调通知头信息不完整");
@@ -125,12 +86,13 @@ public class WxPayController {
             return failResponse("数据解析失败");
         }
         String outTradeNo = String.valueOf(resultMap.get("out_trade_no"));
+        System.out.println("**************商户订单号：" + outTradeNo);
         WxOrderParameter wxOrderParameter = wxOrderParameterService.getByOutTradeNo(outTradeNo);
         if (wxOrderParameter == null) {
             logger.error("微信支付参数为空！ outTradeNo：{}", outTradeNo);
             return failResponse("微信支付参数为空");
         }
-
+        System.out.println("**************支付参数：" + wxOrderParameter.getBusinessType());
         // 4. 处理业务逻辑
         if (wxOrderParameter.getBusinessType().equals(1)) {
             // 盲盒抽赏

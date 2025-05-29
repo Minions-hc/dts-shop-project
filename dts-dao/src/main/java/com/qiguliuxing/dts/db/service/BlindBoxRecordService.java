@@ -159,14 +159,14 @@ public class BlindBoxRecordService {
 
     /**
      * 抽取盲盒
-     * @param request 请求参数
+     * @param wxOrderParameter 请求参数
      * @return
      */
     @Transactional
-    public List<BlindBoxDrawResultVO> drawBlindBox(BlindBoxDrawRequestVO request) {
+    public List<BlindBoxDrawResultVO> drawBlindBox(WxOrderParameter wxOrderParameter) {
         // 1. 查询可用的产品列表
         List<ProductBoxResultVo> availableProducts = blindBoxRecordMapper.selectAvailableProducts(
-                request.getSeriesId(), request.getBoxNumber());
+                wxOrderParameter.getSeriesId(), wxOrderParameter.getBoxNumber());
         if (availableProducts.isEmpty()) {
             throw new RuntimeException("该盲盒已售罄或不存在");
         }
@@ -185,7 +185,7 @@ public class BlindBoxRecordService {
         List<BlindBoxDrawResultVO> results = new ArrayList<>();
         Random random = new Random();
         int spiritPower = 0;
-        for (Integer number : request.getNumbers()) {
+        for (Integer number : wxOrderParameter.getNumbers()) {
             // 随机选择一个产品
             ProductBoxResultVo selectedProduct = productPool.get(random.nextInt(productPool.size()));
             // 4. 更新库存
@@ -200,18 +200,18 @@ public class BlindBoxRecordService {
             ProductVO product = productService.getProductById(selectedProduct.getProductId());
             spiritPower += product.getProductSpiritPower();
             BoxProductVO boxProductVO = new BoxProductVO();
-            boxProductVO.setActivityType(request.getActivityType());
+            boxProductVO.setActivityType(wxOrderParameter.getActivityType());
             boxProductVO.setProductId(selectedProduct.getProductId());
             boxProductVO.setProductName(selectedProduct.getProductName());
             boxProductVO.setProductImage(product.getProductImage());
             boxProductVO.setProductLevel(product.getProductLevelName());
             boxProductVO.setStatus(StatusType.PENDING.getCode());
             boxProductVO.setProductLevel(product.getProductLevelName());
-            boxProductVO.setBoxNumber(request.getBoxNumber());
+            boxProductVO.setBoxNumber(wxOrderParameter.getBoxNumber());
             boxProductVO.setObtainTime(new Date());
             boxProductVO.setCreatedTime(new Date());
             boxProductVO.setUpdatedTime(new Date());
-            boxProductVO.setUserId(request.getUserId());
+            boxProductVO.setUserId(wxOrderParameter.getUserId());
             boxProductVO.setProductBadge(product.getProductBadge());
             // 抽中的产品入盒柜表
             int id = boxProductService.addProduct(boxProductVO);
@@ -219,19 +219,19 @@ public class BlindBoxRecordService {
             // 5. 记录抽取记录
             blindBoxRecordMapper.insertDrawRecord(
                     id,
-                    request.getUserId(),
+                    wxOrderParameter.getUserId(),
                     number,
-                    request.getSeriesId(),
-                    request.getBoxNumber(),
+                    wxOrderParameter.getSeriesId(),
+                    wxOrderParameter.getBoxNumber(),
                     selectedProduct.getProductId());
 
             //写子表数据
             BoxOrderVO boxOrderVO = new BoxOrderVO();
-            boxOrderVO.setOrderAmount(request.getOrderAmount());
-            boxOrderVO.setCouponDeduction(request.getCouponDeduction());
+            boxOrderVO.setOrderAmount(wxOrderParameter.getOrderAmount());
+            boxOrderVO.setCouponDeduction(wxOrderParameter.getCouponDeduction());
             boxOrderVO.setShippingFee(BigDecimal.valueOf(0));
-            boxOrderVO.setPointDeduction(request.getPointDeduction());
-            boxOrderVO.setPaymentAmount(request.getPaymentAmount());
+            boxOrderVO.setPointDeduction(wxOrderParameter.getPointDeduction());
+            boxOrderVO.setPaymentAmount(wxOrderParameter.getPaymentAmount());
             boxOrderVO.setRecordId(boxProductVO.getId());
             boxOrderVO.setCreatedTime(new Date());
             boxOrderVO.setPaymentTime(new Date());
@@ -251,7 +251,7 @@ public class BlindBoxRecordService {
             results.add(result);
         }
         // 更新用户魂力值
-        dtsUserService.updateSpiritPower(request.getUserId(), spiritPower, true);
+        dtsUserService.updateSpiritPower(wxOrderParameter.getUserId(), spiritPower, true);
         return results;
     }
 }

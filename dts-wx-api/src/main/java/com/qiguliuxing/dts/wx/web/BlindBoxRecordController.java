@@ -102,7 +102,7 @@ public class BlindBoxRecordController {
         if(request.getActivityType().equals(ActivityType.SOUL_POWER.getName())) {
             results = blindBoxRecordService.drawBlindBoxBySpiritPower(request);
         } else {
-            results = blindBoxRecordService.drawBlindBox(request);
+            results = blindBoxRecordService.drawBlindBox(null);
         }
         return ResponseUtil.ok(results);
     }

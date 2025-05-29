@@ -62,7 +62,9 @@ public class BoxProductService {
         if (CollectionUtils.isEmpty(ids)){
             throw new RuntimeException("参数错误");
         }
-
+        if (ids.size() < 3) {
+            throw new RuntimeException("提货低于3个，需要调用支付接口支付运费");
+        }
         List<String> statusList = new ArrayList<>();
         statusList.add("pending");
         List<BoxProductVO> boxProductVOS = boxProductMapper.selectByUserId(userId, statusList);
@@ -95,14 +97,12 @@ public class BoxProductService {
             }
             orderItemVOMap.put(boxProductVO.getProductId(), orderItemVO);
         }
-
-        int shippingFee = ids.size() < 3 ? 12 : 0;
         // 2. 创建订单
         OrderVO order = new OrderVO();
         order.setUserId(userId);
         order.setOrderNo(OrderNoGenerator.generate());
         order.setAddressId(addressVO.getAddressId());
-        order.setShippingFee(BigDecimal.valueOf(shippingFee));
+        order.setShippingFee(BigDecimal.valueOf(0));
         order.setCreateBy(order.getUserId());
         order.setUpdateBy(order.getUserId());
         if(CollectionUtils.isEmpty(boxOrders)){
