@@ -34,4 +34,11 @@ public interface BoxProductMapper {
             @Param("userId") String userId,
             @Param("activityTypeList") List<String> activityTypeList,
             @Param("statusList") List<String> statusList);
+
+    /**
+     * 使用微信订单号查询盒柜
+     * @param wxOrderNo 微信订单号
+     * @return 盒柜商品列表
+     */
+    List<BoxProductVO> selectBoxProductsByWxOrderNo(String wxOrderNo);
 }

@@ -213,6 +213,7 @@ public class BlindBoxRecordService {
             boxProductVO.setUpdatedTime(new Date());
             boxProductVO.setUserId(wxOrderParameter.getUserId());
             boxProductVO.setProductBadge(product.getProductBadge());
+            boxProductVO.setWxOrderNo(wxOrderParameter.getWxOrderNo());
             // 抽中的产品入盒柜表
             int id = boxProductService.addProduct(boxProductVO);
 

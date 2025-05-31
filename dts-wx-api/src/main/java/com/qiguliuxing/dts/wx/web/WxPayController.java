@@ -60,7 +60,7 @@ public class WxPayController {
         wxOrderParameter.setUserId(userId);
         wxOrderParameter.setBusinessType(businessType);
         if (businessType.equals(1)){
-            List<Integer> numbers = new ArrayList<>();
+            List<Integer> numbers = JSON.parseArray(data.getJSONArray("numbers").toJSONString(), Integer.class);
             String boxNumber = data.getString("boxNumber");
             Integer seriesId = data.getInteger("seriesId");
             Integer spiritPower = data.getInteger("spiritPower");
@@ -79,13 +79,14 @@ public class WxPayController {
             wxOrderParameter.setOrderAmount(orderAmount);
             wxOrderParameter.setPaymentAmount(paymentAmount);
         } else if (businessType.equals(2)){
-            List<Integer> ids = new ArrayList<>();
+            List<Integer> ids = JSON.parseArray(data.getJSONArray("ids").toJSONString(), Integer.class);;
             wxOrderParameter.setIds(ids);
         }
         // 生成商户订单号(实际项目中应该有自己的订单号生成规则)
         String outTradeNo = "ORDER_" + System.currentTimeMillis();
         Map<String, String> jsapiOrder = WeChatPayUtil.createJsapiOrder(openId, amount, description, outTradeNo);
         wxOrderParameter.setOutTradeNo(outTradeNo);
+        wxOrderParameter.setWxOrderNo(jsapiOrder.get("nonceStr"));
         int result = wxOrderParameterService.saveOrderParameter(wxOrderParameter);
         if (result < 1) {
             logger.error("微信支付参数写入错误！ outTradeNo：{}", outTradeNo);

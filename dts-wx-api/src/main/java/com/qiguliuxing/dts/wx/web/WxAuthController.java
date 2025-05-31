@@ -114,6 +114,8 @@ public class WxAuthController {
 			JSONObject sessionInfo = wxLoginService.code2Session(code);
 			String openId = sessionInfo.getString("openid");
 			String sessionKey = sessionInfo.getString("session_key");
+			logger.error("解析当前登录用户的openId：{}", openId);
+			logger.error("解析当前登录用户的session_key：{}", sessionKey);
 
 			JSONObject userInfo = null;
 			// 3. 如果需要解密用户信息

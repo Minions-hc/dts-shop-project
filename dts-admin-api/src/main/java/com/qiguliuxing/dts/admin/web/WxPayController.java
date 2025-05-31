@@ -115,11 +115,11 @@ public class WxPayController {
             // 示例: 使用Jackson解析JSON
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> dataMap = mapper.readValue(requestBody, Map.class);
-
+            Map<String, Object> resultMap = (Map<String, Object>) dataMap.get("resource");
             // 获取加密数据
-            String cipherText = (String) dataMap.get("resource.ciphertext");
-            String associatedData = (String) dataMap.get("resource.associated_data");
-            String nonce = (String) dataMap.get("resource.nonce");
+            String cipherText = (String) resultMap.get("ciphertext");
+            String associatedData = (String) resultMap.get("associated_data");
+            String nonce = (String) resultMap.get("nonce");
 
             // 使用APIv3密钥解密
             AesUtil aesUtil = new AesUtil(API_V3_KEY.getBytes(StandardCharsets.UTF_8));

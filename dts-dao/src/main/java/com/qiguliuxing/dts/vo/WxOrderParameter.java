@@ -22,6 +22,7 @@ public class WxOrderParameter {
     private List<Integer> ids;      // 提货ID列表
     private Integer businessType;   // 业务类型（1，抽赏；2，提货）
     private String outTradeNo;      // 商户订单号
+    private String wxOrderNo;      // 微信订单号
     private Date createTime;        // 创建时间
     private Date updateTime;        // 更新时间
 
@@ -151,5 +152,13 @@ public class WxOrderParameter {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getWxOrderNo() {
+        return wxOrderNo;
+    }
+
+    public void setWxOrderNo(String wxOrderNo) {
+        this.wxOrderNo = wxOrderNo;
     }
 }

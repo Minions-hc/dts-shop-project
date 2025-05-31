@@ -90,4 +90,16 @@ public class WxBoxProductController {
         return ResponseUtil.ok(boxProductVO);
     }
 
+    /**
+     * 根据微信订单号查询抽奖结果
+     */
+    @GetMapping("/getBoxProductsByWxOrderNo")
+    public Object getBoxProductsByWxOrderNo(@PathParam("wxOrderNo") String wxOrderNo) {
+        List<BoxProductVO> boxProductVOs = boxProductService.selectBoxProductsByWxOrderNo(wxOrderNo);
+        if (boxProductVOs.isEmpty()) {
+            return ResponseUtil.fail(1001, "请联系客服进行订单查询");
+        }
+        return ResponseUtil.ok(boxProductVOs);
+    }
+
 }

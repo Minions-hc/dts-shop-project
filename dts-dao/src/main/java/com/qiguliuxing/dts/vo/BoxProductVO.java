@@ -17,6 +17,7 @@ public class BoxProductVO {
     private Date obtainTime;
     private Date createdTime;
     private Date updatedTime;
+    private String wxOrderNo;
 
     // Getters and Setters
     public Integer getId() {
@@ -129,5 +130,13 @@ public class BoxProductVO {
 
     public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = updatedTime;
+    }
+
+    public String getWxOrderNo() {
+        return wxOrderNo;
+    }
+
+    public void setWxOrderNo(String wxOrderNo) {
+        this.wxOrderNo = wxOrderNo;
     }
 }

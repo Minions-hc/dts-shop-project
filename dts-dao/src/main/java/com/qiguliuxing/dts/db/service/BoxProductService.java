@@ -163,4 +163,8 @@ public class BoxProductService {
     public BoxProductVO selectByIdAndUserId( Integer id, String userId){
         return boxProductMapper.selectByIdAndUserId(id, userId);
     }
+
+    public List<BoxProductVO> selectBoxProductsByWxOrderNo(String wxOrderNo){
+        return boxProductMapper.selectBoxProductsByWxOrderNo(wxOrderNo);
+    }
 }

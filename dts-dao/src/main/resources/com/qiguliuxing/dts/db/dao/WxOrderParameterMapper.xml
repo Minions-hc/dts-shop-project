@@ -2,12 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qiguliuxing.dts.db.dao.WxOrderParameterMapper">
 
+    <!-- 1. 首先定义resultMap -->
+    <resultMap id="wxOrderParameterResultMap" type="com.qiguliuxing.dts.vo.WxOrderParameter">
+        <id property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="numbers" column="numbers" typeHandler="com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler"/>
+        <result property="boxNumber" column="boxNumber"/>
+        <result property="seriesId" column="seriesId"/>
+        <result property="spiritPower" column="spiritPower"/>
+        <result property="activityType" column="activityType"/>
+        <result property="pointDeduction" column="pointDeduction"/>
+        <result property="couponDeduction" column="couponDeduction"/>
+        <result property="orderAmount" column="orderAmount"/>
+        <result property="paymentAmount" column="paymentAmount"/>
+        <result property="ids" column="ids" typeHandler="com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler"/>
+        <result property="businessType" column="businessType"/>
+        <result property="outTradeNo" column="outTradeNo"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="wxOrderNo" column="wxOrderNo"/>
+    </resultMap>
+
     <!-- 插入订单参数 -->
     <insert id="insert" parameterType="com.qiguliuxing.dts.vo.WxOrderParameter" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO wx_orderparameter (
             user_id, numbers, box_number, series_id, spirit_power, activity_type,
             point_deduction, coupon_deduction, order_amount, payment_amount,
-            ids, business_type, out_trade_no
+            ids, business_type, out_trade_no, wx_order_no
         ) VALUES (
                      #{userId},
                      #{numbers, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
@@ -21,32 +42,45 @@
                      #{paymentAmount},
                      #{ids, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
                      #{businessType},
-                     #{outTradeNo}
+                     #{outTradeNo},
+                     #{wxOrderNo}
                  )
     </insert>
 
     <!-- 根据商户订单号查询 -->
-    <select id="selectByOutTradeNo" resultType="com.qiguliuxing.dts.vo.WxOrderParameter">
+    <!-- 2. 修改查询语句使用resultMap -->
+    <select id="selectByOutTradeNo" resultMap="wxOrderParameterResultMap">
         SELECT
-            id, user_id as userId, numbers, box_number as boxNumber,
-            series_id as seriesId, spirit_power as spiritPower, activity_type as activityType,
-            point_deduction as pointDeduction, coupon_deduction as couponDeduction,
-            order_amount as orderAmount, payment_amount as paymentAmount,
-            ids, business_type as businessType, out_trade_no as outTradeNo,
-            create_time as createTime, update_time as updateTime
+            id,
+            user_id as userId,
+            CAST(numbers AS CHAR) as numbers,
+            box_number as boxNumber,
+            series_id as seriesId,
+            spirit_power as spiritPower,
+            activity_type as activityType,
+            point_deduction as pointDeduction,
+            coupon_deduction as couponDeduction,
+            order_amount as orderAmount,
+            payment_amount as paymentAmount,
+            CAST(ids AS CHAR) as ids,
+            business_type as businessType,
+            out_trade_no as outTradeNo,
+            create_time as createTime,
+            update_time as updateTime,
+            wx_order_no as wxOrderNo
         FROM wx_orderparameter
         WHERE out_trade_no = #{outTradeNo}
     </select>
 
     <!-- 根据用户ID查询 -->
-    <select id="selectByUserId" resultType="com.qiguliuxing.dts.vo.WxOrderParameter">
+    <select id="selectByUserId" resultMap="wxOrderParameterResultMap">
         SELECT
             id, user_id as userId, numbers, box_number as boxNumber,
             series_id as seriesId, spirit_power as spiritPower, activity_type as activityType,
             point_deduction as pointDeduction, coupon_deduction as couponDeduction,
             order_amount as orderAmount, payment_amount as paymentAmount,
             ids, business_type as businessType, out_trade_no as outTradeNo,
-            create_time as createTime, update_time as updateTime
+            create_time as createTime, update_time as updateTime,wx_order_no as wxOrderNo
         FROM wx_orderparameter
         WHERE user_id = #{userId}
         ORDER BY create_time DESC

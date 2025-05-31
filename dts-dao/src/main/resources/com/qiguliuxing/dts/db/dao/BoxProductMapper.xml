@@ -45,11 +45,11 @@
         INSERT INTO box_product (
             user_id, product_id, product_name, product_badge, product_image,
             activity_type, product_level, status, order_id, box_number, obtain_time,
-            created_time, updated_time
+            created_time, updated_time, wx_order_no
         ) VALUES (
                      #{userId}, #{productId}, #{productName}, #{productBadge}, #{productImage},
                      #{activityType}, #{productLevel}, #{status}, #{orderId}, #{boxNumber}, #{obtainTime},
-                     NOW(), NOW()
+                     NOW(), NOW(), #{wxOrderNo}
                  )
     </insert>
 
@@ -102,6 +102,30 @@
                     #{s}
                 </foreach>
             </if>
+        </where>
+        ORDER BY updated_time DESC
+    </select>
+
+    <select id="selectBoxProductsByWxOrderNo" resultType="com.qiguliuxing.dts.vo.BoxProductVO">
+        SELECT
+        id,
+        user_id AS userId,
+        product_id AS productId,
+        product_name AS productName,
+        product_badge AS productBadge,
+        product_image AS productImage,
+        activity_type AS activityType,
+        product_level AS productLevel,
+        status,
+        order_id AS orderId,
+        box_number AS boxNumber,
+        obtain_time AS obtainTime,
+        created_time AS createdTime,
+        updated_time AS updatedTime,
+        wx_order_no as wxOrderNo
+        FROM box_product
+        <where>
+           wx_order_no = #{wxOrderNo}
         </where>
         ORDER BY updated_time DESC
     </select>
