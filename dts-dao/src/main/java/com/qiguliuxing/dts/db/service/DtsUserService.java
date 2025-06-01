@@ -83,7 +83,8 @@ public class DtsUserService {
 			user.setAvatar(wxUserInfo.getString("avatarUrl"));
 			user.setPoints(0); // 初始积分
 			user.setProductSpiritPower(0);
-			user.setInviterId(generateInviteCode()); // 生成邀请码
+			user.setInviterId(wxUserInfo.getString("inviterId"));
+			user.setInviteCode(generateInviteCode()); // 生成邀请码
 			user.setCreateBy("system"); // 系统创建
 
 			// 3. 插入新用户

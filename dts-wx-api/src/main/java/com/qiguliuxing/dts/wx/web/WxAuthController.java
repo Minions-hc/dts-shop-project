@@ -116,7 +116,7 @@ public class WxAuthController {
 			String sessionKey = sessionInfo.getString("session_key");
 			logger.error("解析当前登录用户的openId：{}", openId);
 			logger.error("解析当前登录用户的session_key：{}", sessionKey);
-
+			String inviterId = params.getString("inviterId");
 			JSONObject userInfo = null;
 			// 3. 如果需要解密用户信息
 			if (params.containsKey("encryptedData") && params.containsKey("iv")) {
@@ -141,6 +141,7 @@ public class WxAuthController {
 				result.put("phoneNumber", phoneNumber);
 			}
 			userInfo.put("phoneNumber", phoneNumber);
+			userInfo.put("inviterId", inviterId);
 			// 处理用户信息入库
 			UserVO user = userService.handleUserLogin(openId, userInfo);
 			result.put("userInfo", user);
