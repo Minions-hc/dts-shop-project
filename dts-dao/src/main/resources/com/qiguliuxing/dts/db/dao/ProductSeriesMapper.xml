@@ -71,6 +71,7 @@
                 AND is_spiritpower = #{isSpiritPower}
             </if>
         </where>
+        and is_spiritpower = 0
         ORDER BY series_id
     </select>
 
