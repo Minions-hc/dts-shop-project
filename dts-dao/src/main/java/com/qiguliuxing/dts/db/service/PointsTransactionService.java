@@ -18,7 +18,7 @@ public class PointsTransactionService {
 
     @Transactional
     public void insertPointsTransaction(String userId, Integer points, Integer transactionType, String relatedId) {
-        Integer latestBalance = pointsTransactionMapper.findLatestBalanceByUserId(userId);
+        Integer latestBalance = pointsTransactionMapper.findLatestBalanceByUserId(userId) == null ? 0 : pointsTransactionMapper.findLatestBalanceByUserId(userId);
         PointsTransactionVO pointsTransactionVO = new PointsTransactionVO();
         pointsTransactionVO.setUserId(userId);
         pointsTransactionVO.setTransactionType(transactionType);
