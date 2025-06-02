@@ -104,7 +104,7 @@ public class DailyLotteryJob {
                 System.out.println("活动[" + activitiy.getActivityName() + "]，更新中奖信息失败！");
             }
         }
-        activitiy.setActive(false);
+        activitiy.setIsActive(false);
         int result = luckyDrawActivityService.update(activitiy);
         if (result < 1){
             System.out.println("活动[" + activitiy.getActivityName() + "]，更新活动信息失败！");

@@ -13,7 +13,7 @@ public class LuckyDrawActivityVo {
     private String activityRules;    // 活动规则
     private Date drawDate;          // 开奖日期
     private String activityDetails;  // 活动详情图片地址
-    private boolean isActive;
+    private Boolean isActive;
     private Date createdAt;          // 创建时间
     private Date updatedAt;          // 更新时间
 
@@ -95,14 +95,13 @@ public class LuckyDrawActivityVo {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
-
     public void setPrizeList(List<LuckyDrawPrizeVo> prizeList) {
         this.prizeList = prizeList;
     }

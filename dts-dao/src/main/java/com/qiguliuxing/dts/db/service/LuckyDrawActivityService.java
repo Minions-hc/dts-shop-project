@@ -27,7 +27,7 @@ public class LuckyDrawActivityService {
     @Transactional
     public int update(LuckyDrawActivityVo activity) {
         // 如果当前更新设置为有效则设置其他活动为无效状态
-        if (activity.isActive()) {
+        if (activity.getIsActive()) {
             activityMapper.setAllActivitiesInactive();
         }
         return activityMapper.update(activity);
