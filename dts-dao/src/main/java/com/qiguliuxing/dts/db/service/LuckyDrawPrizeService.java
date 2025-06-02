@@ -26,7 +26,14 @@ public class LuckyDrawPrizeService {
     @Transactional
     public int create(LuckyDrawPrizeVo prize) {
         // 更新兑换码类型为奖品
-        redemptionCodeService.batchUpdateCodeType(Collections.singletonList(prize.getRedemptionCode()), RedemptionCodeType.PRIZE.getValue());
+        if (prize.getRewardType().equals("prize")) {
+            redemptionCodeService.batchUpdateCodeType(Collections.singletonList(prize.getRedemptionCode()), RedemptionCodeType.PRIZE.getValue());
+        }
+        if (prize.getRewardType().equals("coupon")) {
+            prize.setProductId(prize.getCouponId());
+            prize.setProductName(prize.getCouponName());
+            prize.setProductQuantity(prize.getCouponQuantity());
+        }
         return prizeMapper.insert(prize);
     }
 

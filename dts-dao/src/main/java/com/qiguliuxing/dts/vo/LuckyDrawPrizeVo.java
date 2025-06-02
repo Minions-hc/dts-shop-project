@@ -15,6 +15,10 @@ public class LuckyDrawPrizeVo {
     private String redemptionCode;
     private Date createdAt;         // 创建时间
     private Date updatedAt;         // 更新时间
+    private String rewardType;
+    private Integer couponId;
+    private String couponName;
+    private Integer couponQuantity;
 
     // 构造方法
     public LuckyDrawPrizeVo() {
@@ -91,5 +95,37 @@ public class LuckyDrawPrizeVo {
 
     public void setRedemptionCode(String redemptionCode) {
         this.redemptionCode = redemptionCode;
+    }
+
+    public String getRewardType() {
+        return rewardType;
+    }
+
+    public void setRewardType(String rewardType) {
+        this.rewardType = rewardType;
+    }
+
+    public Integer getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Integer couponId) {
+        this.couponId = couponId;
+    }
+
+    public String getCouponName() {
+        return couponName;
+    }
+
+    public void setCouponName(String couponName) {
+        this.couponName = couponName;
+    }
+
+    public Integer getCouponQuantity() {
+        return couponQuantity;
+    }
+
+    public void setCouponQuantity(Integer couponQuantity) {
+        this.couponQuantity = couponQuantity;
     }
 }
