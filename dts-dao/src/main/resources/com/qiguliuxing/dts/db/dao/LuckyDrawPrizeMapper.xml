@@ -110,4 +110,23 @@
             redemption_code = #{redemptionCode}
             LIMIT 1
     </select>
+
+
+    <select id="getNoSeriesProducts" parameterType="map" resultType="com.qiguliuxing.dts.vo.ProductVO">
+        SELECT
+        p.product_id as productId,
+        p.product_name AS productName,
+        p.product_image AS productImage,
+        p.product_price AS productPrice,
+        p.product_levelid AS productLevelId,
+        p.product_badge as productBadge,
+        p.product_spirit_power as productSpiritPower,
+        p.created_by AS createdBy,
+        p.created_time AS createdTime,
+        p.updated_by AS updatedBy,
+        p.updated_time AS updatedTime
+        FROM product p
+        where p.product_seriesid is null
+        ORDER BY p.product_id
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.qiguliuxing.dts.db.dao;
 
 import com.qiguliuxing.dts.vo.LuckyDrawPrizeVo;
+import com.qiguliuxing.dts.vo.ProductVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,4 +22,10 @@ public interface LuckyDrawPrizeMapper {
      * @return 奖品信息
      */
     LuckyDrawPrizeVo selectByRedemptionCode(@Param("redemptionCode") String redemptionCode);
+
+    /**
+     *  查询没有挂系列的产品列表
+     * @return 没有挂系列的产品列表
+     */
+    List<ProductVO> getNoSeriesProducts();
 }

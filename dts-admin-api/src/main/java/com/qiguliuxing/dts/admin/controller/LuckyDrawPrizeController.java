@@ -6,6 +6,7 @@ import com.qiguliuxing.dts.db.service.LuckyDrawActivityService;
 import com.qiguliuxing.dts.db.service.LuckyDrawPrizeService;
 import com.qiguliuxing.dts.vo.LuckyDrawActivityVo;
 import com.qiguliuxing.dts.vo.LuckyDrawPrizeVo;
+import com.qiguliuxing.dts.vo.ProductVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,5 +75,15 @@ public class LuckyDrawPrizeController {
             return ResponseUtil.fail(500, "扣减库存失败，可能库存不足");
         }
         return ResponseUtil.ok();
+    }
+
+    @GetMapping("/getNoSeriesProducts")
+    public Object getNoSeriesProducts() {
+        List<ProductVO> noSeriesProducts = prizeService.getNoSeriesProducts();
+        long total = PageInfo.of(noSeriesProducts).getTotal();
+        Map<String, Object> data = new HashMap<>();
+        data.put("total", total);
+        data.put("items", noSeriesProducts);
+        return ResponseUtil.ok(data);
     }
 }

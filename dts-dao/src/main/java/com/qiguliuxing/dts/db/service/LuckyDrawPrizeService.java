@@ -4,6 +4,7 @@ import com.qiguliuxing.dts.db.dao.LuckyDrawPrizeMapper;
 import com.qiguliuxing.dts.db.dao.RedemptionCodeMapper;
 import com.qiguliuxing.dts.db.util.RedemptionCodeType;
 import com.qiguliuxing.dts.vo.LuckyDrawPrizeVo;
+import com.qiguliuxing.dts.vo.ProductVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,13 @@ public class LuckyDrawPrizeService {
      */
     public LuckyDrawPrizeVo getPrizeByRedemptionCode(String redemptionCode) {
         return prizeMapper.selectByRedemptionCode(redemptionCode);
+    }
+
+    /**
+     *  查询没有挂系列的产品列表
+     * @return 没有挂系列的产品列表
+     */
+    public List<ProductVO> getNoSeriesProducts() {
+        return prizeMapper.getNoSeriesProducts();
     }
 }
