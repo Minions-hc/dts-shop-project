@@ -52,8 +52,9 @@ public class WxHomeController {
 	@GetMapping("/getWxCategoryNames")
 	public Object getWxCategoryNames() {
 		List<ProductCategoryVO> productCategories = productCategoryService.getProductCategories(new HashMap<>());
+		List<ProductCategoryVO> filterList = productCategories.stream().filter(productCategoryVO -> productCategoryVO.getCategoryName() != null && !"魂力赏".equals(productCategoryVO.getCategoryName())).collect(Collectors.toList());
 		Map<String, Object> data = new HashMap<>();
-		data.put("items", productCategories);
+		data.put("items", filterList);
 		return ResponseUtil.ok(data);
 	}
 
