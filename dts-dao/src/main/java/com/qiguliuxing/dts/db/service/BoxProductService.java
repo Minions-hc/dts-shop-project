@@ -132,6 +132,7 @@ public class BoxProductService {
             // 4. 更新盒柜产品状态
             // 更新盒柜表状态
             boxProductVO.setStatus(StatusType.SHIPPED.getCode());
+            boxProductVO.setOrderId(order.getOrderId());
             int updateResult = boxProductMapper.updateSelective(boxProductVO);
             if (updateResult <= 0) {
                 throw new RuntimeException("盒柜产品状态更新失败");
