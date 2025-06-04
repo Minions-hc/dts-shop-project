@@ -1,16 +1,17 @@
 package com.qiguliuxing.dts.db.service;
 
 import com.qiguliuxing.dts.db.dao.BlindBoxRecordMapper;
-import com.qiguliuxing.dts.db.dao.DtsUserMapper;
+import com.qiguliuxing.dts.db.dao.DtsCouponUserMapper;
 import com.qiguliuxing.dts.db.util.ActivityType;
+import com.qiguliuxing.dts.db.util.PointsTransactionType;
 import com.qiguliuxing.dts.db.util.StatusType;
 import com.qiguliuxing.dts.vo.*;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -31,10 +32,15 @@ public class BlindBoxRecordService {
 
     @Autowired
     private BoxOrderService boxOrderService;
-    @Autowired
-    private DtsUserMapper dtsUserMapper;
+
     @Autowired
     private DtsUserService dtsUserService;
+
+    @Resource
+    private DtsCouponUserMapper couponUserMapper;
+
+    @Autowired
+    private PointsTransactionService pointsTransactionService;
 
     /**
      * 获取指定系列和箱子的开赏记录
@@ -253,6 +259,18 @@ public class BlindBoxRecordService {
         }
         // 更新用户魂力值
         dtsUserService.updateSpiritPower(wxOrderParameter.getUserId(), spiritPower, true);
+
+        // 用户使用了优惠券则更新使用记录
+        if (wxOrderParameter.getCouponId() != null){
+            int updateCouponResult = couponUserMapper.updateCouponStatusToUsed(wxOrderParameter.getCouponId(), wxOrderParameter.getUserId(), wxOrderParameter.getWxOrderNo());
+            if (updateCouponResult < 1) {
+                throw new RuntimeException("优惠券使用记录更新失败");
+            }
+        }
+        // 用户使用了积分则进行积分扣减
+        if (wxOrderParameter.getPoint() != null){
+            pointsTransactionService.insertPointsTransaction(wxOrderParameter.getUserId(), wxOrderParameter.getPoint(), PointsTransactionType.ORDER_DEDUCTION.getCode(), wxOrderParameter.getWxOrderNo());
+        }
         return results;
     }
 }

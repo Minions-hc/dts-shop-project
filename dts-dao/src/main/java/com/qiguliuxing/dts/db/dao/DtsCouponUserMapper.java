@@ -38,4 +38,16 @@ public interface DtsCouponUserMapper {
     List<UserCouponsVO> selectAvailableCoupons(
             @Param("userId") String userId,
             @Param("orderAmount") BigDecimal orderAmount);
+
+
+    /**
+     * 更新优惠券使用状态
+     * @param couponId 优惠券ID
+     * @param userId 用户ID
+     * @param orderId 订单ID
+     * @return 更新的记录数
+     */
+    int updateCouponStatusToUsed(@Param("couponId") Integer couponId,
+                                 @Param("userId") String userId,
+                                 @Param("orderId") String orderId);
 }

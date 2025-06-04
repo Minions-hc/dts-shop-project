@@ -57,4 +57,15 @@ public class DtsCouponUserService {
 		}
 		return couponUserMapper.selectAvailableCoupons(userId, orderAmount);
 	}
+
+	/**
+	 * 更新优惠券使用状态
+	 * @param couponId 优惠券ID
+	 * @param userId 用户ID
+	 * @param orderId 订单ID
+	 * @return 更新的记录数
+	 */
+	public int updateCouponStatusToUsed(Integer couponId, String userId,  String orderId){
+		return couponUserMapper.updateCouponStatusToUsed(couponId, userId, orderId);
+	}
 }

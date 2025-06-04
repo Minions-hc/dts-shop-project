@@ -21,6 +21,8 @@
         <result property="createTime" column="createTime"/>
         <result property="updateTime" column="updateTime"/>
         <result property="wxOrderNo" column="wxOrderNo"/>
+        <result property="point" column="point"/>
+        <result property="couponId" column="coupon_id"/>
     </resultMap>
 
     <!-- 插入订单参数 -->
@@ -28,7 +30,7 @@
         INSERT INTO wx_orderparameter (
             user_id, numbers, box_number, series_id, spirit_power, activity_type,
             point_deduction, coupon_deduction, order_amount, payment_amount,
-            ids, business_type, out_trade_no, wx_order_no
+            ids, business_type, out_trade_no, wx_order_no, point, coupon_id
         ) VALUES (
                      #{userId},
                      #{numbers, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
@@ -43,7 +45,9 @@
                      #{ids, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
                      #{businessType},
                      #{outTradeNo},
-                     #{wxOrderNo}
+                     #{wxOrderNo},
+                     #{point},
+                     #{couponId}
                  )
     </insert>
 
@@ -67,7 +71,9 @@
             out_trade_no as outTradeNo,
             create_time as createTime,
             update_time as updateTime,
-            wx_order_no as wxOrderNo
+            wx_order_no as wxOrderNo,
+            point as point,
+            coupon_id as couponId
         FROM wx_orderparameter
         WHERE out_trade_no = #{outTradeNo}
     </select>
@@ -80,7 +86,8 @@
             point_deduction as pointDeduction, coupon_deduction as couponDeduction,
             order_amount as orderAmount, payment_amount as paymentAmount,
             ids, business_type as businessType, out_trade_no as outTradeNo,
-            create_time as createTime, update_time as updateTime,wx_order_no as wxOrderNo
+            create_time as createTime, update_time as updateTime,wx_order_no as wxOrderNo,
+            point as point, coupon_id as couponId
         FROM wx_orderparameter
         WHERE user_id = #{userId}
         ORDER BY create_time DESC

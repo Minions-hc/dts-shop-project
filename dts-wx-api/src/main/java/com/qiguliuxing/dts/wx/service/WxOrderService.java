@@ -38,10 +38,6 @@ public class WxOrderService {
 
 
 	public List<OrderVO> queryOrderList(String userId, String orderNo, List<String> orderStatusList) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userId", userId);
-		params.put("orderNo", orderNo);
-		params.put("orderStatusList", orderStatusList);
 		return dtsOrderService.queryOrderList(userId, orderNo, orderStatusList);
 	}
 }

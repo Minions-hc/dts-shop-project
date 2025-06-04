@@ -116,4 +116,19 @@
         ORDER BY
             coupon_amount DESC, expire_time ASC
     </select>
+
+    <!-- 更新优惠券状态为已使用 -->
+    <update id="updateCouponStatusToUsed">
+        UPDATE user_coupons
+        SET
+            status = 2,
+            order_id = #{orderId},
+            use_time = NOW(),
+            update_time = NOW()
+        WHERE
+            coupon_id = #{couponId}
+          AND user_id = #{userId}
+          AND status = 1
+          AND expire_time > NOW()
+    </update>
 </mapper>

@@ -55,6 +55,8 @@ public class WxPayController {
         Integer amount = data.getInteger("amount");
         String description = data.getString("description");
         Integer businessType = data.getInteger("businessType");
+        Integer couponId = data.getInteger("couponId");
+        Integer point = data.getInteger("point");
         WxOrderParameter wxOrderParameter = new WxOrderParameter();
         String userId = data.getString("userId");
         wxOrderParameter.setUserId(userId);
@@ -78,6 +80,8 @@ public class WxPayController {
             wxOrderParameter.setCouponDeduction(couponDeduction);
             wxOrderParameter.setOrderAmount(orderAmount);
             wxOrderParameter.setPaymentAmount(paymentAmount);
+            wxOrderParameter.setPoint(point);
+            wxOrderParameter.setCouponId(couponId);
         } else if (businessType.equals(2)){
             List<Integer> ids = JSON.parseArray(data.getJSONArray("ids").toJSONString(), Integer.class);;
             wxOrderParameter.setIds(ids);

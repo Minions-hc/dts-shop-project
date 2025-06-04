@@ -25,6 +25,8 @@ public class WxOrderParameter {
     private String wxOrderNo;      // 微信订单号
     private Date createTime;        // 创建时间
     private Date updateTime;        // 更新时间
+    private Integer point;          // 积分
+    private Integer couponId;       // 优惠券ID
 
     public Long getId() {
         return id;
@@ -160,5 +162,21 @@ public class WxOrderParameter {
 
     public void setWxOrderNo(String wxOrderNo) {
         this.wxOrderNo = wxOrderNo;
+    }
+
+    public Integer getPoint() {
+        return point;
+    }
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
+
+    public Integer getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Integer couponId) {
+        this.couponId = couponId;
     }
 }
