@@ -79,7 +79,6 @@ public class BoxProductService {
         AddressVO addressVO = dtsAddressMapper.selectDefaultAddressByUserId(userId);
         Map<Integer, OrderItemVO> orderItemVOMap = new HashMap<>();
         for (BoxProductVO boxProductVO : matchedProducts) {
-
             OrderItemVO orderItemVO = null;
             if(orderItemVOMap.containsKey(boxProductVO.getProductId())) {
                 orderItemVO = orderItemVOMap.get(boxProductVO.getProductId());
@@ -105,11 +104,8 @@ public class BoxProductService {
         order.setShippingFee(BigDecimal.valueOf(0));
         order.setCreateBy(order.getUserId());
         order.setUpdateBy(order.getUserId());
-        if(CollectionUtils.isEmpty(boxOrders)){
-            order.setOrderAmount(BigDecimal.valueOf(0));
-        } else {
-            order.setOrderAmount(boxOrders.get(0).getOrderAmount());
-        }
+        order.setOrderAmount(BigDecimal.valueOf(0));
+        order.setPaymentAmount(BigDecimal.valueOf(0));
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         order.setOrderStatus(OrderUtil.SHIPPED);

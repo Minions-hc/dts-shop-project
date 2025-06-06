@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class OrderItemVO {
 
+    private Integer id;
     private Integer orderId;           // 订单ID
     private Integer productId;         // 商品ID
     private String productName;
@@ -95,5 +96,13 @@ public class OrderItemVO {
 
     public void setProductPrice(Double productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

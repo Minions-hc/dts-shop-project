@@ -211,4 +211,12 @@ public class OrderVO {
     public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
+
+    public List<OrderItemVO> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemVO> items) {
+        this.items = items;
+    }
 }

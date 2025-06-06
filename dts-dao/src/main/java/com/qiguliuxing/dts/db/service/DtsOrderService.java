@@ -36,7 +36,13 @@ public class DtsOrderService {
 		params.put("userId", userId);
 		params.put("orderNo", orderNo);
 		params.put("orderStatusList", orderStatusList);
-		return dtsOrderMapper.queryOrderList(params);
+		List<OrderVO> orderVOS = dtsOrderMapper.queryOrderList(params);
+		for (OrderVO orderVO : orderVOS) {
+			Integer orderId = orderVO.getOrderId();
+			List<OrderItemVO> orderItems = dtsOrderMapper.queryOrderItems(orderId);
+			orderVO.setItems(orderItems);
+		}
+		return orderVOS;
 	}
 
 	public OrderVO queryOrderByOrderNo(String orderNo) {
