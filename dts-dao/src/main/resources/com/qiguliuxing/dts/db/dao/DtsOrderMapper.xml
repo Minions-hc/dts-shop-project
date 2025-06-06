@@ -105,7 +105,8 @@
         o.quantity as quantity,
         p.product_name as productName,
         p.product_image as productImg,
-        p.product_price as productPrice
+        p.product_price as productPrice,
+        p.product_badge as productBadge
       FROM
         shop_order_item o
           JOIN product p ON o.product_id = p.product_id

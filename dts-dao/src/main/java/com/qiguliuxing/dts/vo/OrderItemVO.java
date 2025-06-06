@@ -10,6 +10,7 @@ public class OrderItemVO {
     private String productName;
     private String productImg;
     private Double productPrice;
+    private Integer productBadge;
     private Integer quantity;       // 商品数量
     private String createBy;        // 创建人
     private Date createTime;        // 创建时间
@@ -104,5 +105,13 @@ public class OrderItemVO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getProductBadge() {
+        return productBadge;
+    }
+
+    public void setProductBadge(Integer productBadge) {
+        this.productBadge = productBadge;
     }
 }

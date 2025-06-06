@@ -159,7 +159,7 @@ public class BlindBoxRecordService {
             results.add(result);
         }
         // 更新用户魂力值
-        dtsUserService.updateSpiritPower(request.getUserId(), request.getSpiritPower(), true);
+        dtsUserService.updateSpiritPower(request.getUserId(), request.getSpiritPower(), false);
         return results;
     }
 
