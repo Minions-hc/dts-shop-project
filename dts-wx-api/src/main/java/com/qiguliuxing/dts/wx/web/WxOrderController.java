@@ -39,12 +39,12 @@ public class WxOrderController {
 	 * @param userId
 	 */
 	@GetMapping("queryOrderList")
-	public Object queryOrderList(String userId, String orderNo, String orderStatusStr) {
+	public Object queryOrderList(String userId, Integer orderId, String orderStatusStr) {
 		List<String> orderStatusList = new ArrayList<>();
 		if (!StringUtils.isNullOrEmpty(orderStatusStr)) {
 			orderStatusList = Arrays.asList(orderStatusStr.split(","));
 		}
-		List<OrderVO> orderList = wxOrderService.queryOrderList(userId, orderNo, orderStatusList);
+		List<OrderVO> orderList = wxOrderService.queryOrderList(userId, orderId, orderStatusList);
 		Map<String, Object> data = new HashMap<>();
 		data.put("items", orderList);
 		return ResponseUtil.ok(data);

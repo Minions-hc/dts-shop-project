@@ -37,7 +37,7 @@ public class WxOrderService {
 	DtsOrderService dtsOrderService;
 
 
-	public List<OrderVO> queryOrderList(String userId, String orderNo, List<String> orderStatusList) {
-		return dtsOrderService.queryOrderList(userId, orderNo, orderStatusList);
+	public List<OrderVO> queryOrderList(String userId, Integer orderId, List<String> orderStatusList) {
+		return dtsOrderService.queryOrderList(userId, orderId, orderStatusList);
 	}
 }

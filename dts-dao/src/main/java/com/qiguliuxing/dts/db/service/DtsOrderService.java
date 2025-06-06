@@ -31,15 +31,14 @@ public class DtsOrderService {
 		return dtsOrderMapper.queryOrderList(params);
 	}
 
-	public List<OrderVO> queryOrderList(String userId, String orderNo, List<String> orderStatusList) {
+	public List<OrderVO> queryOrderList(String userId, Integer orderId, List<String> orderStatusList) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userId", userId);
-		params.put("orderNo", orderNo);
+		params.put("orderId", orderId);
 		params.put("orderStatusList", orderStatusList);
 		List<OrderVO> orderVOS = dtsOrderMapper.queryOrderList(params);
 		for (OrderVO orderVO : orderVOS) {
-			Integer orderId = orderVO.getOrderId();
-			List<OrderItemVO> orderItems = dtsOrderMapper.queryOrderItems(orderId);
+			List<OrderItemVO> orderItems = dtsOrderMapper.queryOrderItems(orderVO.getOrderId());
 			orderVO.setItems(orderItems);
 		}
 		return orderVOS;

@@ -108,7 +108,7 @@ public class BoxProductService {
         order.setPaymentAmount(BigDecimal.valueOf(0));
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
-        order.setOrderStatus(OrderUtil.SHIPPED);
+        order.setOrderStatus(OrderUtil.WAIT_SHIPPING);
         int result = dtsOrderService.insertOrder(order);
         if (result == 0) {
             throw new RuntimeException("订单创建失败");
