@@ -130,4 +130,30 @@
         ORDER BY updated_time DESC
     </select>
 
+    <select id="queryLastConsumption" resultType="com.qiguliuxing.dts.vo.BoxProductVO">
+        SELECT
+        id,
+        user_id AS userId,
+        product_id AS productId,
+        product_name AS productName,
+        product_badge AS productBadge,
+        product_image AS productImage,
+        activity_type AS activityType,
+        product_level AS productLevel,
+        status,
+        order_id AS orderId,
+        box_number AS boxNumber,
+        obtain_time AS obtainTime,
+        created_time AS createdTime,
+        updated_time AS updatedTime,
+        wx_order_no as wxOrderNo
+        FROM box_product
+        <where>
+            user_id = #{userId}
+            AND activity_type in ('踩雷赏','一番赏')
+        </where>
+        ORDER BY updated_time DESC
+        limit 1
+    </select>
+
 </mapper>
