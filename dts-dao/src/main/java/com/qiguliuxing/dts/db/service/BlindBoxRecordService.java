@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 盲盒记录服务
@@ -187,39 +188,20 @@ public class BlindBoxRecordService {
         if (productPool.isEmpty()) {
             throw new RuntimeException("该盲盒已售罄");
         }
+        List<ProductBoxResultVo> filterPools = productPool.stream().filter(pool -> !pool.getLevelName().equals("终赏")).collect(Collectors.toList());
         // 3. 随机抽取产品
         List<BlindBoxDrawResultVO> results = new ArrayList<>();
         Random random = new Random();
         int spiritPower = 0;
         for (Integer number : wxOrderParameter.getNumbers()) {
             // 随机选择一个产品
-            ProductBoxResultVo selectedProduct = productPool.get(random.nextInt(productPool.size()));
+            ProductBoxResultVo selectedProduct = filterPools.get(random.nextInt(filterPools.size()));
             // 4. 更新库存
-            int updated = blindBoxRecordMapper.updateSoldQuantity(
-                    selectedProduct.getBoxId(),
-                    selectedProduct.getProductId(),
-                    1);
-            if (updated == 0) {
-                throw new RuntimeException("产品库存更新失败，可能已被其他用户购买");
-            }
+            updateSoldQuantity(selectedProduct);
 
             ProductVO product = productService.getProductById(selectedProduct.getProductId());
             spiritPower += product.getProductSpiritPower();
-            BoxProductVO boxProductVO = new BoxProductVO();
-            boxProductVO.setActivityType(wxOrderParameter.getActivityType());
-            boxProductVO.setProductId(selectedProduct.getProductId());
-            boxProductVO.setProductName(selectedProduct.getProductName());
-            boxProductVO.setProductImage(product.getProductImage());
-            boxProductVO.setProductLevel(product.getProductLevelName());
-            boxProductVO.setStatus(StatusType.PENDING.getCode());
-            boxProductVO.setProductLevel(product.getProductLevelName());
-            boxProductVO.setBoxNumber(wxOrderParameter.getBoxNumber());
-            boxProductVO.setObtainTime(new Date());
-            boxProductVO.setCreatedTime(new Date());
-            boxProductVO.setUpdatedTime(new Date());
-            boxProductVO.setUserId(wxOrderParameter.getUserId());
-            boxProductVO.setProductBadge(product.getProductBadge());
-            boxProductVO.setWxOrderNo(wxOrderParameter.getWxOrderNo());
+            BoxProductVO boxProductVO = getBoxProductVO(wxOrderParameter, selectedProduct, product);
             // 抽中的产品入盒柜表
             int id = boxProductService.addProduct(boxProductVO);
 
@@ -233,30 +215,49 @@ public class BlindBoxRecordService {
                     selectedProduct.getProductId());
 
             //写子表数据
-            BoxOrderVO boxOrderVO = new BoxOrderVO();
-            boxOrderVO.setOrderAmount(wxOrderParameter.getOrderAmount());
-            boxOrderVO.setCouponDeduction(wxOrderParameter.getCouponDeduction());
-            boxOrderVO.setShippingFee(BigDecimal.valueOf(0));
-            boxOrderVO.setPointDeduction(wxOrderParameter.getPointDeduction());
-            boxOrderVO.setPaymentAmount(wxOrderParameter.getPaymentAmount());
-            boxOrderVO.setRecordId(boxProductVO.getId());
-            boxOrderVO.setCreatedTime(new Date());
-            boxOrderVO.setPaymentTime(new Date());
-            boxOrderVO.setUpdatedTime(new Date());
+            BoxOrderVO boxOrderVO = getBoxOrderVO(wxOrderParameter, boxProductVO);
             boxOrderService.createBoxOrder(boxOrderVO);
 
             // 6. 构建返回结果
-            BlindBoxDrawResultVO result = new BlindBoxDrawResultVO();
-            result.setBoxId(selectedProduct.getBoxId());
-            result.setBoxNumber(selectedProduct.getBoxNumber());
-            result.setProductId(selectedProduct.getProductId());
-            result.setProductName(selectedProduct.getProductName());
-            result.setProductImage(selectedProduct.getProductImage());
-            result.setProductPrice(selectedProduct.getProductPrice());
-            result.setLevelName(selectedProduct.getLevelName());
-            result.setNumber(number);
+            BlindBoxDrawResultVO result = getBlindBoxDrawResultVO(number, selectedProduct);
             results.add(result);
         }
+
+
+        if (wxOrderParameter.getNumbers().size() == filterPools.size()) {
+            List<ProductBoxResultVo> laterProducts = productPool.stream().filter(pool -> pool.getLevelName().equals("终赏")).collect(Collectors.toList());
+            // 1. 查询所有产品信息
+            List<ProductBoxResultVo> productBoxResultVos = blindBoxRecordMapper.selectAllProducts(wxOrderParameter.getSeriesId(), wxOrderParameter.getBoxNumber());
+            // 3. 计算总数量（所有产品数量的总和）
+            int totalNumber = productBoxResultVos.stream().filter(productBoxResultVo -> !productBoxResultVo.getLevelName().equals("终赏"))
+                    .mapToInt(ProductBoxResultVo::getQuantity)
+                    .sum();
+            for (ProductBoxResultVo laterProduct : laterProducts) {
+                totalNumber++;
+                // 4. 更新库存
+                updateSoldQuantity(laterProduct);
+                ProductVO product = productService.getProductById(laterProduct.getProductId());
+                spiritPower += product.getProductSpiritPower();
+                BoxProductVO boxProductVO = getBoxProductVO(wxOrderParameter, laterProduct, product);
+                // 抽中的产品入盒柜表
+                int id = boxProductService.addProduct(boxProductVO);
+                // 5. 记录抽取记录
+                blindBoxRecordMapper.insertDrawRecord(
+                        id,
+                        wxOrderParameter.getUserId(),
+                        totalNumber,
+                        wxOrderParameter.getSeriesId(),
+                        wxOrderParameter.getBoxNumber(),
+                        laterProduct.getProductId());
+                //写子表数据
+                BoxOrderVO boxOrderVO = getBoxOrderVO(wxOrderParameter, boxProductVO);
+                boxOrderService.createBoxOrder(boxOrderVO);
+                // 6. 构建返回结果
+                BlindBoxDrawResultVO result = getBlindBoxDrawResultVO(totalNumber, laterProduct);
+                results.add(result);
+            }
+        }
+
         // 更新用户魂力值
         dtsUserService.updateSpiritPower(wxOrderParameter.getUserId(), spiritPower, true);
 
@@ -272,5 +273,62 @@ public class BlindBoxRecordService {
             pointsTransactionService.insertPointsTransaction(wxOrderParameter.getUserId(), wxOrderParameter.getPoint(), PointsTransactionType.ORDER_DEDUCTION.getCode(), wxOrderParameter.getWxOrderNo());
         }
         return results;
+    }
+
+    private BlindBoxDrawResultVO getBlindBoxDrawResultVO(Integer number, ProductBoxResultVo selectedProduct) {
+        BlindBoxDrawResultVO result = new BlindBoxDrawResultVO();
+        result.setBoxId(selectedProduct.getBoxId());
+        result.setBoxNumber(selectedProduct.getBoxNumber());
+        result.setProductId(selectedProduct.getProductId());
+        result.setProductName(selectedProduct.getProductName());
+        result.setProductImage(selectedProduct.getProductImage());
+        result.setProductPrice(selectedProduct.getProductPrice());
+        result.setLevelName(selectedProduct.getLevelName());
+        result.setNumber(number);
+        return result;
+    }
+
+    private BoxOrderVO getBoxOrderVO(WxOrderParameter wxOrderParameter, BoxProductVO boxProductVO) {
+        BoxOrderVO boxOrderVO = new BoxOrderVO();
+        boxOrderVO.setOrderAmount(wxOrderParameter.getOrderAmount());
+        boxOrderVO.setCouponDeduction(wxOrderParameter.getCouponDeduction());
+        boxOrderVO.setShippingFee(BigDecimal.valueOf(0));
+        boxOrderVO.setPointDeduction(wxOrderParameter.getPointDeduction());
+        boxOrderVO.setPaymentAmount(wxOrderParameter.getPaymentAmount());
+        boxOrderVO.setRecordId(boxProductVO.getId());
+        boxOrderVO.setCreatedTime(new Date());
+        boxOrderVO.setPaymentTime(new Date());
+        boxOrderVO.setUpdatedTime(new Date());
+        return boxOrderVO;
+    }
+
+    private BoxProductVO getBoxProductVO(WxOrderParameter wxOrderParameter, ProductBoxResultVo selectedProduct, ProductVO product) {
+        BoxProductVO boxProductVO = new BoxProductVO();
+        boxProductVO.setActivityType(wxOrderParameter.getActivityType());
+        boxProductVO.setProductId(selectedProduct.getProductId());
+        boxProductVO.setProductName(selectedProduct.getProductName());
+        boxProductVO.setProductImage(product.getProductImage());
+        boxProductVO.setProductLevel(product.getProductLevelName());
+        boxProductVO.setStatus(StatusType.PENDING.getCode());
+        boxProductVO.setProductLevel(product.getProductLevelName());
+        boxProductVO.setBoxNumber(wxOrderParameter.getBoxNumber());
+        boxProductVO.setObtainTime(new Date());
+        boxProductVO.setCreatedTime(new Date());
+        boxProductVO.setUpdatedTime(new Date());
+        boxProductVO.setUserId(wxOrderParameter.getUserId());
+        boxProductVO.setProductBadge(product.getProductBadge());
+        boxProductVO.setWxOrderNo(wxOrderParameter.getWxOrderNo());
+        return boxProductVO;
+    }
+
+    private void updateSoldQuantity(ProductBoxResultVo selectedProduct) {
+        // 4. 更新库存
+        int updated = blindBoxRecordMapper.updateSoldQuantity(
+                selectedProduct.getBoxId(),
+                selectedProduct.getProductId(),
+                1);
+        if (updated == 0) {
+            throw new RuntimeException("产品库存更新失败，可能已被其他用户购买");
+        }
     }
 }

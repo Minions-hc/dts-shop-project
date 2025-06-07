@@ -39,7 +39,8 @@ public class ProductBoxService {
         productBoxMapper.insertProductBox(productBox);
         List<BoxProductRelationVO> relations = new ArrayList<>();
         BoxProductRelationVO relationVO = null;
-        for (ProductVO product : productBox.getProducts()) {
+        List<ProductVO> filterProducts = productBox.getProducts().stream().filter(productVO -> productVO.getQuantity() != null).collect(Collectors.toList());
+        for (ProductVO product : filterProducts) {
             relationVO = new BoxProductRelationVO();
             relationVO.setBoxNumber(productBox.getBoxNumber());
             relationVO.setBoxId(productBox.getBoxId());
@@ -50,7 +51,9 @@ public class ProductBoxService {
             relationVO.setUpdatedBy(productBox.getUpdatedBy());
             relations.add(relationVO);
         }
-        boxProductRelationService.batchInsertBoxProductRelations(relations);
+        if (!relations.isEmpty()) {
+            boxProductRelationService.batchInsertBoxProductRelations(relations);
+        }
     }
 
     /**
@@ -77,10 +80,11 @@ public class ProductBoxService {
         params.put("boxNumber", productBox.getBoxNumber());
         // 查询已有数据
         List<ProductVO> existingProducts = boxProductRelationService.queryProductsInBox(params);
+        Map<Integer, ProductVO> existingProductsMap = existingProducts.stream().collect(Collectors.toMap(ProductVO::getProductId, p -> p));
         List<Integer> existingProductIds = existingProducts.stream().map(ProductVO::getProductId).collect(Collectors.toList());
         List<BoxProductRelationVO> needUpdateRelations = new ArrayList<>();
         List<ProductVO> needUpdateProducts = productBox.getProducts().stream().filter(productVO -> existingProductIds.contains(productVO.getProductId())).collect(Collectors.toList());
-        setProductBoxRelations(productBox, needUpdateProducts, needUpdateRelations);
+        setProductBoxRelations(productBox, needUpdateProducts, needUpdateRelations, true, existingProductsMap);
         if(!needUpdateRelations.isEmpty()){
             boxProductRelationService.batchUpdateProductBoxRelation(needUpdateRelations);
         }
@@ -88,7 +92,7 @@ public class ProductBoxService {
                 .filter(productVO -> (productVO.getQuantity() != null && productVO.getQuantity() > 0) && !existingProductIds.contains(productVO.getProductId()))
                 .collect(Collectors.toList());
         List<BoxProductRelationVO> needInsertRelations = new ArrayList<>();
-        setProductBoxRelations(productBox, needInsertProducts, needInsertRelations);
+        setProductBoxRelations(productBox, needInsertProducts, needInsertRelations, false, existingProductsMap);
         if(!needInsertRelations.isEmpty()){
             boxProductRelationService.batchInsertBoxProductRelations(needInsertRelations);
         }
@@ -100,15 +104,19 @@ public class ProductBoxService {
      * @param products 产品数据
      * @param relations 关系数据
      */
-    private void setProductBoxRelations(ProductBoxVO productBox, List<ProductVO> products, List<BoxProductRelationVO> relations) {
+    private void setProductBoxRelations(ProductBoxVO productBox, List<ProductVO> products, List<BoxProductRelationVO> relations, boolean isUpdate,  Map<Integer, ProductVO> existingProductsMap) {
         BoxProductRelationVO relationVO;
-        for (ProductVO needInsertProduct : products) {
+        for (ProductVO productVO : products) {
             relationVO = new BoxProductRelationVO();
             relationVO.setBoxNumber(productBox.getBoxNumber());
             relationVO.setBoxId(productBox.getBoxId());
-            relationVO.setQuantity(needInsertProduct.getQuantity());
-            relationVO.setProductId(needInsertProduct.getProductId());
-            relationVO.setSoldQuantity(0);
+            relationVO.setQuantity(productVO.getQuantity());
+            relationVO.setProductId(productVO.getProductId());
+            if (isUpdate) {
+                relationVO.setSoldQuantity(existingProductsMap.get(productVO.getProductId()).getSoldQuantity());
+            } else {
+                relationVO.setSoldQuantity(0);
+            }
             relationVO.setUpdatedBy(productBox.getUpdatedBy());
             relationVO.setCreatedBy(productBox.getCreatedBy());
             relations.add(relationVO);

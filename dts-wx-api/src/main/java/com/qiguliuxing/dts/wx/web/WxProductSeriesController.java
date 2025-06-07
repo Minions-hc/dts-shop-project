@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +25,18 @@ import java.util.stream.Collectors;
 @Validated
 public class WxProductSeriesController {
 
-    @Autowired
+    @Resource
     private ProductBoxService productBoxService;
 
     @Autowired
     private ProductSeriesService productSeriesService;
 
-    @Autowired
-    private IProductCategoryService productCategoryService;
-
     @GetMapping("/getProductBoxBySeriesId")
     public Object getProductBoxBySeriesId(Integer seriesId){
         List<ProductBoxResultVo> productBoxResultVos = productBoxService.getProductBoxBySeriesId(seriesId);
-
+        productBoxResultVos.sort(Comparator.comparing(
+                vo -> !"终赏".equals(vo.getLevelName())
+        ));
         ProductSeriesVO productSeries = productSeriesService.getProductSeriesById(seriesId);
         // 1. 按照boxNumber分组获取分组后的列表
         Map<String, List<ProductBoxResultVo>> groupedByBoxNumber = productBoxResultVos.stream()

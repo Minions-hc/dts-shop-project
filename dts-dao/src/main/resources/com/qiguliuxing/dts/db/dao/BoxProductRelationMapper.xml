@@ -40,7 +40,8 @@
         p.product_price as productPrice,
         p.product_levelid as productLevelId,
         pl.level_name as productLevelName,
-        r.quantity as quantity
+        r.quantity as quantity,
+        r.sold_quantity as soldQuantity
         FROM box_product_relation r
         JOIN product p
             ON r.product_id = p.product_id

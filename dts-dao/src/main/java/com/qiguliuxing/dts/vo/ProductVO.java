@@ -8,6 +8,7 @@ public class ProductVO {
     private String productImage; // 产品图片
     private Double productPrice; // 产品价格
     private Integer quantity;
+    private Integer soldQuantity;
     private Integer productSeriesId;
     private String productSeriesName;
     private String productLevelName;
@@ -138,5 +139,13 @@ public class ProductVO {
 
     public void setProductSpiritPower(Integer productSpiritPower) {
         this.productSpiritPower = productSpiritPower;
+    }
+
+    public Integer getSoldQuantity() {
+        return soldQuantity;
+    }
+
+    public void setSoldQuantity(Integer soldQuantity) {
+        this.soldQuantity = soldQuantity;
     }
 }

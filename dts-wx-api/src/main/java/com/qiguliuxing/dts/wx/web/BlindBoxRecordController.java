@@ -45,7 +45,7 @@ public class BlindBoxRecordController {
         List<BlindBoxRecordVO> records = blindBoxRecordService.getOpenRecords(seriesId, boxNumber);
 
         // 3. 计算总数量（所有产品数量的总和）
-        int totalNumber = productBoxResultVos.stream()
+        int totalNumber = productBoxResultVos.stream().filter(productBoxResultVo -> !productBoxResultVo.getLevelName().equals("终赏"))
                 .mapToInt(ProductBoxResultVo::getQuantity)
                 .sum();
         // 4. 创建编号列表
