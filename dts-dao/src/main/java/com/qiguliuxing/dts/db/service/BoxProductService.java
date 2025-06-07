@@ -164,4 +164,9 @@ public class BoxProductService {
     public List<BoxProductVO> selectBoxProductsByWxOrderNo(String wxOrderNo){
         return boxProductMapper.selectBoxProductsByWxOrderNo(wxOrderNo);
     }
+
+    // 查询用户最后的消费记录
+    public BoxProductVO queryLastConsumption(String userId){
+        return boxProductMapper.queryLastConsumption(userId);
+    }
 }

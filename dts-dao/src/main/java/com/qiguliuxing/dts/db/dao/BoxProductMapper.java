@@ -41,4 +41,11 @@ public interface BoxProductMapper {
      * @return 盒柜商品列表
      */
     List<BoxProductVO> selectBoxProductsByWxOrderNo(String wxOrderNo);
+
+    /**
+     * 使用用户id查询盒柜最后的消费记录
+     * @param userId 用户id
+     * @return 盒柜商品列表
+     */
+    BoxProductVO queryLastConsumption(String userId);
 }

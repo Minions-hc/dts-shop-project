@@ -83,8 +83,12 @@ public class WxPayController {
             wxOrderParameter.setPoint(point);
             wxOrderParameter.setCouponId(couponId);
         } else if (businessType.equals(2)){
-            List<Integer> ids = JSON.parseArray(data.getJSONArray("ids").toJSONString(), Integer.class);;
+            List<Integer> ids = JSON.parseArray(data.getJSONArray("ids").toJSONString(), Integer.class);
+            BigDecimal orderAmount = data.getBigDecimal("orderAmount");
+            BigDecimal paymentAmount = data.getBigDecimal("paymentAmount");
             wxOrderParameter.setIds(ids);
+            wxOrderParameter.setOrderAmount(orderAmount);
+            wxOrderParameter.setPaymentAmount(paymentAmount);
         }
         // 生成商户订单号(实际项目中应该有自己的订单号生成规则)
         String outTradeNo = "ORDER_" + System.currentTimeMillis();
