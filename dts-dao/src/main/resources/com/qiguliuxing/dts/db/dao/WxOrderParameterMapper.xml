@@ -30,7 +30,7 @@
         INSERT INTO wx_orderparameter (
             user_id, numbers, box_number, series_id, spirit_power, activity_type,
             point_deduction, coupon_deduction, order_amount, payment_amount,
-            ids, business_type, out_trade_no, wx_order_no, point, coupon_id
+            ids, business_type, out_trade_no, wx_order_no, point, coupon_id, is_lock
         ) VALUES (
                      #{userId},
                      #{numbers, typeHandler=com.qiguliuxing.dts.db.mybatis.JsonListTypeHandler},
@@ -47,7 +47,8 @@
                      #{outTradeNo},
                      #{wxOrderNo},
                      #{point},
-                     #{couponId}
+                     #{couponId},
+                    #{isLock}
                  )
     </insert>
 
@@ -73,7 +74,8 @@
             update_time as updateTime,
             wx_order_no as wxOrderNo,
             point as point,
-            coupon_id as couponId
+            coupon_id as couponId,
+            is_lock as lsLock
         FROM wx_orderparameter
         WHERE out_trade_no = #{outTradeNo}
     </select>
@@ -87,7 +89,7 @@
             order_amount as orderAmount, payment_amount as paymentAmount,
             ids, business_type as businessType, out_trade_no as outTradeNo,
             create_time as createTime, update_time as updateTime,wx_order_no as wxOrderNo,
-            point as point, coupon_id as couponId
+            point as point, coupon_id as couponId, is_lock as isLock
         FROM wx_orderparameter
         WHERE user_id = #{userId}
         ORDER BY create_time DESC
