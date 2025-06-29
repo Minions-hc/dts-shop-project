@@ -108,7 +108,7 @@ public class BlindBoxRecordController {
 
 
     @GetMapping("/lockStatus")
-    public Object getLockStatus(@RequestParam Integer seriesId,@RequestParam String boxNumber, @RequestAttribute String currentUserId) {
+    public Object getLockStatus(@RequestParam Integer seriesId,@RequestParam String boxNumber, @RequestParam String currentUserId) {
         BoxLockStatusDTO status = blindBoxRecordService.getBoxLockStatus(seriesId, boxNumber, currentUserId);
 
         return ResponseUtil.ok(status);
