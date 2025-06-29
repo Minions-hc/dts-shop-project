@@ -70,6 +70,9 @@
             <if test="isSpiritPower != null">
                 AND is_spiritpower = #{isSpiritPower}
             </if>
+            <if test="isOnSale != null">
+                AND is_on_sale = #{isOnSale}
+            </if>
         </where>
         ORDER BY series_id
     </select>
@@ -182,6 +185,7 @@
             is_hot_recommend = #{isHotRecommend},
             price = #{price},
             price_ranges = #{priceRanges},
+            is_on_sale = #{isOnSale},
             updated_by = #{updatedBy},
             updated_time = NOW()
         WHERE series_id = #{seriesId}

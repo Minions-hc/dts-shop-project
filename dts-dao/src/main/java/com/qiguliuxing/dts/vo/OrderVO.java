@@ -24,6 +24,7 @@ public class OrderVO {
     private Date createTime;        // 创建时间
     private String updateBy;        // 修改人
     private Date updateTime;
+    private String wxOrderNo; // 微信订单号
 
     /**
      * 快递费用
@@ -218,5 +219,13 @@ public class OrderVO {
 
     public void setItems(List<OrderItemVO> items) {
         this.items = items;
+    }
+
+    public String getWxOrderNo() {
+        return wxOrderNo;
+    }
+
+    public void setWxOrderNo(String wxOrderNo) {
+        this.wxOrderNo = wxOrderNo;
     }
 }

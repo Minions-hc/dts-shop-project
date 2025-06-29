@@ -99,7 +99,7 @@ public class WxPayController {
             blindBoxRecordService.drawBlindBox(wxOrderParameter);
         } else if (wxOrderParameter.getBusinessType().equals(2)) {
             // 提货运费
-            boxProductService.shipProducts(wxOrderParameter.getUserId(), wxOrderParameter.getIds());
+            boxProductService.shipProducts(wxOrderParameter.getUserId(), wxOrderParameter.getIds(), outTradeNo);
         }
 
         // 5. 返回处理结果

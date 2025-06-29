@@ -17,6 +17,7 @@ public class ProductSeriesVO {
     private Boolean isHotRecommend;
     private Integer purchaseCount; // 购买次数
     private Double price;
+    private Boolean isOnSale; // 是否上架
     private String createdBy; // 创建人
     private Date createdTime; // 创建时间
     private String updatedBy; // 更新人
@@ -167,5 +168,13 @@ public class ProductSeriesVO {
 
     public void setIsSpiritPower(Boolean isSpiritPower) {
        this.isSpiritPower = isSpiritPower;
+    }
+
+    public Boolean getIsOnSale() {
+        return isOnSale;
+    }
+
+    public void setIsOnSale(Boolean onSale) {
+        isOnSale = onSale;
     }
 }

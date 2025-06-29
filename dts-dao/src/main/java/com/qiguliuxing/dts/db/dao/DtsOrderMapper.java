@@ -37,4 +37,9 @@ public interface DtsOrderMapper {
      */
     @Select("SELECT COUNT(1) FROM shop_order WHERE order_no = #{orderNo}")
     boolean existsByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 使用微信订单号查询是否已经成功生成订单
+     */
+    OrderVO queryOrderByWxOrderNo(Map<String,Object> params);
 }

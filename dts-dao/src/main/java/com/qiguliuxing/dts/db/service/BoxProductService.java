@@ -38,6 +38,9 @@ public class BoxProductService {
     @Autowired
     private BoxOrderService boxOrderService;
 
+    @Autowired
+    private WxOrderParameterService wxOrderParameterService;
+
     public List<BoxProductVO> getProductsByUserId(String userId, List<String> statusList) {
         return boxProductMapper.selectByUserId(userId, statusList);
     }
@@ -57,12 +60,17 @@ public class BoxProductService {
      * 盒柜产品提货
      */
     @Transactional
-    public void shipProducts(String userId, List<Integer> ids) {
+    public void shipProducts(String userId, List<Integer> ids, String outTradeNo) {
+        WxOrderParameter wxOrderParameter = null;
+        if (!StringUtils.isEmpty(outTradeNo)) {
+            wxOrderParameter = wxOrderParameterService.getByOutTradeNo(outTradeNo);
+        }
 
         if (CollectionUtils.isEmpty(ids)){
             throw new RuntimeException("参数错误");
         }
-        if (ids.size() < 3) {
+        // 只有提交少于三个且没有给运费的才需要抛异常
+        if (ids.size() < 3 && StringUtils.isEmpty(outTradeNo)) {
             throw new RuntimeException("提货低于3个，需要调用支付接口支付运费");
         }
         List<String> statusList = new ArrayList<>();
@@ -101,7 +109,6 @@ public class BoxProductService {
         order.setUserId(userId);
         order.setOrderNo(OrderNoGenerator.generate());
         order.setAddressId(addressVO.getAddressId());
-        order.setShippingFee(BigDecimal.valueOf(0));
         order.setCreateBy(order.getUserId());
         order.setUpdateBy(order.getUserId());
         order.setOrderAmount(BigDecimal.valueOf(0));
@@ -109,6 +116,17 @@ public class BoxProductService {
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         order.setOrderStatus(OrderUtil.WAIT_SHIPPING);
+        if (wxOrderParameter != null) {
+            order.setShippingFee(wxOrderParameter.getPaymentAmount());
+            order.setOrderAmount(wxOrderParameter.getOrderAmount());
+            order.setPaymentAmount(wxOrderParameter.getPaymentAmount());
+            order.setWxOrderNo(wxOrderParameter.getWxOrderNo());
+        } else {
+            order.setShippingFee(BigDecimal.valueOf(0));
+            order.setOrderAmount(BigDecimal.valueOf(0));
+            order.setPaymentAmount(BigDecimal.valueOf(0));
+        }
+
         int result = dtsOrderService.insertOrder(order);
         if (result == 0) {
             throw new RuntimeException("订单创建失败");

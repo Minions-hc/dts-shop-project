@@ -40,4 +40,8 @@ public class WxOrderService {
 	public List<OrderVO> queryOrderList(String userId, Integer orderId, List<String> orderStatusList) {
 		return dtsOrderService.queryOrderList(userId, orderId, orderStatusList);
 	}
+
+	public OrderVO queryOrderByWxOrderNo(String wxOrderNo) {
+		return dtsOrderService.queryOrderByWxOrderNo(wxOrderNo);
+	}
 }

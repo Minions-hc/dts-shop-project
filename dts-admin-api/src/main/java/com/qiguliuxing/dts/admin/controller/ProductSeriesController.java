@@ -71,4 +71,21 @@ public class ProductSeriesController {
         logger.info("【请求结束】商场管理->类目管理->查询:total:{}", JSONObject.toJSONString(data));
         return ResponseUtil.ok(data);
     }
+
+    @PostMapping("/updateOnSaleStatus")
+    public Object updateOnSaleStatus(@RequestBody Map<String, Object> body) {
+        Integer seriesId = (Integer) body.get("seriesId");
+        Boolean isOnSale = (Boolean) body.get("isOnSale");
+
+        // 根据ID更新状态
+        ProductSeriesVO series = productSeriesService.getProductSeriesById(seriesId);
+        if (series == null) {
+            return ResponseUtil.fail(404, "系列不存在");
+        }
+
+        series.setIsOnSale(isOnSale);
+        productSeriesService.updateProductSeries(series);
+
+        return ResponseUtil.ok();
+    }
 }

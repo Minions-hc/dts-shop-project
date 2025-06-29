@@ -68,6 +68,7 @@ public class WxHomeController {
 		params.put("isPopularNew", isPopularNew);
 		params.put("isHotRecommend", isHotRecommend);
 		params.put("isSpiritPower", 0);
+		params.put("isOnSale", 1);
 		List<ProductSeriesVO> productSeries = productSeriesService.getWxProductSeries(params);
 		Map<String, Object> data = new HashMap<>();
 		data.put("items", productSeries);

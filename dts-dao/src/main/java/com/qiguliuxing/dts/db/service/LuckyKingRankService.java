@@ -1,10 +1,14 @@
 package com.qiguliuxing.dts.db.service;
 
+import com.alibaba.druid.util.StringUtils;
+import com.qiguliuxing.dts.db.dao.DtsUserMapper;
 import com.qiguliuxing.dts.db.dao.LuckyKingRankMapper;
 import com.qiguliuxing.dts.vo.LuckyKingRankVO;
+import com.qiguliuxing.dts.vo.UserVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +20,9 @@ public class LuckyKingRankService {
 
     @Resource
     private LuckyKingRankMapper luckyKingRankMapper;
+
+    @Resource
+    private DtsUserMapper dtsUserMapper;
 
     public List<LuckyKingRankVO> getCurrentMonthTop10() {
         List<LuckyKingRankVO> list = luckyKingRankMapper.selectLuckyKingTop10();
@@ -38,11 +45,20 @@ public class LuckyKingRankService {
      * @return 所有用户的总积分和
      */
     public LuckyKingRankVO getUserLuckyKingPoints(String userId) {
+        UserVO user = dtsUserMapper.selectUserById(userId);
         LuckyKingRankVO luckyKingRankVO = luckyKingRankMapper.selectUserLuckyKingPoints(userId);
         List<LuckyKingRankVO> list = luckyKingRankMapper.selectLuckyKingTop10();
         // 当出现没有欧皇榜数据时，直接与前十的差距设为0
         if (list.isEmpty()) {
+            if (StringUtils.isEmpty(luckyKingRankVO.getUserName())) {
+                luckyKingRankVO.setUserId(user.getUserId());
+                luckyKingRankVO.setUserName(user.getUserName());
+                luckyKingRankVO.setAvatar(user.getAvatar());
+            }
             luckyKingRankVO.setDistancePoints(0);
+            Map<String, LuckyKingRankVO> userIdAndLuckyKingRankMap = new HashMap<>();
+            userIdAndLuckyKingRankMap.put(userId, luckyKingRankVO);
+            return luckyKingRankVO;
         }
         // 添加排名
         IntStream.range(0, list.size()).forEach(i -> list.get(i).setRank(i + 1));

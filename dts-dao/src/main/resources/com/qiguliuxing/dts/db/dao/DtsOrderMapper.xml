@@ -181,7 +181,8 @@
       update_by,
       shipping_fee,
       discount_amount,
-      points_deduction
+      points_deduction,
+      wx_order_no
     ) VALUES (
                #{userId},
                #{orderNo},
@@ -197,7 +198,8 @@
                #{updateBy},
                #{shippingFee},
                #{discountAmount},
-               #{pointsDeduction}
+               #{pointsDeduction},
+                #{wxOrderNo}
              )
   </insert>
 
@@ -243,4 +245,28 @@
     </set>
     WHERE `order_no` = #{orderNo}
   </update>
+
+    <!-- 动态查询SQL-->
+    <select id="queryOrderByWxOrderNo" resultMap="orderResultMap" parameterType="java.util.Map">
+        SELECT
+        o.order_id,
+        o.order_no,
+        o.user_id,
+        o.order_amount,
+        o.payment_amount,
+        DATE_FORMAT(o.payment_time, '%Y-%m-%d %H:%i:%s') as payment_time,
+        DATE_FORMAT(o.delivery_time, '%Y-%m-%d %H:%i:%s') as delivery_time,
+        o.shipping_fee,
+        o.discount_amount,
+        o.points_deduction,
+        o.shipping_channel,
+        o.tracking_number,
+        o.order_status,
+        DATE_FORMAT(o.create_time, '%Y-%m-%d %H:%i:%s') as create_time
+        FROM shop_order o
+        <where>
+            o.wx_order_no = #{wxOrderNo}
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
 </mapper>

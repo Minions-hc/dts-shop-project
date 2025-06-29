@@ -77,7 +77,7 @@ public class WxBoxProductController {
     public Object submitDelivery(@RequestBody String body) {
         String userId = JacksonUtil.parseString(body, "userId");
         List<Integer> ids = JacksonUtil.parseIntegerList(body, "ids");
-        boxProductService.shipProducts(userId, ids);
+        boxProductService.shipProducts(userId, ids, "");
         return ResponseUtil.ok();
     }
 

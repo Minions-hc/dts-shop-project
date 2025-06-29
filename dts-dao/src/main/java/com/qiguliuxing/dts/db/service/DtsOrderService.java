@@ -67,4 +67,10 @@ public class DtsOrderService {
 	public int insertOrder(OrderVO order){
 		return dtsOrderMapper.insertOrder(order);
 	}
+
+	public OrderVO queryOrderByWxOrderNo(String wxOrderNo) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("wxOrderNo", wxOrderNo);
+		return dtsOrderMapper.queryOrderByWxOrderNo(params);
+	}
 }

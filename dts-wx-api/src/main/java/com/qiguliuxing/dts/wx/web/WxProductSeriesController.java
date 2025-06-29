@@ -76,6 +76,7 @@ public class WxProductSeriesController {
     public Object getSpiritPowerSeries(){
         Map<String, Object> params = new HashMap<>();
         params.put("isSpiritPower", 1);
+        params.put("isOnSale", 1);
         List<ProductSeriesVO> productSeries = productSeriesService.getWxProductSeries(params);
         return ResponseUtil.ok(productSeries);
     }

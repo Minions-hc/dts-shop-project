@@ -50,4 +50,23 @@ public class WxOrderController {
 		return ResponseUtil.ok(data);
 	}
 
+	/**
+	 * 订单列表
+	 *
+	 * @param wxOrderNo
+	 */
+	@GetMapping("queryOrderByWxOrderNo")
+	public Object queryOrderByWxOrderNo(String wxOrderNo) {
+		if (StringUtils.isNullOrEmpty(wxOrderNo)) {
+			return ResponseUtil.fail(1002, "微信订单为空，请联系客服进行订单查询");
+		}
+
+		OrderVO order = wxOrderService.queryOrderByWxOrderNo(wxOrderNo);
+		if (order == null) {
+			return ResponseUtil.fail(1001, "请联系客服进行订单查询");
+		}
+		Map<String, Object> data = new HashMap<>();
+		data.put("item", order);
+		return ResponseUtil.ok(data);
+	}
 }
