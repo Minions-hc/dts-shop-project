@@ -20,7 +20,7 @@
         <result column="created_time" property="createdTime" jdbcType="TIMESTAMP"/>
         <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
         <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
-
+        <result column="is_on_sale" property="isOnSale" jdbcType="TINYINT"/>
         <!-- 价格区间JSON字段映射 -->
         <result column="price_ranges" property="priceRanges" jdbcType="VARCHAR"/>
     </resultMap>
@@ -44,7 +44,8 @@
         ser.created_by,
         ser.created_time,
         ser.updated_by,
-        ser.updated_time
+        ser.updated_time,
+        ser.is_on_sale
         FROM product_series as ser
         inner join product_category as category
         on category.category_id = ser.category_id
