@@ -99,19 +99,33 @@
 
   <select id="queryOrderItems" parameterType="java.lang.Integer" resultType="com.qiguliuxing.dts.vo.OrderItemVO">
       SELECT
-        o.id as id,
-        o.order_id as orderId,
-        o.product_id as productId,
-        o.quantity as quantity,
-        p.product_name as productName,
-        p.product_image as productImg,
-        p.product_price as productPrice,
-        p.product_badge as productBadge
+          o.id as id,
+          o.order_id as orderId,
+          o.product_id as productId,
+          o.quantity as quantity,
+          COALESCE(o.product_type, 0) as productType,
+          CASE
+              WHEN COALESCE(o.product_type, 0) = 1 THEN mp.product_name
+              ELSE p.product_name
+              END as productName,
+          CASE
+              WHEN COALESCE(o.product_type, 0) = 1 THEN mp.product_image
+              ELSE p.product_image
+              END as productImg,
+          CASE
+              WHEN COALESCE(o.product_type, 0) = 1 THEN 0
+              ELSE p.product_price
+              END as productPrice,
+          CASE
+              WHEN COALESCE(o.product_type, 0) = 1 THEN mp.product_badge
+              ELSE p.product_badge
+              END as productBadge
       FROM
-        shop_order_item o
-          JOIN product p ON o.product_id = p.product_id
+          shop_order_item o
+              LEFT JOIN product p ON o.product_id = p.product_id AND COALESCE(o.product_type, 0) = 0
+              LEFT JOIN market_product mp ON o.product_id = mp.product_id AND COALESCE(o.product_type, 0) = 1
       WHERE
-        o.order_id = #{orderId}
+          o.order_id = #{orderId}
   </select>
 
 
@@ -152,13 +166,15 @@
       product_id,
       quantity,
       create_by,
-      update_by
+      update_by,
+      product_type
     ) VALUES (
                #{orderId},
                #{productId},
                #{quantity},
                #{createBy},
-               #{updateBy}
+               #{updateBy},
+               #{productType}
              )
   </insert>
 

@@ -7,6 +7,7 @@ public class OrderItemVO {
     private Integer id;
     private Integer orderId;           // 订单ID
     private Integer productId;         // 商品ID
+    private Integer productType;       // 产品类型
     private String productName;
     private String productImg;
     private Double productPrice;
@@ -113,5 +114,13 @@ public class OrderItemVO {
 
     public void setProductBadge(Integer productBadge) {
         this.productBadge = productBadge;
+    }
+
+    public Integer getProductType() {
+        return productType;
+    }
+
+    public void setProductType(Integer productType) {
+        this.productType = productType;
     }
 }

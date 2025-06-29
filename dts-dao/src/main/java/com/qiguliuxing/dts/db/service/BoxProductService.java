@@ -4,6 +4,7 @@ import com.qiguliuxing.dts.db.dao.BoxOrderMapper;
 import com.qiguliuxing.dts.db.dao.BoxProductMapper;
 import com.qiguliuxing.dts.db.dao.DtsAddressMapper;
 import com.qiguliuxing.dts.db.dao.DtsOrderMapper;
+import com.qiguliuxing.dts.db.util.ActivityType;
 import com.qiguliuxing.dts.db.util.OrderNoGenerator;
 import com.qiguliuxing.dts.db.util.OrderUtil;
 import com.qiguliuxing.dts.db.util.StatusType;
@@ -93,6 +94,7 @@ public class BoxProductService {
                 orderItemVO.setQuantity(orderItemVO.getQuantity() + 1);
             } else {
                 orderItemVO = new OrderItemVO();
+                orderItemVO.setProductType(ActivityType.MARKET_EXCHANGE.getName().equals(boxProductVO.getActivityType()) ? 1 : 0);
                 orderItemVO.setProductId(boxProductVO.getProductId());
                 orderItemVO.setProductName(boxProductVO.getProductName());
                 orderItemVO.setProductImg(boxProductVO.getProductImage());
