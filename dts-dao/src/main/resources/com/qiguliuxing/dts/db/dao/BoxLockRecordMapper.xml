@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiguliuxing.dts.db.dao.BoxLockRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.qiguliuxing.dts.vo.BoxLockRecordVO">
+        <id column="id" property="id" />
+        <result column="series_id" property="seriesId" />
+        <result column="box_number" property="boxNumber" />
+        <result column="user_id" property="userId" />
+        <result column="lock_status" property="lockStatus" />
+        <result column="unlock_time" property="unlockTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_by" property="createdBy" />
+        <result column="lock_count" property="lockCount" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.qiguliuxing.dts.vo.BoxLockRecordVO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO box_lock_record (series_id, box_number, user_id, lock_status, unlock_time, created_by, lock_count)
+        VALUES (#{seriesId}, #{boxNumber}, #{userId}, #{lockStatus}, #{unlockTime}, #{createdBy}, #{lockCount})
+    </insert>
+
+    <update id="updateLock" parameterType="com.qiguliuxing.dts.vo.BoxLockRecordVO">
+        UPDATE box_lock_record
+        SET unlock_time = #{unlockTime},
+            lock_count = #{lockCount},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="findExpiredLockIds" resultType="java.lang.Long">
+        SELECT id
+        FROM box_lock_record
+        WHERE lock_status = 1
+          AND unlock_time &lt;= #{currentTime}
+        ORDER BY unlock_time ASC
+            LIMIT #{limit}
+    </select>
+
+    <update id="unlockExpiredRecords">
+        UPDATE box_lock_record
+        SET lock_status = 0
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

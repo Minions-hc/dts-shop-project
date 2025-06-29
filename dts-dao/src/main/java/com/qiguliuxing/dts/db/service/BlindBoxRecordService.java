@@ -1,12 +1,14 @@
 package com.qiguliuxing.dts.db.service;
 
 import com.qiguliuxing.dts.db.dao.BlindBoxRecordMapper;
+import com.qiguliuxing.dts.db.dao.BoxLockRecordMapper;
 import com.qiguliuxing.dts.db.dao.DtsCouponUserMapper;
 import com.qiguliuxing.dts.db.util.ActivityType;
 import com.qiguliuxing.dts.db.util.PointsTransactionType;
 import com.qiguliuxing.dts.db.util.StatusType;
 import com.qiguliuxing.dts.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -42,6 +44,12 @@ public class BlindBoxRecordService {
 
     @Autowired
     private PointsTransactionService pointsTransactionService;
+
+
+    private static final int BATCH_SIZE = 100;
+
+    @Autowired
+    private BoxLockRecordMapper lockRecordMapper;
 
     /**
      * 获取指定系列和箱子的开赏记录
@@ -272,6 +280,12 @@ public class BlindBoxRecordService {
         if (wxOrderParameter.getPoint() != null){
             pointsTransactionService.insertPointsTransaction(wxOrderParameter.getUserId(), wxOrderParameter.getPoint(), PointsTransactionType.ORDER_DEDUCTION.getCode(), wxOrderParameter.getWxOrderNo());
         }
+
+        // 十连抽进行处理
+        if (Objects.equals(wxOrderParameter.getIds().size(), 10)) {
+            handleBoxLock(wxOrderParameter.getUserId(), wxOrderParameter.getSeriesId(),wxOrderParameter.getBoxNumber(), wxOrderParameter.getLock());
+        }
+
         return results;
     }
 
@@ -331,4 +345,100 @@ public class BlindBoxRecordService {
             throw new RuntimeException("产品库存更新失败，可能已被其他用户购买");
         }
     }
+
+    /**
+     * 盒柜产品提货
+     */
+    @Transactional
+    public void handleBoxLock(String userId, Integer seriesId, String boxNumber, boolean isLockSelected) {
+        // 1. 获取用户当前激活的锁
+        Optional<BoxLockRecordVO> currentLockOpt = lockRecordMapper.findActiveLockByUserId(userId);
+
+        // 2. 检查是否是同系列同箱子的连续锁定
+        boolean isSameBox = currentLockOpt.isPresent() &&
+                currentLockOpt.get().getSeriesId().equals(seriesId) &&
+                currentLockOpt.get().getBoxNumber().equals(boxNumber);
+
+        // 3. 计算锁定时间
+        int lockMinutes;
+        if (isLockSelected) {
+            lockMinutes = isSameBox ? 180 : 30; // 同箱3小时，新箱30分钟
+        } else {
+            lockMinutes = 5; // 未选锁箱5分钟
+        }
+
+        // 4. 处理旧锁定（如果存在且不是同一个箱子）
+        if (currentLockOpt.isPresent() && !isSameBox) {
+            lockRecordMapper.unlockAllByUser(userId);
+        }
+
+        // 5. 创建/更新锁箱记录
+        if (isSameBox && isLockSelected) {
+            // 更新现有记录
+            BoxLockRecordVO existing = currentLockOpt.get();
+            existing.setUnlockTime(calculateUnlockTime(lockMinutes));
+            existing.setLockCount(existing.getLockCount() + 1);
+            lockRecordMapper.updateLock(existing);
+        } else {
+            // 创建新记录
+            BoxLockRecordVO newRecord = new BoxLockRecordVO();
+            newRecord.setSeriesId(seriesId);
+            newRecord.setBoxNumber(boxNumber);
+            newRecord.setUserId(userId);
+            newRecord.setLockStatus(1);
+            newRecord.setCreatedBy(userId);
+            newRecord.setUnlockTime(calculateUnlockTime(lockMinutes));
+            newRecord.setLockCount(1);
+            lockRecordMapper.insert(newRecord);
+        }
+    }
+
+    // 定时解锁任务
+    @Scheduled(cron = "0 * * * * ?") // 每分钟执行
+    @Transactional
+    public void unlockBoxesTask() {
+        Date now = new Date();
+        int processedCount;
+
+        do {
+            // 分批获取过期锁ID
+            List<Long> expiredIds = lockRecordMapper.findExpiredLockIds(now, BATCH_SIZE);
+            processedCount = expiredIds.size();
+
+            if (processedCount > 0) {
+                // 批量解锁
+                lockRecordMapper.unlockExpiredRecords(expiredIds);
+            }
+
+        } while (processedCount == BATCH_SIZE); // 继续处理直到没有完整批次
+    }
+
+    private Date calculateUnlockTime(int minutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, minutes);
+        return calendar.getTime();
+    }
+
+    // 查询箱子锁定状态
+    public BoxLockStatusDTO getBoxLockStatus(Integer seriesId, String boxNumber, String currentUserId) {
+        Optional<BoxLockRecordVO> boxLock = lockRecordMapper.findActiveLockByBox(seriesId, boxNumber);
+        Optional<BoxLockRecordVO> userLock = lockRecordMapper.findActiveLockByUserId(currentUserId);
+
+        return covertBoxLockStatusDTO(boxLock.orElse(null), userLock.orElse(null), currentUserId);
+    }
+
+    private BoxLockStatusDTO covertBoxLockStatusDTO(BoxLockRecordVO boxLock, BoxLockRecordVO userLock, String currentUserId) {
+            BoxLockStatusDTO boxLockStatusDTO = new BoxLockStatusDTO();
+            if (boxLock != null) {
+                boxLockStatusDTO.setLocked(true);
+                boxLockStatusDTO.setOwnedByCurrentUser(boxLock.getUserId().equals(currentUserId));
+                boxLockStatusDTO.setUnlockTime(boxLock.getUnlockTime());
+                boxLockStatusDTO.setLockCount(boxLock.getLockCount());
+                boxLockStatusDTO.setLockedByUserId(boxLock.getUserId());
+            } else {
+                boxLockStatusDTO.setLocked(false);
+                boxLockStatusDTO.setOwnedByCurrentUser(false);
+            }
+            return boxLockStatusDTO;
+        }
 }

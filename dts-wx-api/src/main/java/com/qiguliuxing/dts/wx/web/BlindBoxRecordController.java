@@ -4,10 +4,7 @@ package com.qiguliuxing.dts.wx.web;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.BlindBoxRecordService;
 import com.qiguliuxing.dts.db.util.ActivityType;
-import com.qiguliuxing.dts.vo.BlindBoxDrawResultVO;
-import com.qiguliuxing.dts.vo.BlindBoxRecordVO;
-import com.qiguliuxing.dts.vo.ProductBoxResultVo;
-import com.qiguliuxing.dts.vo.BlindBoxDrawRequestVO;
+import com.qiguliuxing.dts.vo.*;
 import com.qiguliuxing.dts.wx.dao.NumberItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +25,10 @@ public class BlindBoxRecordController {
     @Autowired
     private BlindBoxRecordService blindBoxRecordService;
 
-
     /**
      * 查询开赏记录接口
-     * @param seriesId 系列ID
+     *
+     * @param seriesId  系列ID
      * @param boxNumber 箱子编号
      * @return 包含开赏记录的结果
      */
@@ -73,7 +70,8 @@ public class BlindBoxRecordController {
 
     /**
      * 查询开赏记录接口
-     * @param seriesId 系列ID
+     *
+     * @param seriesId  系列ID
      * @param boxNumber 箱子编号
      * @return 包含开赏记录的结果
      */
@@ -93,18 +91,27 @@ public class BlindBoxRecordController {
 
     /**
      * 抽取盲盒接口
+     *
      * @param request 抽取请求参数
      * @return 抽取结果
      */
     @PostMapping("/drawBlindBox")
     public Object drawBlindBox(@RequestBody BlindBoxDrawRequestVO request) {
         List<BlindBoxDrawResultVO> results;
-        if(request.getActivityType().equals(ActivityType.SOUL_POWER.getName())) {
+        if (request.getActivityType().equals(ActivityType.SOUL_POWER.getName())) {
             results = blindBoxRecordService.drawBlindBoxBySpiritPower(request);
         } else {
             results = blindBoxRecordService.drawBlindBox(null);
         }
         return ResponseUtil.ok(results);
+    }
+
+
+    @GetMapping("/lockStatus")
+    public Object getLockStatus(@RequestParam Integer seriesId,@RequestParam String boxNumber, @RequestAttribute String currentUserId) {
+        BoxLockStatusDTO status = blindBoxRecordService.getBoxLockStatus(seriesId, boxNumber, currentUserId);
+
+        return ResponseUtil.ok(status);
     }
 
 }

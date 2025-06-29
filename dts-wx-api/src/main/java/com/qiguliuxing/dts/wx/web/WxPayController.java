@@ -71,6 +71,7 @@ public class WxPayController {
             BigDecimal couponDeduction = data.getBigDecimal("couponDeduction");
             BigDecimal orderAmount = data.getBigDecimal("orderAmount");
             BigDecimal paymentAmount = data.getBigDecimal("paymentAmount");
+            Boolean isLock = data.getBoolean("isLock");
             wxOrderParameter.setNumbers(numbers);
             wxOrderParameter.setBoxNumber(boxNumber);
             wxOrderParameter.setSeriesId(seriesId);
@@ -82,6 +83,7 @@ public class WxPayController {
             wxOrderParameter.setPaymentAmount(paymentAmount);
             wxOrderParameter.setPoint(point);
             wxOrderParameter.setCouponId(couponId);
+            wxOrderParameter.setLock(isLock != null ? isLock : false);
         } else if (businessType.equals(2)){
             List<Integer> ids = JSON.parseArray(data.getJSONArray("ids").toJSONString(), Integer.class);
             BigDecimal orderAmount = data.getBigDecimal("orderAmount");

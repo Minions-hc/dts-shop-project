@@ -27,6 +27,7 @@ public class WxOrderParameter {
     private Date updateTime;        // 更新时间
     private Integer point;          // 积分
     private Integer couponId;       // 优惠券ID
+    private Boolean isLock;       // 是否锁箱
 
     public Long getId() {
         return id;
@@ -178,5 +179,13 @@ public class WxOrderParameter {
 
     public void setCouponId(Integer couponId) {
         this.couponId = couponId;
+    }
+
+    public Boolean getLock() {
+        return isLock;
+    }
+
+    public void setLock(Boolean lock) {
+        isLock = lock;
     }
 }
